@@ -268,4 +268,310 @@ const OVERVIEW = {
 };
 
  
+// ===== Interactive Transaction Timeline & Strategy =====
+
+// Small date helpers
+function toISODate(d){ const z = new Date(d); const off = z.getTimezoneOffset(); const local = new Date(z.getTime() - off*60000); return local.toISOString().slice(0,10); }
+function addDays(d, n){ const x = new Date(d); x.setDate(x.getDate()+n); return x; }
+function fmtRange(start, days){
+  const s = new Date(start);
+  const e = addDays(start, Math.max(0, days-1));
+  const f = (x) => x.toLocaleDateString(undefined, { month:'short', day:'numeric' });
+  return `${f(s)} – ${f(e)}`;
+}
+function daysBetween(a, b){ const ms = (new Date(b)) - (new Date(a)); return Math.round(ms/86400000)+1; }
+
+// Season from start date
+function inferSeason(d){
+  const m = (new Date(d)).getMonth()+1;
+  if (m>=3 && m<=6) return 'spring';
+  if (m>=7 && m<=8) return 'summer';
+  if (m>=9 && m<=11) return 'fall';
+  return 'winter';
+}
+
+// Core planning engine
+function computeTxPlan(opts){
+  // Defaults & factors tuned for NY attorney closings
+  const season = opts.season === 'auto' ? inferSeason(opts.start) : opts.season;
+
+  // Season DOM multipliers (heuristic): spring -15%, summer baseline, fall +10%, winter +25%
+  const seasonMul = { spring: 0.85, summer: 1.00, fall: 1.10, winter: 1.25 }[season] || 1.0;
+
+  // Sell: baseline days-on-market by heat (then season-adjust)
+  const sellDOMBase = { slow: 45, balanced: 35, competitive: 18 }[opts.sellHeat] || 35;
+  const sellDOM = Math.round(sellDOMBase * seasonMul);
+
+  // Buy: time to accepted offer by heat (more competitive = longer to land)
+  const buyOfferCycle = { slow: 3, balanced: 7, competitive: 12 }[opts.buyHeat] || 7;
+
+  // Contract-to-close durations for buy (NY attorney closings)
+  let buyCTC = 45; // conventional default
+  if (opts.financing === 'cash') buyCTC = 25;
+  if (opts.financing === 'conv10') buyCTC = 50;
+  if (opts.financing === 'fha' || opts.financing === 'va') buyCTC = 55;
+
+  // HOA adds lender questionnaire/resale docs lag
+  const hoaLag = (opts.propType === 'hoa') ? 7 : 0;
+
+  // Seller side: assume buyer is financed → 45 days CTC
+  const sellCTC = 45;
+
+  // Upfront prep window (pre-inspection + light fixes + photos/stage)
+  const prep = 10;
+
+  // Negotiate window after marketing burst
+  const negotiate = 5;
+
+  const steps = [];
+  let cursor = new Date(opts.start);
+
+  // 1) Preparation
+  steps.push({
+    no: 1,
+    title: "Week 0–1: Preparation",
+    start: toISODate(cursor),
+    days: prep,
+    notes: "Pre-inspection; minor repairs; agent interviews; photography & staging; mortgage pre-approval."
+  });
+  cursor = addDays(cursor, prep);
+
+  // 2) List White Plains (marketing window ~ DOM)
+  steps.push({
+    no: 2,
+    title: "Week 1–3: List White Plains",
+    start: toISODate(cursor),
+    days: sellDOM,
+    notes: `Strategic pricing; open houses; targeted outreach. Season: ${season}.`
+  });
+  cursor = addDays(cursor, sellDOM);
+
+  // 3) Negotiate & Accept Offer (sell)
+  steps.push({
+    no: 3,
+    title: "Week 2–4: Negotiate & Accept (Sell)",
+    start: toISODate(cursor),
+    days: negotiate,
+    notes: "Attorney review, terms, contingencies; sign contracts; schedule tentative closing."
+  });
+  const sellContractDate = toISODate(cursor); // when negotiating starts
+  cursor = addDays(cursor, negotiate);
+
+  // Determine when to pursue the buy offer
+  let buyOfferStart;
+  if (opts.saleContingency === 'yes') {
+    // Safer: start buy offer right after seller contracts are signed
+    buyOfferStart = addDays(sellContractDate, 0);
+  } else {
+    // Parallel path: begin toward end of marketing to reduce gap risk
+    buyOfferStart = addDays(opts.start, prep + Math.max(7, Math.round(sellDOM * 0.6)));
+  }
+
+  // 4) Make Loudonville Offer
+  const buyOfferStartISO = toISODate(buyOfferStart);
+  steps.push({
+    no: 4,
+    title: "Week 3–4: Make Loudonville Offer",
+    start: buyOfferStartISO,
+    days: buyOfferCycle,
+    notes: (opts.propType === 'hoa' ? "Request HOA resale packet; " : "") + "Tour thoroughly; submit competitive terms; align close with sell date."
+  });
+  const buyAcceptDate = toISODate(addDays(buyOfferStart, buyOfferCycle));
+
+  // 5) Due Diligence (buy)
+  const insp = 7; // inspection period
+  const appraisal = (opts.financing === 'cash') ? 0 : 10;
+  const commitment = (opts.financing === 'cash') ? 0 : (opts.financing === 'conv20' ? 25 : (opts.financing === 'conv10' ? 28 : 30));
+  const ddDays = insp + Math.max(appraisal, 0) + Math.max(commitment, 0) + hoaLag;
+
+  steps.push({
+    no: 5,
+    title: "Week 4–6: Due Diligence (Buy)",
+    start: buyAcceptDate,
+    days: ddDays,
+    notes: [
+      `Inspection ${insp}d`,
+      (appraisal ? `Appraisal ${appraisal}d` : "No appraisal (cash)"),
+      (commitment ? `Mortgage commitment ${commitment}d` : "No mortgage (cash)"),
+      (hoaLag ? `HOA docs +${hoaLag}d` : null)
+    ].filter(Boolean).join(" • ")
+  });
+
+  // 6) Closings
+  // Sell close date target = sell contract + sellCTC
+  const sellCloseTarget = toISODate(addDays(sellContractDate, sellCTC));
+
+  // Buy close aligned per user preference
+  let buyCloseTarget;
+  if (opts.closeOrder === 'same_day') {
+    buyCloseTarget = sellCloseTarget;
+  } else if (opts.closeOrder === 'gap_3') {
+    buyCloseTarget = toISODate(addDays(sellCloseTarget, 3));
+  } else { // buy_first (bridge)
+    // buy CTC measured from buyAcceptDate plus buyCTC
+    buyCloseTarget = toISODate(addDays(buyAcceptDate, buyCTC + hoaLag));
+  }
+
+  const closeStart = (opts.closeOrder === 'buy_first') ? buyCloseTarget : sellCloseTarget;
+  const closeDays = (opts.closeOrder === 'same_day') ? 1 : 3;
+
+  steps.push({
+    no: 6,
+    title: "Week 6–8: Closings",
+    start: closeStart,
+    days: closeDays,
+    notes: (opts.closeOrder === 'same_day')
+      ? "Close sale AM, purchase PM; wire proceeds; keys/movers coordinated."
+      : (opts.closeOrder === 'gap_3')
+        ? "Close sale, then purchase ~3 days later; short-term storage or rent-back recommended."
+        : "Buy before selling (bridge funds or cash)."
+  });
+
+  // Totals & flags
+  const totalDays = daysBetween(opts.start, addDays(closeStart, Math.max(0, closeDays-1)));
+  let rateLockSuggest = 0;
+  if (opts.financing !== 'cash') {
+    // lock suggested from buyAcceptDate to buyCloseTarget + buffer
+    const lockSpan = Math.max(1, daysBetween(buyAcceptDate, buyCloseTarget));
+    rateLockSuggest = lockSpan <= 45 ? 45 : 60;
+  }
+
+  const flags = [];
+
+  // Risk: buy scheduled before sale close & not bridge?
+  if (opts.closeOrder === 'buy_first' && opts.saleContingency === 'yes') {
+    flags.push("Buy scheduled before sale with a sale contingency — high risk of denial.");
+  }
+
+  // Risk: HOA doc lag
+  if (opts.propType === 'hoa') flags.push("HOA resale packet can delay underwriting; order early.");
+
+  // Risk: Competitive buy with thin down payment
+  (function(){
+    const downEl = document.getElementById('downPctInput');
+    const dp = downEl ? parseFloat(downEl.value) : (typeof BUY_DEFAULTS !== 'undefined' ? BUY_DEFAULTS.downPct : 0.2);
+    if (opts.buyHeat === 'competitive' && dp < 0.2 && opts.financing !== 'cash') {
+      flags.push("Competitive buy: <20% down may need stronger terms (EMD, appraisal buffer, shorter inspection).");
+    }
+  })();
+
+  // Risk: rate-lock vs timeline
+  if (opts.financing !== 'cash' && rateLockSuggest >= 60) {
+    flags.push("Consider 60-day rate lock or lock extension buffer.");
+  }
+
+  return { steps, totalDays, rateLockSuggest, flags, season, sellDOM, buyOfferCycle, sellCloseTarget, buyCloseTarget };
+}
+
+function renderTxPlan(){
+  const startEl = document.getElementById('txStartDate');
+  const seasonEl = document.getElementById('season');
+  const sellHeatEl = document.getElementById('sellHeat');
+  const buyHeatEl = document.getElementById('buyHeat');
+  const propTypeEl = document.getElementById('propType');
+  const finEl = document.getElementById('financing');
+  const saleContEl = document.getElementById('saleContingency');
+  const orderEl = document.getElementById('closeOrder');
+
+  const opts = {
+    start: startEl?.value || toISODate(new Date()),
+    season: seasonEl?.value || 'auto',
+    sellHeat: sellHeatEl?.value || 'balanced',
+    buyHeat: buyHeatEl?.value || 'competitive',
+    propType: propTypeEl?.value || 'sfh',
+    financing: finEl?.value || 'conv20',
+    saleContingency: saleContEl?.value || 'no',
+    closeOrder: orderEl?.value || 'same_day'
+  };
+
+  const result = computeTxPlan(opts);
+
+  // Fill KPI cards
+  const durEl = document.getElementById('txTotalDuration');
+  if (durEl) durEl.textContent = `${result.totalDays} days`;
+
+  const lockEl = document.getElementById('txRateLock');
+  if (lockEl) lockEl.textContent = (result.rateLockSuggest ? `${result.rateLockSuggest} days` : "N/A (cash)");
+
+  const flagsEl = document.getElementById('txFlags');
+  if (flagsEl) flagsEl.innerHTML = result.flags.length
+    ? result.flags.map(f => `<span class="risk-badge">RISK</span>${f}`).join("<br>")
+    : "None";
+
+  // Render table
+  const tbody = document.querySelector('#txPlanTable tbody');
+  if (tbody) {
+    tbody.innerHTML = '';
+    result.steps.forEach(step => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><span class="phase-badge">${step.no}</span></td>
+        <td>${step.title}</td>
+        <td>${fmtRange(step.start, step.days)}</td>
+        <td>${step.days}</td>
+        <td>${step.notes}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // Store last plan for ICS export
+  window.__TX_LAST_PLAN__ = result;
+}
+
+// ICS export (all-day events per phase)
+function exportTxPlanICS(){
+  const res = window.__TX_LAST_PLAN__;
+  if (!res || !res.steps?.length) return;
+
+  function dt(yMd){ return yMd.replaceAll('-',''); }
+  const lines = [
+    "BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//z.colonie.town//TransactionPlan//EN"
+  ];
+  res.steps.forEach(s => {
+    const start = dt(s.start);
+    const end = dt(toISODate(addDays(s.start, Math.max(0, s.days-1))));
+    lines.push("BEGIN:VEVENT");
+    lines.push(`UID:${crypto?.randomUUID ? crypto.randomUUID() : (Math.random().toString(36).slice(2))}@z.colonie.town`);
+    lines.push(`DTSTAMP:${dt(toISODate(new Date()))}T000000Z`);
+    lines.push(`DTSTART;VALUE=DATE:${start}`);
+    lines.push(`DTEND;VALUE=DATE:${dt(toISODate(addDays(end,1)))}`); // inclusive end
+    lines.push(`SUMMARY:${s.title}`);
+    lines.push(`DESCRIPTION:${(s.notes||'').replace(/\r?\n/g,' ')}`);
+    lines.push("END:VEVENT");
+  });
+  lines.push("END:VCALENDAR");
+
+  const blob = new Blob([lines.join("\r\n")], { type: "text/calendar" });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = "transaction-plan.ics";
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 0);
+}
+
+// Wire up
+(function(){
+  const startEl = document.getElementById('txStartDate');
+  if (startEl && !startEl.value) startEl.value = toISODate(new Date());
+
+  const doRender = () => renderTxPlan();
+
+  ['txStartDate','season','sellHeat','buyHeat','propType','financing','saleContingency','closeOrder']
+    .forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('input', doRender);
+      if (el && el.tagName === 'SELECT') el.addEventListener('change', doRender);
+    });
+
+  const recalcBtn = document.getElementById('txRecalcBtn');
+  if (recalcBtn) recalcBtn.addEventListener('click', doRender);
+
+  const exportBtn = document.getElementById('txExportICS');
+  if (exportBtn) exportBtn.addEventListener('click', exportTxPlanICS);
+
+  // initial render
+  renderTxPlan();
+})();
  
