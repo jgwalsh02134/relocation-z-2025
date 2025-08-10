@@ -9,12 +9,47 @@
   <script defer src="assets/script.js"></script>
 </head>
 <body>
-  <header class="site-header">
-    <div class="container">
+  <header class="site-header header-v2">
+  <div class="container nav-row">
+    <a class="brand" href="/">z.colonie.town</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">☰</button>
+    <nav id="siteNav" class="nav-links">
+      <a href="#hero">Home</a>
+      <a href="#sale-strategy">Sell</a>
+      <a href="#buy-8le">Buy</a>
+      <a href="#timeline">Timeline</a>
+      <a href="#resources">Resources</a>
+    </nav>
+  </div>
+
+  <section class="hero" id="hero">
+    <div class="container hero-inner">
       <h1>Relocation Project</h1>
-      <p>White Plains → Capital District – Buy/Sell Analysis</p>
+      <p class="sub">Decision-ready plan for moving from White Plains to the Capital District — with live sell/buy math.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#sale-strategy">Start with Sale</a>
+        <a class="btn btn-outline" href="#buy-8le">Evaluate Purchase</a>
+      </div>
     </div>
-  </header>
+  </section>
+
+  <div class="kpi-strip">
+    <div class="container kpi-grid">
+      <div class="kpi">
+        <div class="kpi-label">Seller Baseline</div>
+        <div class="kpi-value" id="kpiSellBaseline">$—</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Annual Taxes</div>
+        <div class="kpi-value" id="kpiTaxesAnnual">$—</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Target Buy (default)</div>
+        <div class="kpi-value" id="kpiBuyDefault">$—</div>
+      </div>
+    </div>
+  </div>
+</header>
 
   <main class="container">
     <!-- Key Metrics -->
