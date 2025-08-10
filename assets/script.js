@@ -112,35 +112,80 @@ buySelect.addEventListener("change", updateDashboard);
 buySelect.value = buyingProperties[0].id;
 updateDashboard();
 
+// ----- SELLING (authoritative baseline for 54 Collyer Pl) -----
 const SELLING = {
   address: "54 Collyer Pl, White Plains, NY 10605",
-  baseValue: 1050000,      // TODO: replace with your verified value
-  commissionRate: 0.04,    // adjust to agreement
-  transferTaxRate: 0.004,  // NYS seller transfer tax 0.4%
+  baseValue: 600000,                 // from valuation.point_estimate
+  commissionRate: 0.04,              // closing_costs.commission_rate
+  transferTaxRate: 0.004,            // NYS seller transfer tax (0.4%)
   attorneyFee: 2200,
   stagingPhotography: 3000,
-  miscClosing: 1500
+  miscClosing: 1500,
+  meta: {
+    beds: 3,
+    baths: 1.5,
+    sqft: 1065,
+    lot_sqft: 13068,
+    year_built: 1924,
+    zoning: "R1-7.5",
+    features: ["Cape Cod style", "Basement"]
+  },
+  costs: {
+    taxes_annual: 11119.27,
+    insurance_annual: 1600,
+    utilities_monthly_breakdown: {
+      electric: 150,
+      gas: 140,
+      water_sewer: 30,
+      internet: 70,
+      other: 0
+    },
+    utilities_monthly_total: 390
+  },
+  sources: {
+    valuation: [
+      { name: "Redfin – subject property record", url: "https://www.redfin.com/NY/White-Plains/54-Collyer-Pl-10605/home/20181781" },
+      { name: "Zillow – subject property page", url: "https://www.zillow.com/homedetails/54-Collyer-Pl-White-Plains-NY-10605/32982800_zpid/" },
+      { name: "PropertyShark – public record", url: "https://www.propertyshark.com/mason/Property/9171955/54-Collyer-Pl-White-Plains-NY-10605/" },
+      { name: "City of White Plains – 2025 Final Assessment Roll (PDF)", url: "https://www.cityofwhiteplains.com/DocumentCenter/View/16387/2025-Final-Assessment-Roll" }
+    ],
+    taxes: "https://www.cityofwhiteplains.com/DocumentCenter/View/16387/2025-Final-Assessment-Roll",
+    insurance: "https://www.policygenius.com/homeowners-insurance/new-york/",
+    utilities: [
+      { name: "City of White Plains – Water & Sewer Rates", url: "https://www.cityofwhiteplains.com/FAQ.aspx?TID=19" },
+      { name: "Verizon Fios – plan/pricing reference", url: "https://www.verizon.com/home/internet/fios-fastest-internet/" }
+    ],
+    comps: [
+      { address: "45 Richbell Rd, White Plains, NY 10605", url: "https://www.redfin.com/NY/White-Plains/45-Richbell-Rd-10605/home/20182907" },
+      { address: "2 Carrigan Ave, White Plains, NY 10605", url: "https://www.redfin.com/NY/White-Plains/2-Carrigan-Ave-10605/home/20183121" },
+      { address: "33 Doyer Ave, White Plains, NY 10605", url: "https://www.zillow.com/homedetails/33-Doyer-Ave-White-Plains-NY-10605/32978915_zpid/" },
+      { address: "477 Ridgeway, White Plains, NY 10605", url: "https://www.redfin.com/NY/White-Plains/477-Ridgeway-10605/home/20184051" },
+      { address: "23 Carrigan Ave, White Plains, NY 10605", url: "https://www.redfin.com/NY/White-Plains/23-Carrigan-Ave-10605/home/20183122" }
+    ]
+  }
 };
 
-// Ensure old top-of-page metrics don’t show $0
+// Keep older KPIs in sync (if your earlier code reads sellingProperty.price)
 if (typeof sellingProperty === "undefined") {
   window.sellingProperty = { price: SELLING.baseValue };
 } else {
   sellingProperty.price = SELLING.baseValue;
 }
 
+// ----- SCENARIOS (from research JSON) -----
+const SCENARIOS = [
+  { label: "Conservative", list: 549000, expectedSale: 540000 },
+  { label: "Strategic",    list: 599000, expectedSale: 610000 },
+  { label: "Aggressive",   list: 675000, expectedSale: 675000 }
+];
+
+// ----- OVERVIEW cards (tie sale range to valuation range) -----
 const OVERVIEW = {
-  typicalSaleRange: [975000, 1100000],
-  targetBuyRange: [435000, 470000],
-  monthlyUtilityDelta: -65,
+  typicalSaleRange: [525000, 675000],  // valuation.range.low/high
+  targetBuyRange: [435000, 470000],    // adjust later as needed
+  monthlyUtilityDelta: -65,            // placeholder until buy-side is wired
   taxSavingsAnnual: 1043
 };
-
-const SCENARIOS = [
-  { label: "Conservative", list: 975000, expectedSale: 975000 },
-  { label: "Strategic",   list: 999000, expectedSale: 1050000 },
-  { label: "Aggressive",  list: 1100000, expectedSale: 1100000 }
-];
 
 const fmtMoney = n => n.toLocaleString(undefined,{ style:'currency', currency:'USD', maximumFractionDigits:0 });
 
