@@ -49,7 +49,8 @@ function updateDashboard() {
     netElem.className = "metric-value " + (net >= 0 ? "metric-positive" : "metric-negative");
 
     // Property Details
-    document.getElementById("propertyDetails").innerHTML = `
+    const detailsEl = document.getElementById("propertyDetails");
+    if (detailsEl) detailsEl.innerHTML = `
         <h3>Selling</h3>
         <p>${sellingProperty.address}</p>
         <ul>
@@ -169,11 +170,19 @@ const SELLING = {
 const $ = (s, r=document) => r.querySelector(s);
 const fmt$ = n => n.toLocaleString(undefined,{ style:'currency', currency:'USD', maximumFractionDigits:0 });
 
-// Keep older KPI code in sync if it reads sellingProperty.price
+// Keep older KPI/chart code in sync with authoritative SELLING data
 if (typeof sellingProperty === "undefined") {
-  window.sellingProperty = { price: SELLING.baseValue };
+  window.sellingProperty = {
+    price: SELLING.baseValue,
+    taxes: SELLING.costs.taxes_annual,
+    insurance: SELLING.costs.insurance_annual,
+    utilities: (SELLING.costs.utilities_monthly_total || 0) * 12
+  };
 } else {
   sellingProperty.price = SELLING.baseValue;
+  sellingProperty.taxes = SELLING.costs.taxes_annual;
+  sellingProperty.insurance = SELLING.costs.insurance_annual;
+  sellingProperty.utilities = (SELLING.costs.utilities_monthly_total || 0) * 12;
 }
 
 // ---------- Seller net math ----------
@@ -267,7 +276,20 @@ const OVERVIEW = {
   taxSavingsAnnual: 1043
 };
 
- 
+// Header KPI updater
+function updateHeaderKPIs(){
+  const sellBaseEl = document.getElementById('kpiSellBaseline');
+  const taxesAnnualEl = document.getElementById('kpiTaxesAnnual');
+  const buyDefaultEl = document.getElementById('kpiBuyDefault');
+  if (sellBaseEl) sellBaseEl.textContent = fmt$(SELLING.baseValue);
+  if (taxesAnnualEl) taxesAnnualEl.textContent = fmt$(SELLING.costs.taxes_annual);
+  if (buyDefaultEl) {
+    const defaultBuy = (typeof buyingProperties !== 'undefined' && buyingProperties.length)
+      ? buyingProperties[0].price : 0;
+    buyDefaultEl.textContent = fmt$(defaultBuy);
+  }
+}
+
 // ===== Interactive Transaction Timeline & Strategy =====
 
 // Small date helpers
@@ -571,7 +593,24 @@ function exportTxPlanICS(){
   const exportBtn = document.getElementById('txExportICS');
   if (exportBtn) exportBtn.addEventListener('click', exportTxPlanICS);
 
+  // Mobile nav toggle
+  const navToggle = document.getElementById('navToggle');
+  const siteNav = document.getElementById('siteNav');
+  if (navToggle && siteNav) {
+    navToggle.addEventListener('click', () => {
+      const isOpen = siteNav.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', String(isOpen));
+    });
+    siteNav.addEventListener('click', (e) => {
+      if (e.target && e.target.matches('a')) {
+        siteNav.classList.remove('open');
+        navToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
   // initial render
   renderTxPlan();
+  updateHeaderKPIs();
 })();
  
