@@ -112,55 +112,49 @@ buySelect.addEventListener("change", updateDashboard);
 buySelect.value = buyingProperties[0].id;
 updateDashboard();
 
-/* ===== Selling Property – authoritative inputs =====
-   Replace the numbers below with verified values (your CMA / tax bill / invoices).
-   Everything else updates automatically. */
 const SELLING = {
   address: "54 Collyer Pl, White Plains, NY 10605",
-  // Accurate current value you believe is defendable in today’s market:
-  // (If you have a range, set 'base' near your median, adjust scenarios below.)
-  baseValue: 1050000,   // <- CHANGE
-  // Annual property tax doesn't affect sale net; kept for context if needed
-  annualTax: 0,         // optional; not used in net proceeds
-  // Closing cost assumptions (editable):
-  commissionRate: 0.04, // 4% default (adjust to your agreement)
-  transferTaxRate: 0.004, // NYS seller transfer tax 0.4%
-  attorneyFee: 2200,    // typical range $1.5k–$2.5k
-  stagingPhotography: 3000, // if you plan to stage
-  miscClosing: 1500     // title closer, filing, small incidentals
+  baseValue: 1050000,      // TODO: replace with your verified value
+  commissionRate: 0.04,    // adjust to agreement
+  transferTaxRate: 0.004,  // NYS seller transfer tax 0.4%
+  attorneyFee: 2200,
+  stagingPhotography: 3000,
+  miscClosing: 1500
 };
 
-// Typical ranges for the “Overview” cards (edit to your research)
+// Ensure old top-of-page metrics don’t show $0
+if (typeof sellingProperty === "undefined") {
+  window.sellingProperty = { price: SELLING.baseValue };
+} else {
+  sellingProperty.price = SELLING.baseValue;
+}
+
 const OVERVIEW = {
-  typicalSaleRange: [975000, 1100000], // shown as "$975K - $1.1M"
+  typicalSaleRange: [975000, 1100000],
   targetBuyRange: [435000, 470000],
-  monthlyUtilityDelta: -65,            // negative = savings vs current
-  taxSavingsAnnual: 1043               // e.g., STAR/Enhanced STAR
+  monthlyUtilityDelta: -65,
+  taxSavingsAnnual: 1043
 };
 
-// Three modeled scenarios (you can rename/retune)
 const SCENARIOS = [
   { label: "Conservative", list: 975000, expectedSale: 975000 },
-  { label: "Strategic",    list: 999000, expectedSale: 1050000 },
-  { label: "Aggressive",   list: 1100000, expectedSale: 1100000 }
+  { label: "Strategic",   list: 999000, expectedSale: 1050000 },
+  { label: "Aggressive",  list: 1100000, expectedSale: 1100000 }
 ];
 
-// Format helpers
-const fmtMoney = (n) => n.toLocaleString(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0});
-const fmtRange = ([a,b]) => `${fmtMoney(a).replace('.00','').replace('$','\$')}`.replace(/\u00A0/g,'') + " - " + `${fmtMoney(b).replace('.00','').replace('$','\$')}`;
+const fmtMoney = n => n.toLocaleString(undefined,{ style:'currency', currency:'USD', maximumFractionDigits:0 });
 
-// Compute seller net proceeds
 function computeSellerNet(salePrice) {
   const c = SELLING;
   const commission = salePrice * c.commissionRate;
-  const xfer = salePrice * c.transferTaxRate; // seller-paid NYS transfer tax 0.4%
+  const xfer = salePrice * c.transferTaxRate;
   const other = (c.attorneyFee||0) + (c.stagingPhotography||0) + (c.miscClosing||0);
   const net = salePrice - commission - xfer - other;
   return { commission, xfer, other, net };
 }
 
-// Render Overview cards
-(function renderOverview(){
+// Overview cards
+(function (){
   const $sale = document.getElementById('typicalSaleRange');
   const $buy  = document.getElementById('targetBuyRange');
   const $util = document.getElementById('utilDelta');
@@ -171,8 +165,8 @@ function computeSellerNet(salePrice) {
   if ($tax)  $tax.textContent  = fmtMoney(OVERVIEW.taxSavingsAnnual) + "/yr";
 })();
 
-// Render Sale Strategy table
-(function renderSaleStrategy(){
+// Sale strategy table
+(function (){
   const addr = document.getElementById('sellAddress');
   if (addr) addr.textContent = SELLING.address;
 
@@ -182,7 +176,6 @@ function computeSellerNet(salePrice) {
 
   SCENARIOS.forEach(s => {
     const { commission, xfer, other, net } = computeSellerNet(s.expectedSale);
-
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${s.label}</td>
@@ -196,3 +189,4 @@ function computeSellerNet(salePrice) {
     tbody.appendChild(tr);
   });
 })();
+ 
