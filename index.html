@@ -1,223 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relocation Project – White Plains to Capital District</title>
-    <link rel="stylesheet" href="assets/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="assets/script.js" defer></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Relocation Project – White Plains → Capital District</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script defer src="assets/script.js"></script>
 </head>
 <body>
-    <header>
-        <h1>Relocation Project</h1>
-        <p>White Plains to Capital District – Buy/Sell Analysis</p>
-    </header>
-
+  <header class="site-header">
     <div class="container">
-
-        <!-- Overview Metrics -->
-        <div class="section">
-            <h2>Key Metrics</h2>
-            <div class="metrics">
-                <div class="metric-card">
-                    <h3>Selling Property</h3>
-                    <p>54 Collyer Pl, White Plains, NY</p>
-                    <p><strong id="sellPrice">$0</strong></p>
-                </div>
-                <div class="metric-card">
-                    <h3>Buying Property</h3>
-                    <select id="buyPropertySelect"></select>
-                    <p><strong id="buyPrice">$0</strong></p>
-                </div>
-                <div class="metric-card">
-                    <h3>Net Difference</h3>
-                    <p><strong id="netDifference">$0</strong></p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Property Details -->
-        <div class="section">
-            <h2>Property Profiles</h2>
-            <div id="propertyDetails"></div>
-        </div>
-
-        <!-- Comparative Chart -->
-        <div class="section">
-            <h2>Cost-of-Living Comparison</h2>
-            <canvas id="costChart"></canvas>
-        </div>
-
-        <!-- Timeline -->
-        <div class="section">
-            <h2>Unified Buy–Sell Timeline</h2>
-            <p>[Timeline graphic or steps will go here]</p>
-        </div>
-
+      <h1>Relocation Project</h1>
+      <p>White Plains → Capital District – Buy/Sell Analysis</p>
     </div>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relocation Project – White Plains to Capital District</title>
-    <link rel="stylesheet" href="assets/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="assets/script.js" defer></script>
-</head>
-<body>
-    <header>
-        <h1>Relocation Project</h1>
-        <p>White Plains to Capital District – Buy/Sell Analysis</p>
-    </header>
+  </header>
 
-    <main class="container">
+  <main class="container">
+    <!-- Key Metrics -->
+    <section class="section" id="metrics">
+      <h2>Key Metrics</h2>
+      <div class="metrics">
+        <div class="metric-card">
+          <h3>Selling Property</h3>
+          <p>54 Collyer Pl, White Plains, NY</p>
+          <p class="metric-value" id="sellPrice">$0</p>
+        </div>
 
-        <!-- Key Metrics -->
-        <section class="section">
-            <h2>Key Metrics</h2>
-            <div class="metrics">
-                <div class="metric-card">
-                    <h3>🏠 Selling Property</h3>
-                    <p>54 Collyer Pl, White Plains, NY</p>
-                    <p class="metric-value" id="sellPrice">$0</p>
-                </div>
-                <div class="metric-card">
-                    <h3>📍 Buying Property</h3>
-                    <select id="buyPropertySelect"></select>
-                    <p class="metric-value" id="buyPrice">$0</p>
-                </div>
-                <div class="metric-card">
-                    <h3>💰 Net Difference</h3>
-                    <p class="metric-value" id="netDifference">$0</p>
-                </div>
-            </div>
-        </section>
+        <div class="metric-card">
+          <h3>Buying Property</h3>
+          <select id="buyPropertySelect" aria-label="Select target property"></select>
+          <p class="metric-value" id="buyPrice">$0</p>
+        </div>
 
-        <!-- Property Details -->
-        <section class="section">
-            <h2>Property Profiles</h2>
-            <div id="propertyDetails"></div>
-        </section>
+        <div class="metric-card">
+          <h3>Net Difference</h3>
+          <p class="metric-value" id="netDifference">$0</p>
+        </div>
+      </div>
 
-        <!-- Cost of Living Chart -->
-        <section class="section">
-            <h2>Cost-of-Living Comparison</h2>
-            <div class="chart-container">
-                <canvas id="costChart"></canvas>
-            </div>
-        </section>
+      <div class="chart-container">
+        <canvas id="costChart"></canvas>
+      </div>
+    </section>
 
-        <section class="section" id="overview">
-            <h2>Relocation Overview</h2>
-            <p>This page tracks a White Plains → Capital District move with up-to-date values for the fixed seller address and any candidate purchase in Colonie/Loudonville.</p>
+    <!-- Overview -->
+    <section class="section" id="overview">
+      <h2>Relocation Overview</h2>
+      <p>This page tracks a White Plains → Capital District move with up-to-date values for the fixed seller address and candidate purchases in Colonie/Loudonville.</p>
 
-            <div class="metrics-grid">
-              <div class="metric-card guide">
-                <h4>Typical Sale Range</h4>
-                <div class="value" id="typicalSaleRange">$—</div>
-                <div class="detail">White Plains Market</div>
-              </div>
-              <div class="metric-card guide">
-                <h4>Target Purchase Range</h4>
-                <div class="value" id="targetBuyRange">$—</div>
-                <div class="detail">Colonie / Loudonville</div>
-              </div>
-              <div class="metric-card guide">
-                <h4>Monthly Utility Delta</h4>
-                <div class="value" id="utilDelta">$—</div>
-                <div class="detail">Difference vs current</div>
-              </div>
-              <div class="metric-card guide">
-                <h4>Tax Savings Potential</h4>
-                <div class="value" id="taxSavings">$—</div>
-                <div class="detail">Programs like STAR</div>
-              </div>
-            </div>
+      <div class="metrics-grid">
+        <div class="metric-card guide">
+          <h4>Typical Sale Range</h4>
+          <div class="value" id="typicalSaleRange">$—</div>
+          <div class="detail">White Plains Market</div>
+        </div>
+        <div class="metric-card guide">
+          <h4>Target Purchase Range</h4>
+          <div class="value" id="targetBuyRange">$—</div>
+          <div class="detail">Colonie / Loudonville</div>
+        </div>
+        <div class="metric-card guide">
+          <h4>Monthly Utility Delta</h4>
+          <div class="value" id="utilDelta">$—</div>
+          <div class="detail">Difference vs current</div>
+        </div>
+        <div class="metric-card guide">
+          <h4>Tax Savings Potential</h4>
+          <div class="value" id="taxSavings">$—</div>
+          <div class="detail">Programs like STAR</div>
+        </div>
+      </div>
 
-            <div class="alert alert-info">
-              <strong>Note:</strong> NYS mansion tax (1%) applies to <strong>buyers</strong> at or above $1,000,000. We don’t subtract it from your seller net, but it can shrink your buyer pool above that threshold.
-            </div>
-        </section>
+      <div class="alert alert-info">
+        <strong>Note:</strong> NYS mansion tax (1%) applies to <strong>buyers</strong> at or above $1,000,000. It doesn’t hit your seller net directly, but it can reduce demand above that threshold.
+      </div>
+    </section>
 
-        <section class="section" id="sale-strategy">
-            <h2>White Plains Sale Strategy</h2>
-            <p>We model seller <strong>net proceeds</strong> including commission, NYS transfer tax (0.4%), attorney, staging, and standard closing costs. Adjust the assumptions to match reality.</p>
+    <!-- Sale Strategy -->
+    <section class="section" id="sale-strategy">
+      <h2>White Plains Sale Strategy</h2>
+      <p>We model seller <strong>net proceeds</strong> including commission, NYS transfer tax (0.4%), attorney, staging, and standard closing costs. Adjust the numbers to match reality.</p>
 
-            <div class="metrics-grid">
-              <div class="metric-card guide">
-                <h4>Fixed Selling Address</h4>
-                <div class="value" id="sellAddress">54 Collyer Pl, White Plains, NY 10605</div>
-                <div class="detail">Click “Edit assumptions” if this needs correction</div>
-              </div>
-              <div class="metric-card guide">
-                <h4>Best Listing Tactic</h4>
-                <div class="value">List $999,000</div>
-                <div class="detail">To avoid buyer-side mansion tax threshold</div>
-              </div>
-            </div>
+      <div class="metrics-grid">
+        <div class="metric-card guide">
+          <h4>Fixed Selling Address</h4>
+          <div class="value" id="sellAddress">54 Collyer Pl, White Plains, NY 10605</div>
+          <div class="detail">Edit in assets/script.js if needed</div>
+        </div>
+        <div class="metric-card guide">
+          <h4>Best Listing Tactic</h4>
+          <div class="value">List $999,000</div>
+          <div class="detail">Avoid buyer-side mansion tax threshold</div>
+        </div>
+      </div>
 
-            <div class="table-wrap">
-              <table class="guide" id="pricingTable">
-                <thead>
-                  <tr>
-                    <th>Scenario</th>
-                    <th>List</th>
-                    <th>Expected Sale</th>
-                    <th>Commission</th>
-                    <th>Transfer Tax (0.4%)</th>
-                    <th>Other Costs</th>
-                    <th><strong>Net Proceeds</strong></th>
-                  </tr>
-                </thead>
-                <tbody><!-- filled by JS --></tbody>
-              </table>
-            </div>
+      <div class="table-wrap">
+        <table class="guide" id="pricingTable">
+          <thead>
+            <tr>
+              <th>Scenario</th>
+              <th>List</th>
+              <th>Expected Sale</th>
+              <th>Commission</th>
+              <th>Transfer Tax (0.4%)</th>
+              <th>Other Costs</th>
+              <th><strong>Net Proceeds</strong></th>
+            </tr>
+          </thead>
+          <tbody><!-- Filled by JS --></tbody>
+        </table>
+      </div>
+    </section>
 
-            <div class="alert alert-warning">
-              <strong>Strategy:</strong> Staying at or just below $1,000,000 can expand demand. If comps justify $1.05M–$1.10M, weigh demand vs buyer tax friction.
-            </div>
-        </section>
-
-        <section class="section" id="timeline">
-            <h2>Unified Buy–Sell Timeline</h2>
-            <div class="timeline">
-              <div class="timeline-item">
-                <h4>Weeks 1–2: Prep</h4>
-                <p>Pre-inspection, minor fixes, staging, photography, loan pre-approval.</p>
-              </div>
-              <div class="timeline-item">
-                <h4>Weeks 3–4: List & Tour</h4>
-                <p>List White Plains; begin touring Colonie/Loudonville targets.</p>
-              </div>
-              <div class="timeline-item">
-                <h4>Weeks 5–6: Offers</h4>
-                <p>Negotiate sale; prepare purchase offer with suitable contingencies.</p>
-              </div>
-              <div class="timeline-item">
-                <h4>Weeks 7–8: Due Diligence</h4>
-                <p>Inspections, appraisal, mortgage commitment.</p>
-              </div>
-              <div class="timeline-item">
-                <h4>Weeks 9–10: Pre-Closing</h4>
-                <p>Final walkthroughs, movers, utilities, address changes.</p>
-              </div>
-              <div class="timeline-item">
-                <h4>Weeks 11–12: Close</h4>
-                <p>Close sale first if possible; then purchase close and move-in.</p>
-              </div>
-            </div>
-        </section>
-
-        <!-- Timeline -->
-        <section class="section">
-            <h2>Unified Buy–Sell Timeline</h2>
-            <p>[Timeline graphic or steps will go here]</p>
-        </section>
-
-    </main>
+    <!-- Unified Buy–Sell Timeline -->
+    <section class="section" id="timeline">
+      <h2>Unified Buy–Sell Timeline</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <h4>Weeks 1–2: Prep</h4>
+          <p>Pre-inspection, minor fixes, staging, photography, loan pre-approval.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Weeks 3–4: List & Tour</h4>
+          <p>List White Plains; begin touring Colonie/Loudonville targets.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Weeks 5–6: Offers</h4>
+          <p>Negotiate sale; prepare purchase offer with suitable contingencies.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Weeks 7–8: Due Diligence</h4>
+          <p>Inspections, appraisal, mortgage commitment.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Weeks 9–10: Pre-Closing</h4>
+          <p>Final walkthroughs, movers, utilities, address changes.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Weeks 11–12: Close</h4>
+          <p>Close sale first if possible; then purchase close and move-in.</p>
+        </div>
+      </div>
+    </section>
+  </main>
 </body>
 </html>
