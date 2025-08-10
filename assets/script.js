@@ -111,3 +111,88 @@ buySelect.addEventListener("change", updateDashboard);
 // Init
 buySelect.value = buyingProperties[0].id;
 updateDashboard();
+
+/* ===== Selling Property – authoritative inputs =====
+   Replace the numbers below with verified values (your CMA / tax bill / invoices).
+   Everything else updates automatically. */
+const SELLING = {
+  address: "54 Collyer Pl, White Plains, NY 10605",
+  // Accurate current value you believe is defendable in today’s market:
+  // (If you have a range, set 'base' near your median, adjust scenarios below.)
+  baseValue: 1050000,   // <- CHANGE
+  // Annual property tax doesn't affect sale net; kept for context if needed
+  annualTax: 0,         // optional; not used in net proceeds
+  // Closing cost assumptions (editable):
+  commissionRate: 0.04, // 4% default (adjust to your agreement)
+  transferTaxRate: 0.004, // NYS seller transfer tax 0.4%
+  attorneyFee: 2200,    // typical range $1.5k–$2.5k
+  stagingPhotography: 3000, // if you plan to stage
+  miscClosing: 1500     // title closer, filing, small incidentals
+};
+
+// Typical ranges for the “Overview” cards (edit to your research)
+const OVERVIEW = {
+  typicalSaleRange: [975000, 1100000], // shown as "$975K - $1.1M"
+  targetBuyRange: [435000, 470000],
+  monthlyUtilityDelta: -65,            // negative = savings vs current
+  taxSavingsAnnual: 1043               // e.g., STAR/Enhanced STAR
+};
+
+// Three modeled scenarios (you can rename/retune)
+const SCENARIOS = [
+  { label: "Conservative", list: 975000, expectedSale: 975000 },
+  { label: "Strategic",    list: 999000, expectedSale: 1050000 },
+  { label: "Aggressive",   list: 1100000, expectedSale: 1100000 }
+];
+
+// Format helpers
+const fmtMoney = (n) => n.toLocaleString(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0});
+const fmtRange = ([a,b]) => `${fmtMoney(a).replace('.00','').replace('$','\$')}`.replace(/\u00A0/g,'') + " - " + `${fmtMoney(b).replace('.00','').replace('$','\$')}`;
+
+// Compute seller net proceeds
+function computeSellerNet(salePrice) {
+  const c = SELLING;
+  const commission = salePrice * c.commissionRate;
+  const xfer = salePrice * c.transferTaxRate; // seller-paid NYS transfer tax 0.4%
+  const other = (c.attorneyFee||0) + (c.stagingPhotography||0) + (c.miscClosing||0);
+  const net = salePrice - commission - xfer - other;
+  return { commission, xfer, other, net };
+}
+
+// Render Overview cards
+(function renderOverview(){
+  const $sale = document.getElementById('typicalSaleRange');
+  const $buy  = document.getElementById('targetBuyRange');
+  const $util = document.getElementById('utilDelta');
+  const $tax  = document.getElementById('taxSavings');
+  if ($sale) $sale.textContent = `${fmtMoney(OVERVIEW.typicalSaleRange[0])} - ${fmtMoney(OVERVIEW.typicalSaleRange[1])}`;
+  if ($buy)  $buy.textContent  = `${fmtMoney(OVERVIEW.targetBuyRange[0])} - ${fmtMoney(OVERVIEW.targetBuyRange[1])}`;
+  if ($util) $util.textContent = (OVERVIEW.monthlyUtilityDelta>=0?"+":"") + `${OVERVIEW.monthlyUtilityDelta}/mo`;
+  if ($tax)  $tax.textContent  = fmtMoney(OVERVIEW.taxSavingsAnnual) + "/yr";
+})();
+
+// Render Sale Strategy table
+(function renderSaleStrategy(){
+  const addr = document.getElementById('sellAddress');
+  if (addr) addr.textContent = SELLING.address;
+
+  const tbody = document.querySelector('#pricingTable tbody');
+  if (!tbody) return;
+  tbody.innerHTML = "";
+
+  SCENARIOS.forEach(s => {
+    const { commission, xfer, other, net } = computeSellerNet(s.expectedSale);
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${s.label}</td>
+      <td>${fmtMoney(s.list)}</td>
+      <td>${fmtMoney(s.expectedSale)}</td>
+      <td>${fmtMoney(commission)}</td>
+      <td>${fmtMoney(xfer)}</td>
+      <td>${fmtMoney(other)}</td>
+      <td><strong>${fmtMoney(net)}</strong></td>
+    `;
+    tbody.appendChild(tr);
+  });
+})();
