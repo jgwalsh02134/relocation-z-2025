@@ -165,12 +165,92 @@ const SELLING = {
   }
 };
 
-// Keep older KPIs in sync (if your earlier code reads sellingProperty.price)
+// ---------- Helpers ----------
+const $ = (s, r=document) => r.querySelector(s);
+const fmt$ = n => n.toLocaleString(undefined,{ style:'currency', currency:'USD', maximumFractionDigits:0 });
+
+// Keep older KPI code in sync if it reads sellingProperty.price
 if (typeof sellingProperty === "undefined") {
   window.sellingProperty = { price: SELLING.baseValue };
 } else {
   sellingProperty.price = SELLING.baseValue;
 }
+
+// ---------- Seller net math ----------
+function computeSellerNet(salePrice) {
+  const c = SELLING;
+  const commission = salePrice * c.commissionRate;
+  const xfer = salePrice * c.transferTaxRate; // NYS seller transfer tax
+  const other = (c.attorneyFee||0) + (c.stagingPhotography||0) + (c.miscClosing||0);
+  const net = salePrice - commission - xfer - other;
+  return { commission, xfer, other, net };
+}
+
+// ---------- Render: Overview cards ----------
+(function(){
+  const $sale = $('#typicalSaleRange');
+  const $buy  = $('#targetBuyRange');
+  const $util = $('#utilDelta');
+  const $tax  = $('#taxSavings');
+  if ($sale) $sale.textContent = `${fmt$(OVERVIEW.typicalSaleRange[0])} - ${fmt$(OVERVIEW.typicalSaleRange[1])}`;
+  if ($buy)  $buy.textContent  = `${fmt$(OVERVIEW.targetBuyRange[0])} - ${fmt$(OVERVIEW.targetBuyRange[1])}`;
+  if ($util) $util.textContent = (OVERVIEW.monthlyUtilityDelta>=0?"+":"") + `${OVERVIEW.monthlyUtilityDelta}/mo`;
+  if ($tax)  $tax.textContent  = fmt$(OVERVIEW.taxSavingsAnnual) + "/yr";
+})();
+
+// ---------- Render: Sale strategy table ----------
+(function(){
+  const addressEl = $('#sellAddress');
+  if (addressEl) addressEl.textContent = SELLING.address;
+
+  const tbody = $('#pricingTable tbody');
+  if (!tbody) return;
+  tbody.innerHTML = "";
+  (Array.isArray(SCENARIOS) ? SCENARIOS : []).forEach(s => {
+    const { commission, xfer, other, net } = computeSellerNet(s.expectedSale);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${s.label}</td>
+      <td>${fmt$(s.list)}</td>
+      <td>${fmt$(s.expectedSale)}</td>
+      <td>${fmt$(commission)}</td>
+      <td>${fmt$(xfer)}</td>
+      <td>${fmt$(other)}</td>
+      <td><strong>${fmt$(net)}</strong></td>
+    `;
+    tbody.appendChild(tr);
+  });
+})();
+
+// ---------- Render: Top KPI cards (sell/buy/net) ----------
+(function(){
+  const sellEl = $('#sellPrice');
+  if (sellEl) sellEl.textContent = fmt$(SELLING.baseValue);
+
+  const buySel = $('#buyPropertySelect');
+  const buyPriceEl = $('#buyPrice');
+  const netEl = $('#netDifference');
+
+  function recalc(){
+    if (!buySel) return;
+    let buyPrice = 0;
+    if (typeof buyingProperties !== 'undefined' && buyingProperties.length) {
+      const current = buyingProperties.find(p => String(p.id) === String(buySel.value)) || buyingProperties[0];
+      buyPrice = current?.price || 0;
+      if (buyPriceEl) buyPriceEl.textContent = fmt$(buyPrice);
+    }
+    if (netEl) {
+      const net = SELLING.baseValue - buyPrice;
+      netEl.textContent = fmt$(net);
+      netEl.className = 'metric-value ' + (net >= 0 ? 'metric-positive' : 'metric-negative');
+    }
+  }
+
+  if (buySel) {
+    buySel.addEventListener('change', recalc);
+    recalc();
+  }
+})();
 
 // ----- SCENARIOS (from research JSON) -----
 const SCENARIOS = [
@@ -187,51 +267,5 @@ const OVERVIEW = {
   taxSavingsAnnual: 1043
 };
 
-const fmtMoney = n => n.toLocaleString(undefined,{ style:'currency', currency:'USD', maximumFractionDigits:0 });
-
-function computeSellerNet(salePrice) {
-  const c = SELLING;
-  const commission = salePrice * c.commissionRate;
-  const xfer = salePrice * c.transferTaxRate;
-  const other = (c.attorneyFee||0) + (c.stagingPhotography||0) + (c.miscClosing||0);
-  const net = salePrice - commission - xfer - other;
-  return { commission, xfer, other, net };
-}
-
-// Overview cards
-(function (){
-  const $sale = document.getElementById('typicalSaleRange');
-  const $buy  = document.getElementById('targetBuyRange');
-  const $util = document.getElementById('utilDelta');
-  const $tax  = document.getElementById('taxSavings');
-  if ($sale) $sale.textContent = `${fmtMoney(OVERVIEW.typicalSaleRange[0])} - ${fmtMoney(OVERVIEW.typicalSaleRange[1])}`;
-  if ($buy)  $buy.textContent  = `${fmtMoney(OVERVIEW.targetBuyRange[0])} - ${fmtMoney(OVERVIEW.targetBuyRange[1])}`;
-  if ($util) $util.textContent = (OVERVIEW.monthlyUtilityDelta>=0?"+":"") + `${OVERVIEW.monthlyUtilityDelta}/mo`;
-  if ($tax)  $tax.textContent  = fmtMoney(OVERVIEW.taxSavingsAnnual) + "/yr";
-})();
-
-// Sale strategy table
-(function (){
-  const addr = document.getElementById('sellAddress');
-  if (addr) addr.textContent = SELLING.address;
-
-  const tbody = document.querySelector('#pricingTable tbody');
-  if (!tbody) return;
-  tbody.innerHTML = "";
-
-  SCENARIOS.forEach(s => {
-    const { commission, xfer, other, net } = computeSellerNet(s.expectedSale);
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${s.label}</td>
-      <td>${fmtMoney(s.list)}</td>
-      <td>${fmtMoney(s.expectedSale)}</td>
-      <td>${fmtMoney(commission)}</td>
-      <td>${fmtMoney(xfer)}</td>
-      <td>${fmtMoney(other)}</td>
-      <td><strong>${fmtMoney(net)}</strong></td>
-    `;
-    tbody.appendChild(tr);
-  });
-})();
+ 
  
