@@ -26,7 +26,7 @@ const buyingProperties = [
     }
 ];
 
-// Populate Buy Property Selector
+// Populate selector
 const buySelect = document.getElementById("buyPropertySelect");
 buyingProperties.forEach(p => {
     const opt = document.createElement("option");
@@ -42,7 +42,11 @@ function updateDashboard() {
 
     document.getElementById("sellPrice").textContent = `$${sellingProperty.price.toLocaleString()}`;
     document.getElementById("buyPrice").textContent = `$${buyProp.price.toLocaleString()}`;
-    document.getElementById("netDifference").textContent = `$${(sellingProperty.price - buyProp.price).toLocaleString()}`;
+
+    const net = sellingProperty.price - buyProp.price;
+    const netElem = document.getElementById("netDifference");
+    netElem.textContent = `$${net.toLocaleString()}`;
+    netElem.className = "metric-value " + (net >= 0 ? "metric-positive" : "metric-negative");
 
     // Property Details
     document.getElementById("propertyDetails").innerHTML = `
@@ -71,7 +75,7 @@ function updateDashboard() {
     costChart.update();
 }
 
-// Chart.js Setup
+// Chart.js
 const ctx = document.getElementById('costChart').getContext('2d');
 const costChart = new Chart(ctx, {
     type: 'bar',
@@ -87,10 +91,21 @@ const costChart = new Chart(ctx, {
             backgroundColor: '#007bff'
         }]
     },
-    options: { responsive: true }
+    options: { 
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            x: {
+                ticks: {
+                    maxRotation: 45,
+                    minRotation: 0
+                }
+            }
+        }
+    }
 });
 
-// Event Listener
+// Event listener
 buySelect.addEventListener("change", updateDashboard);
 
 // Init
