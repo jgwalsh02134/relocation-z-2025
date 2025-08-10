@@ -224,3 +224,16 @@ table.guide tr:hover { background: var(--gray-50); }
     position:absolute; left:0; right:0; top:56px; padding:.75rem; border-top:1px solid rgba(255,255,255,.18); }
   .nav-links.open { display:flex; }
 }
+
+/* ===== Interactive Transaction Timeline ===== */
+#featured-interactive .value { font-weight:800; }
+#featured-interactive .guide td, 
+#featured-interactive .guide th { vertical-align: top; }
+#featured-interactive .phase-badge {
+  display:inline-grid; place-items:center; width:28px; height:28px; 
+  background: var(--accent); color:#fff; border-radius:999px; font-weight:800;
+}
+#featured-interactive .risk-badge {
+  display:inline-block; padding:.15rem .5rem; border-radius:999px; 
+  border:1px solid var(--danger); color:#991b1b; background:#fef2f2; margin-right:.4rem;
+}

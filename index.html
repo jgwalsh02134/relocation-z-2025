@@ -52,6 +52,128 @@
 </header>
 
   <main class="container">
+    <section class="section featured featured-interactive" id="featured-interactive">
+      <h2>Transaction Timeline &amp; Strategy (Interactive)</h2>
+      <p class="sub">Generate a location-aware buy–sell sequence for White Plains → Loudonville/Colonie based on current conditions.</p>
+
+      <div class="resource-card">
+        <h4>Assumptions</h4>
+        <div class="grid-inputs">
+          <label>Start date
+            <input id="txStartDate" type="date">
+          </label>
+
+          <label>Sell market (fixed)
+            <select id="sellMarket">
+              <option value="whiteplains" selected>White Plains (Westchester, NY)</option>
+            </select>
+          </label>
+
+          <label>Buy market
+            <select id="buyMarket">
+              <option value="loudonville" selected>Loudonville / Town of Colonie (Albany Co.)</option>
+              <option value="albany">Albany (City)</option>
+              <option value="colonie">Colonie (wider)</option>
+            </select>
+          </label>
+
+          <label>Season
+            <select id="season">
+              <option value="auto" selected>Auto (from start date)</option>
+              <option value="spring">Spring (Mar–Jun)</option>
+              <option value="summer">Summer (Jul–Aug)</option>
+              <option value="fall">Fall (Sep–Nov)</option>
+              <option value="winter">Winter (Dec–Feb)</option>
+            </select>
+          </label>
+
+          <label>Sell market heat
+            <select id="sellHeat">
+              <option value="slow">Slow</option>
+              <option value="balanced" selected>Balanced</option>
+              <option value="competitive">Competitive</option>
+            </select>
+          </label>
+
+          <label>Buy market heat
+            <select id="buyHeat">
+              <option value="slow">Slow</option>
+              <option value="balanced">Balanced</option>
+              <option value="competitive" selected>Competitive</option>
+            </select>
+          </label>
+
+          <label>Property type (buy)
+            <select id="propType">
+              <option value="sfh" selected>Single-family</option>
+              <option value="hoa">Condo/HOA</option>
+            </select>
+          </label>
+
+          <label>Financing (buy)
+            <select id="financing">
+              <option value="cash">Cash</option>
+              <option value="conv20" selected>Conventional 20%+</option>
+              <option value="conv10">Conventional 10%</option>
+              <option value="fha">FHA</option>
+              <option value="va">VA</option>
+            </select>
+          </label>
+
+          <label>Sale contingency on buy?
+            <select id="saleContingency">
+              <option value="yes">Yes (buy depends on sale)</option>
+              <option value="no" selected>No (bridge/rent-back/other)</option>
+            </select>
+          </label>
+
+          <label>Close order
+            <select id="closeOrder">
+              <option value="same_day" selected>Same-day close (sell then buy)</option>
+              <option value="gap_3">Sell then buy (3-day gap)</option>
+              <option value="buy_first">Buy then sell (bridge)</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="control-row">
+          <button id="txRecalcBtn" class="btn btn-primary" type="button">Recalculate Plan</button>
+          <button id="txExportICS" class="btn" type="button">Export .ics</button>
+        </div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <h4>Estimated Total Duration</h4>
+          <div class="value" id="txTotalDuration">—</div>
+          <div class="detail">Start → final closing</div>
+        </div>
+        <div class="metric-card">
+          <h4>Recommended Rate-Lock</h4>
+          <div class="value" id="txRateLock">—</div>
+          <div class="detail">Consider 45–60 days for financed buys</div>
+        </div>
+        <div class="metric-card">
+          <h4>Risk Flags</h4>
+          <div class="detail" id="txFlags">None</div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="guide" id="txPlanTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Phase</th>
+              <th>Window</th>
+              <th>Days</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody><!-- filled by JS --></tbody>
+        </table>
+      </div>
+    </section>
     <!-- Key Metrics -->
     <section class="section" id="metrics">
       <h2>Key Metrics</h2>
