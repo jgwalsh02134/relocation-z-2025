@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Relocation Buy–Sell Analysis: White Plains → Loudonville</title>
+
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6"></script>
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+
+  <style>
+    /* Print */
+    @page { size: Letter; margin: 0.5in; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    @media print {
+      body { margin: 0; font-size: 11pt; background: #fff; }
+      .page-break { page-break-after: always; break-after: always; }
+      .no-print { display: none !important; }
+      .container { box-shadow: none; }
+      .chart-container, table, .metric-card { page-break-inside: avoid; break-inside: avoid; }
+      thead { display: table-header-group; }
+    }
+
+    /* Base */
+    :root {
+      --brand1: #2563eb;
+      --brand2: #7c3aed;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --bg: #f8fafc;
+      --panel: #ffffff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 0; background: var(--bg);
+      color: var(--ink); font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.7;
+    }
+    .container { max-width: 1220px; margin: 0 auto; background: var(--panel); box-shadow: 0 12px 60px rgba(2,6,23,0.06); }
+    .content { padding: 40px; }
+    h1,h2,h3,h4,h5 { margin: 0 0 12px; }
+    h2 { font-size: 1.8rem; padding-bottom: 8px; border-bottom: 3px solid #3b82f6; }
+    h3 { font-size: 1.25rem; color: #334155; }
+    p { margin: 0 0 12px; color: #4b5563; }
+    .muted { color: var(--muted); }
+
+    /* Header */
+    .hero { position: relative; padding: 56px 40px; color: white;
+      background: radial-gradient(1000px 300px at 20% -20%, rgba(255,255,255,.15), transparent 60%),
+                  linear-gradient(135deg, var(--brand1) 0%, var(--brand2) 100%);
+      overflow: hidden;
+    }
+    .hero h1 { font-size: 2.4rem; text-shadow: 0 2px 10px rgba(0,0,0,.25); }
+    .hero .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 8px; margin-top: 10px; }
+    .pill { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,.15); padding: 6px 10px; border-radius: 999px; font-size: .85rem; }
+    .meta span { display:block; }
+
+    /* Executive summary */
+    .exec { background: linear-gradient(180deg, #eff6ff 0%, #f8fafc 100%);
+      border-left: 6px solid #2563eb; padding: 26px; border-radius: 8px; margin: 28px 0; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 18px; margin-top: 20px; }
+    .metric-card {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      color: #fff; border-radius: 12px; padding: 22px; text-align: center; position: relative;
+      box-shadow: 0 12px 30px rgba(99,102,241,0.28);
+    }
+    .metric-card h4 { margin: 0 0 8px; font-size: .9rem; letter-spacing: .5px; text-transform: uppercase; opacity: .95; }
+    .metric-card .value { font-size: 1.8rem; font-weight: 700; }
+    .metric-card .subtext { font-size: .85rem; margin-top: 6px; opacity: .9; }
+
+    /* Panels & tables */
+    .panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 22px; box-shadow: 0 2px 12px rgba(2,6,23,0.04); margin: 24px 0; }
+    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 12px rgba(2,6,23,0.05); }
+    thead { background: linear-gradient(135deg,#1e40af 0%, #3730a3 100%); color: white; }
+    th { padding: 12px 14px; text-align: left; font-size: .9rem; letter-spacing: .3px; }
+    td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; }
+    tbody tr:hover { background: #f9fafb; }
+    .text-right { text-align: right; }
+    .highlight { background: #eff6ff !important; font-weight: 600; }
+    .note { background: #fef3c7; border-left: 5px solid #f59e0b; padding: 16px; border-radius: 8px; }
+    .warn { background: #fee2e2; border-left: 5px solid #ef4444; padding: 16px; border-radius: 8px; }
+    .ok { background: #e8fbf2; border-left: 5px solid #10b981; padding: 16px; border-radius: 8px; }
+
+    /* Charts */
+    .chart-container { margin: 26px 0; padding: 22px; background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(2,6,23,0.06); }
+    .chart-title { text-align: center; color: #1e40af; font-weight: 600; margin-bottom: 8px; }
+
+    /* Timeline */
+    .timeline { position: relative; padding-left: 24px; margin: 20px 0; }
+    .timeline::before { content: ''; position: absolute; top: 0; bottom: 0; left: 8px; width: 2px; background: #e5e7eb; }
+    .t-item { position: relative; padding-left: 24px; margin: 18px 0; }
+    .t-item::before { content: attr(data-step); position: absolute; left: -6px; top: 0; width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg,#3b82f6,#6366f1); color: white; font-size: .85rem; display: grid; place-items: center; }
+
+    /* Footer */
+    .footer { background: #f8fafc; padding: 28px; border-top: 2px solid #e5e7eb; color: #475569; }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 16px; }
+
+    /* Small */
+    @media (max-width: 768px) {
+      .content { padding: 24px; }
+      .hero { padding: 40px 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="hero">
+      <h1>Relocation Buy–Sell Analysis</h1>
+      <div class="muted">Strategic plan for selling in White Plains and buying in Loudonville</div>
+      <div class="meta" style="margin-top:12px;">
+        <div><span class="pill"><strong>From</strong> 54 Collyer Pl, White Plains, NY 10605</span></div>
+        <div><span class="pill"><strong>To</strong> 8 Loudonwood East, Loudonville, NY 12211</span></div>
+        <div><span class="pill"><strong>Date</strong> August 10, 2025</span></div>
+        <div><span class="pill"><strong>Version</strong> Master</span></div>
+      </div>
+    </header>
+
+    <main class="content">
+      <section class="exec">
+        <h2>Executive Summary</h2>
+        <p>This report pairs a sale in White Plains with a purchase in Loudonville and turns it into a single, decision‑ready plan: net proceeds, cash‑to‑close, comps, offer strategy, utilities, exemptions, risk, and timeline—optimized for a one‑person household and aging‑in‑place.</p>
+        <div class="cards">
+          <div class="metric-card">
+            <h4>Expected Sale Price</h4>
+            <div class="value">$975K – $1.10M</div>
+            <div class="subtext">Scenarios for pricing &amp; net proceeds</div>
+          </div>
+          <div class="metric-card">
+            <h4>Target Purchase</h4>
+            <div class="value">$449,900</div>
+            <div class="subtext">8 Loudonwood East</div>
+          </div>
+          <div class="metric-card">
+            <h4>Cash to Close</h4>
+            <div class="value">$99,703.75</div>
+            <div class="subtext">20% down, borrower portion</div>
+          </div>
+          <div class="metric-card">
+            <h4>Total Monthly</h4>
+            <div class="value">$3,419.77</div>
+            <div class="subtext">P&amp;I + tax + HOA + insurance</div>
+          </div>
+        </div>
+        <div class="note" style="margin-top:14px;">
+          <strong>Strategic take:</strong> The block comp in White Plains supports a strong list strategy just under $1,000,000 to avoid mansion‑tax friction; Loudonwood East is priced in line with same‑HOA sales. Move quickly, with a cap anchored to comps and terms that beat on speed and certainty, not just price.
+        </div>
+      </section>
+
+      <!-- SELLER -->
+      <section>
+        <h2>Part I — Seller: 54 Collyer Pl, White Plains</h2>
+        <h3>Net Proceeds by Sale &amp; Commission</h3>
+        <div class="chart-container">
+          <div class="chart-title">Seller Net Proceeds Across Price Points</div>
+          <canvas id="netProceeds"></canvas>
+        </div>
+
+        <h4>Detailed Calculations</h4>
+        <div class="grid-2">
+          <div class="panel">
+            <h3 style="margin-bottom:6px;">Conservative: $975,000</h3>
+            <table>
+              <thead><tr><th>Item</th><th>3%</th><th>4%</th><th>5%</th></tr></thead>
+              <tbody>
+                <tr><td>Sale Price</td><td class="text-right">$975,000.00</td><td class="text-right">$975,000.00</td><td class="text-right">$975,000.00</td></tr>
+                <tr><td>Broker Commission</td><td class="text-right">($29,250.00)</td><td class="text-right">($39,000.00)</td><td class="text-right">($48,750.00)</td></tr>
+                <tr><td>NYS Transfer Tax (0.4%)</td><td class="text-right">($3,900.00)</td><td class="text-right">($3,900.00)</td><td class="text-right">($3,900.00)</td></tr>
+                <tr><td>Attorney &amp; Misc</td><td class="text-right">($3,000.00)</td><td class="text-right">($3,000.00)</td><td class="text-right">($3,000.00)</td></tr>
+                <tr class="highlight"><td>Net Before Loan Payoff</td><td class="text-right"><strong>$938,850.00</strong></td><td class="text-right"><strong>$929,100.00</strong></td><td class="text-right"><strong>$919,350.00</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="panel">
+            <h3 style="margin-bottom:6px;">Comp‑Anchor: $1,050,000 &nbsp; | &nbsp; Stretch: $1,100,000</h3>
+            <table>
+              <thead><tr><th>Item</th><th>1.05M @4%</th><th>1.10M @4%</th></tr></thead>
+              <tbody>
+                <tr><td>Broker Commission</td><td class="text-right">($42,000.00)</td><td class="text-right">($44,000.00)</td></tr>
+                <tr><td>NYS Transfer Tax (0.4%)</td><td class="text-right">($4,200.00)</td><td class="text-right">($4,400.00)</td></tr>
+                <tr><td>Attorney &amp; Misc</td><td class="text-right">($3,000.00)</td><td class="text-right">($3,000.00)</td></tr>
+                <tr class="highlight"><td>Net</td><td class="text-right"><strong>$1,000,800.00</strong></td><td class="text-right"><strong>$1,048,600.00</strong></td></tr>
+              </tbody>
+            </table>
+            <div class="note" style="margin-top:10px;">
+              <strong>Pricing edge:</strong> Listing at <strong>$999,000</strong> broadens the buyer pool by staying below New York’s 1% mansion‑tax threshold; let competition set any premium above the line.
+            </div>
+          </div>
+        </div>
+
+        <h3>White Plains Comp (Same Block)</h3>
+        <table>
+          <thead><tr><th>Address</th><th>Beds/Baths</th><th>GLA (sf)</th><th>Sold</th><th class="text-right">Price</th><th class="text-right">$/sf</th></tr></thead>
+          <tbody>
+            <tr><td>2 Collyer Pl</td><td>3/2</td><td>1,732</td><td>2025‑07‑08</td><td class="text-right">$1,050,000</td><td class="text-right">$606.71</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- BUYER -->
+      <section class="page-break">
+        <h2>Part II — Buyer: 8 Loudonwood East, Loudonville</h2>
+
+        <div class="panel">
+          <h3>Property Snapshot</h3>
+          <table>
+            <thead><tr><th>Feature</th><th>Details</th></tr></thead>
+            <tbody>
+              <tr><td>List Price</td><td>$449,900</td></tr>
+              <tr><td>Bedrooms / Bathrooms</td><td>3 / 3</td></tr>
+              <tr><td>GLA (above grade)</td><td>1,508 sf</td></tr>
+              <tr><td>Finished lower level (non‑GLA)</td><td>1,508 sf</td></tr>
+              <tr><td>Year Built</td><td>1974</td></tr>
+              <tr><td>Annual Property Taxes</td><td>$7,325</td></tr>
+              <tr><td>HOA</td><td>$1,150/quarter  (~$383.33/mo)</td></tr>
+            </tbody>
+          </table>
+          <div class="warn" style="margin-top:10px;">
+            <strong>GLA vs. finished lower level:</strong> Appraisers count above‑grade living area in GLA. Finished lower level adds value but is not GLA; keep this split clear in comps and marketing.
+          </div>
+        </div>
+
+        <h3>Cash to Close (Albany County)</h3>
+        <div class="grid-2">
+          <div class="chart-container"><div class="chart-title">Borrower Portion (20% Down)</div><canvas id="closingPie"></canvas></div>
+          <div class="panel">
+            <table>
+              <thead><tr><th>Cost Component</th><th>Basis</th><th class="text-right">Amount</th></tr></thead>
+              <tbody>
+                <tr><td>Down Payment</td><td>20% of price</td><td class="text-right">$89,980.00</td></tr>
+                <tr><td>Mortgage Recording Tax — Borrower</td><td>~1.00% of loan</td><td class="text-right">$3,599.20</td></tr>
+                <tr><td>Mortgage Recording Tax — Lender</td><td>~0.25% of loan (often lender‑paid)</td><td class="text-right">$899.80</td></tr>
+                <tr><td>Owner’s Title Insurance</td><td>~0.45% of price</td><td class="text-right">$2,024.55</td></tr>
+                <tr><td>Other Fees</td><td>Attorney, appraisal, inspections, recording</td><td class="text-right">$4,100.00</td></tr>
+                <tr class="highlight"><td><strong>Total Cash to Close</strong></td><td><strong>Borrower portion</strong></td><td class="text-right"><strong>$99,703.75</strong></td></tr>
+              </tbody>
+            </table>
+            <div class="note" style="margin-top:10px;"><strong>MRT note:</strong> In Albany County, the lender often covers the ~0.25% “special additional” portion, but confirm on the Loan Estimate.</div>
+          </div>
+        </div>
+
+        <h3>Monthly Payment (20% Down, 30‑yr)</h3>
+        <div class="grid-2">
+          <div class="chart-container"><div class="chart-title">Monthly Composition</div><canvas id="monthlyDonut"></canvas></div>
+          <div class="panel">
+            <table>
+              <thead><tr><th>Component</th><th class="text-right">Monthly</th><th class="text-right">Annual</th></tr></thead>
+              <tbody>
+                <tr><td>Principal &amp; Interest</td><td class="text-right">$2,306.02</td><td class="text-right">$27,672.24</td></tr>
+                <tr><td>Property Taxes</td><td class="text-right">$610.42</td><td class="text-right">$7,325.00</td></tr>
+                <tr><td>HOA</td><td class="text-right">$383.33</td><td class="text-right">$4,600.00</td></tr>
+                <tr><td>Homeowners Insurance (est.)</td><td class="text-right">$120.00</td><td class="text-right">$1,440.00</td></tr>
+                <tr class="highlight"><td>Total</td><td class="text-right"><strong>$3,419.77</strong></td><td class="text-right"><strong>$41,037.24</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <h3>Rate Sensitivity (Interactive)</h3>
+        <div class="panel">
+          <p class="muted">Adjust the rate to see the impact on Principal &amp; Interest and the total monthly. Assumes 20% down.</p>
+          <div style="display:grid;grid-template-columns: 1fr 120px; gap: 16px; align-items:center; margin:12px 0 8px;">
+            <input id="rateSlider" type="range" min="4.0" max="8.0" step="0.05" value="6.63" />
+            <div style="text-align:right;"><strong id="rateLabel">6.63%</strong></div>
+          </div>
+          <div class="chart-container" style="margin-top:12px;">
+            <div class="chart-title">P&amp;I vs. Rate</div>
+            <canvas id="rateLine"></canvas>
+          </div>
+        </div>
+
+        <h3>Same‑HOA Comps (Loudonwood East)</h3>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Address</th><th>Beds/Baths</th><th>Approx. SF</th><th>Date</th><th class="text-right">Price</th></tr></thead>
+            <tbody>
+              <tr><td>26 Loudonwood East</td><td>3 / 3</td><td>~2,300</td><td>2025‑05‑20</td><td class="text-right">$460,000</td></tr>
+              <tr><td>59 Loudonwood East</td><td>2 / 2</td><td>~1,778</td><td>2024‑12‑06</td><td class="text-right">$449,000</td></tr>
+              <tr><td>20 Loudonwood East</td><td>2 / 3</td><td>~2,614</td><td>2024‑04‑02</td><td class="text-right">$435,000</td></tr>
+              <tr><td>10 Loudonwood East</td><td>2 / 2</td><td>~1,964</td><td>2024‑09‑13</td><td class="text-right">$285,000</td></tr>
+              <tr><td>3 Loudonwood East</td><td>3 / 3</td><td>~1,964</td><td>2023‑04‑25</td><td class="text-right">$365,000</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="chart-container">
+          <div class="chart-title">Comps — Price Distribution (Box Plot)</div>
+          <div id="compBoxPlot" style="height:360px;"></div>
+        </div>
+
+        <h3>Offer Strategy &amp; Bid Ladder</h3>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Tier</th><th>Offer Range</th><th>When to Use</th><th>Term Levers</th><th>Appraisal Risk</th></tr></thead>
+            <tbody>
+              <tr><td>A — Value Seek</td><td>$438k–$442k</td><td>Days on market ≥ 3–4 wks; no competition</td><td>Full inspection + radon; 5% EMD; 30–35 day close; modest repair‑credit cap</td><td>Low</td></tr>
+              <tr><td>B — Fair Value (Base)</td><td>$449,900</td><td>Fresh listing; steady interest</td><td>5–7% EMD; inspection with single‑item threshold (e.g., &gt;$7,500); 21‑day commitment</td><td>Low</td></tr>
+              <tr><td>C — Competitive</td><td>$456k–$462k (esc. to $465k)</td><td>Multiple‑offer signals</td><td>Escalation in $3k steps; appraisal gap $5–10k; limit asks to health/safety/structural</td><td>Moderate</td></tr>
+              <tr><td>D — Win‑Now (Capped)</td><td>$467k–$472k</td><td>Intense activity; updates clearly superior</td><td>Escalate only as needed; hard‑cap gap coverage; 7–10% EMD; tight timelines</td><td>Higher (&gt;$465k)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="panel">
+          <h3>Offer Impact — Dollars &amp; Cents</h3>
+          <p class="muted">Assumes 20% down and borrower MRT of 1.00% of loan. Owner’s title at 0.45% of price; other fees $4,100.</p>
+          <table id="offerImpact">
+            <thead><tr><th>Offer</th><th class="text-right">Loan (80%)</th><th class="text-right">P&amp;I / mo</th><th class="text-right">Δ vs. List</th><th class="text-right">Cash‑to‑Close</th><th class="text-right">Δ vs. List</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- LIVING COSTS -->
+      <section class="page-break">
+        <h2>Part III — Utilities &amp; Living Costs</h2>
+        <div class="chart-container"><div class="chart-title">Monthly Utilities Comparison</div><canvas id="utilitiesBar"></canvas></div>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Utility</th><th class="text-right">White Plains (ConEd)</th><th class="text-right">Loudonville (National Grid)</th><th class="text-right">Monthly Savings</th><th class="text-right">Annual Savings</th></tr></thead>
+            <tbody>
+              <tr><td>Electric</td><td class="text-right">$200.00</td><td class="text-right">$170.00</td><td class="text-right">$30.00</td><td class="text-right">$360.00</td></tr>
+              <tr><td>Natural Gas</td><td class="text-right">$115.00</td><td class="text-right">$100.00</td><td class="text-right">$15.00</td><td class="text-right">$180.00</td></tr>
+              <tr><td>Water/Sewer</td><td class="text-right">$45.00</td><td class="text-right">$35.00</td><td class="text-right">$10.00</td><td class="text-right">$120.00</td></tr>
+              <tr><td>Internet</td><td class="text-right">$80.00</td><td class="text-right">$70.00</td><td class="text-right">$10.00</td><td class="text-right">$120.00</td></tr>
+              <tr class="highlight"><td>Total</td><td class="text-right"><strong>$440.00</strong></td><td class="text-right"><strong>$375.00</strong></td><td class="text-right"><strong>$65.00</strong></td><td class="text-right"><strong>$780.00</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="panel ok">
+          <strong>Aging‑in‑place advantages:</strong> single‑level living on the main floor; exterior maintenance handled by the HOA; two major hospitals within ~6 miles; CDTA STAR paratransit eligibility if needed. Ownership (no mortgage) is roughly $1,081/mo before utilities.
+        </div>
+      </section>
+
+      <!-- TAXES & EXEMPTIONS -->
+      <section class="page-break">
+        <h2>Part IV — Taxes &amp; Exemptions</h2>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Program</th><th class="text-right">Annual Savings</th><th>Eligibility (summary)</th></tr></thead>
+            <tbody>
+              <tr><td>Basic STAR (North Colonie CSD)</td><td class="text-right">$424</td><td>Primary residence; income limits apply</td></tr>
+              <tr><td>Enhanced STAR</td><td class="text-right">$1,043</td><td>65+; income and residency requirements</td></tr>
+            </tbody>
+          </table>
+          <div class="note" style="margin-top:10px;">
+            <strong>Senior Citizens Exemption (RPTL §467):</strong> Local‑option reductions; Town of Colonie provides increased benefits for incomes ≤ $107,300 (2025). Confirm with the assessor’s office.
+          </div>
+        </div>
+      </section>
+
+      <!-- RISK & TIMELINE -->
+      <section class="page-break">
+        <h2>Part V — Risks &amp; Controls</h2>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Risk Category</th><th>Concern</th><th>Mitigation Strategy</th></tr></thead>
+            <tbody>
+              <tr><td>Market Timing</td><td>Rates rise during transaction</td><td>Lock early; consider a rate‑lock extension option</td></tr>
+              <tr><td>Bridge Financing</td><td>Purchase must close before sale</td><td>HELOC/bridge loan line‑up as backup</td></tr>
+              <tr><td>HOA Health</td><td>Special assessments / reserves</td><td>Request resale packet; review budget + reserve study</td></tr>
+              <tr><td>1974 Systems</td><td>Electrical, HVAC, insulation</td><td>Thorough inspection; check for aluminum wiring; service records</td></tr>
+              <tr><td>Lower Level</td><td>Moisture/humidity</td><td>Moisture testing; dehumidifier budget</td></tr>
+              <tr><td>Tax Implications</td><td>Capital gains on sale</td><td>CPA consult; verify primary residence exclusion</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>Part VI — Transaction Timeline</h2>
+        <div class="timeline panel">
+          <div class="t-item" data-step="1">
+            <h4>Week 0–1: Prep</h4>
+            <p>Pre‑inspection (White Plains); financial docs; attorney engagement; update pre‑approval or POF.</p>
+          </div>
+          <div class="t-item" data-step="2">
+            <h4>Week 1–2: List White Plains</h4>
+            <p>Professional photos + staging; strategic list at $999,000; launch marketing; open houses.</p>
+          </div>
+          <div class="t-item" data-step="3">
+            <h4>Week 2–4: Offers &amp; Negotiation</h4>
+            <p>Review offers with attorney; negotiate terms; contract with contingencies; schedule closing.</p>
+          </div>
+          <div class="t-item" data-step="4">
+            <h4>Week 3–4: Loudonville Offer</h4>
+            <p>Tour thoroughly; request HOA resale packet; submit competitive offer with focused contingencies.</p>
+          </div>
+          <div class="t-item" data-step="5">
+            <h4>Week 4–8: Due Diligence</h4>
+            <p>Inspections (general + radon); appraisal; mortgage commitment; HOA review; insurance quotes.</p>
+          </div>
+          <div class="t-item" data-step="6">
+            <h4>Week 6–8: Closings</h4>
+            <p>Close on White Plains; final walkthrough; close on Loudonville; utilities transfer; change of address.</p>
+          </div>
+        </div>
+      </section>
+
+      
+      <!-- FINANCIAL SUMMARY -->
+      <section class="page-break">
+        <h2>Part VII — Financial Summary & Flow</h2>
+        <div class="panel">
+          <p class="muted">How the sale funds the purchase under the <strong>Target</strong> scenario (White Plains at $1.05M; 4% commission).</p>
+          <div id="sankeyFlow" style="height: 460px;"></div>
+          <p class="muted" style="margin-top:8px;">
+            Scenario math: Net before payoff on a $1.05M sale at 4% commission = <strong>$1,000,800</strong>.
+            Borrower cash to close on $449,900 with 20% down ≈ <strong>$99,703.75</strong>.
+            Remaining cash post‑purchase ≈ <strong>$901,096</strong> (before any loan payoff and taxes).
+          </p>
+        </div>
+      </section>
+
+      <!-- SOURCES -->
+      <section class="page-break">
+        <h2>Sources &amp; Key References</h2>
+        <div class="grid-2">
+          <div class="panel">
+            <h3>Taxes &amp; Recording</h3>
+            <ul>
+              <li>New York State Dept. of Taxation &amp; Finance — Transfer tax and mansion tax overview.</li>
+              <li>Albany County Clerk — Mortgage recording tax structure (borrower vs lender portions).</li>
+            </ul>
+            <h3>Market &amp; Rates</h3>
+            <ul>
+              <li>Freddie Mac PMMS — Weekly 30‑yr mortgage rate context.</li>
+              <li>Greater Capital Assoc. of REALTORS® — Monthly indicators for the Albany region.</li>
+              <li>New York State Assoc. of REALTORS® — Statewide inventory &amp; pricing context.</li>
+            </ul>
+          </div>
+          <div class="panel">
+            <h3>Utilities &amp; Local Services</h3>
+            <ul>
+              <li>NYSERDA/EIA — NY statewide residential electricity price trend; typical usage benchmarks.</li>
+              <li>National Grid Upstate — Service rate schedule and posted supply costs.</li>
+              <li>Latham Water District; Pure Waters (sewer) — Rate structure.</li>
+              <li>CDTA &amp; STAR paratransit; Albany County Dept. for Aging — senior transport.</li>
+              <li>FEMA NFHL — flood maps; EPA — radon zones; First Street — climate risk model.</li>
+            </ul>
+          </div>
+        </div>
+        <p class="muted">See the printed PDF or the live HTML for direct links to these sources in the embedded sources panel.</p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="grid-2">
+        <div>
+          <h4>Important Disclaimers</h4>
+          <ul>
+            <li>Planning estimates only; not appraisal, legal, or tax advice.</li>
+            <li>Seller nets exclude any existing loan payoff and taxes.</li>
+            <li>Buyer cash‑to‑close excludes prepaids/escrows unless noted.</li>
+            <li>Square footage requires measurement and permit review; lower level treated as non‑GLA.</li>
+            <li>Confirm HOA scope, reserves, and any special assessments in the resale packet.</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contact &amp; Next Steps</h4>
+          <ul>
+            <li>Engage attorney; gather financials; schedule pre‑inspection.</li>
+            <li>Confirm STAR/senior exemptions with the assessor; order insurance quotes.</li>
+            <li>Calibrate offer ladder to live competition and HOA disclosures.</li>
+          </ul>
+        </div>
+      </div>
+      <div style="margin-top:16px;" class="muted">Prepared August 10, 2025. This report is for informational purposes only.</div>
+    </footer>
+  </div>
+
+  <script>
+    // Shared numbers
+    const PRICE = 449900;
+    const DOWN_PCT = 0.20;
+    const LOAN = PRICE * (1 - DOWN_PCT);
+    const MRT_BORR = 0.01;    // borrower portion of mortgage recording tax (Albany County)
+    const MRT_LEND = 0.0025;  // lender portion (often lender-paid)
+    const TITLE_PCT = 0.0045;
+    const OTHER_FEES = 4100;
+
+    // ---- SELLER: Net Proceeds Bar ----
+    (function() {
+      const el = document.getElementById('netProceeds');
+      if (!el || !window.Chart) return;
+      const data = {
+        labels: ['$975,000', '$1,050,000', '$1,100,000'],
+        datasets: [
+          { label: '3% Commission', data: [938850, 1011300, 1059600] },
+          { label: '4% Commission', data: [929100, 1000800, 1048600] },
+          { label: '5% Commission', data: [919350, 990300, 1037600] }
+        ]
+      };
+      new Chart(el, {
+        type: 'bar',
+        data,
+        options: {
+          plugins: { legend: { position: 'bottom' },
+            tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: $${ctx.parsed.y.toLocaleString()}` } } },
+          scales: { y: { ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'K' } } }
+        }
+      });
+    })();
+
+    // ---- BUYER: Closing Pie ----
+    (function() {
+      const el = document.getElementById('closingPie');
+      if (!el || !window.Chart) return;
+      const loan = LOAN;
+      const pie = [PRICE*DOWN_PCT, loan*MRT_BORR, PRICE*TITLE_PCT, OTHER_FEES];
+      new Chart(el, {
+        type: 'pie',
+        data: { labels: ['Down Payment', 'MRT (Borrower)', 'Owner\'s Title', 'Other Fees'], datasets: [{ data: pie }] },
+        options: { plugins: { legend: { position: 'right' },
+                   tooltip: { callbacks: { label: (c) => `${c.label}: $${c.parsed.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}` } } } }
+      });
+    })();
+
+    // ---- BUYER: Monthly Donut ----
+    (function() {
+      const el = document.getElementById('monthlyDonut');
+      if (!el || !window.Chart) return;
+      new Chart(el, {
+        type: 'doughnut',
+        data: {
+          labels: ['Principal & Interest', 'Property Tax', 'HOA', 'Insurance'],
+          datasets: [{ data: [2306.02, 610.42, 383.33, 120.00] }]
+        },
+        options: { plugins: { legend: { position: 'right' } } }
+      });
+    })();
+
+    // ---- Rate Sensitivity ----
+    function pmt(r, n, L) {
+      // monthly mortgage payment
+      const pow = Math.pow(1 + r, n);
+      return r === 0 ? L/n : (r * L * pow) / (pow - 1);
+    }
+    (function() {
+      const slider = document.getElementById('rateSlider');
+      const label  = document.getElementById('rateLabel');
+      const el     = document.getElementById('rateLine');
+      if (!slider || !label || !el || !window.Chart) return;
+
+      const n = 360;
+      const update = () => {
+        const rate = parseFloat(slider.value);
+        label.textContent = rate.toFixed(2) + '%';
+        const r = rate/100/12;
+        // Build a series around current
+        const x = [];
+        const y = [];
+        for (let rr = 4.0; rr <= 8.0 + 1e-9; rr += 0.25) {
+          x.push(rr.toFixed(2) + '%');
+          y.push(pmt(rr/100/12, n, LOAN));
+        }
+        chart.data.labels = x;
+        chart.data.datasets[0].data = y;
+        chart.update();
+      };
+      const chart = new Chart(el, {
+        type: 'line',
+        data: { labels: [], datasets: [{ label: 'P&I / month', data: [] }] },
+        options: { plugins: { legend: { display: false } }, scales: { y: { ticks: { callback: v => '$' + Math.round(v).toLocaleString() } } } }
+      });
+      update();
+      slider.addEventListener('input', update);
+    })();
+
+    // ---- Offer Impact Table ----
+    (function() {
+      const tbody = document.querySelector('#offerImpact tbody');
+      if (!tbody) return;
+      const offers = [438000, 449900, 459000, 465000, 470000, 472000];
+      const r = 0.0663/12, n = 360;
+      const base = 449900;
+      const baseLoan = base * (1 - DOWN_PCT);
+      const basePI = pmt(r, n, baseLoan);
+      const baseCTC = (base*DOWN_PCT) + (baseLoan*MRT_BORR) + (base*TITLE_PCT) + OTHER_FEES;
+
+      offers.forEach(price => {
+        const loan = price * (1 - DOWN_PCT);
+        const pi = pmt(r, n, loan);
+        const ctc = (price*DOWN_PCT) + (loan*MRT_BORR) + (price*TITLE_PCT) + OTHER_FEES;
+
+        const tr = document.createElement('tr');
+        function fmt(x) { return '$' + x.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2}); }
+        function fmt0(x) { return '$' + Math.round(x).toLocaleString(); }
+        tr.innerHTML = `
+          <td>${fmt0(price)}</td>
+          <td class="text-right">${fmt(loan)}</td>
+          <td class="text-right">${fmt(pi)}</td>
+          <td class="text-right">${(pi - basePI >= 0 ? '+' : '') + fmt(pi - basePI)}</td>
+          <td class="text-right">${fmt(ctc)}</td>
+          <td class="text-right">${(ctc - baseCTC >= 0 ? '+' : '') + fmt(ctc - baseCTC)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    })();
+
+    // ---- Utilities chart ----
+    (function() {
+      const el = document.getElementById('utilitiesBar');
+      if (!el || !window.Chart) return;
+      new Chart(el, {
+        type: 'bar',
+        data: {
+          labels: ['Electric', 'Gas', 'Water', 'Internet', 'Total'],
+          datasets: [
+            { label: 'White Plains', data: [200,115,45,80,440] },
+            { label: 'Loudonville', data: [170,100,35,70,375] }
+          ]
+        },
+        options: { plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true, ticks: { callback: v=>'$'+v } } } }
+      });
+    })();
+
+    // ---- Box Plot of comps (Plotly) ----
+    (function() {
+      const el = document.getElementById('compBoxPlot');
+      if (!el || !window.Plotly) return;
+      const prices = [460000, 449000, 435000, 285000, 365000];
+      const data = [{ 
+        type: 'box',
+        y: prices,
+        boxpoints: 'all',
+        jitter: 0.4,
+        pointpos: -1.8
+      }];
+      const layout = {
+        margin: { t: 20, r: 10, l: 40, b: 40 },
+        yaxis: { tickprefix: '$', separatethousands: true }
+      };
+      Plotly.newPlot(el, data, layout, {displayModeBar:false, responsive:true});
+    })();
+  
+    // ---- Sankey flow ----
+    (function(){
+      const el = document.getElementById('sankeyFlow');
+      if (!el || !window.Plotly) return;
+      // Nodes: 0 Sale Proceeds, 1 Closing Costs+Commission, 2 Net After Selling Costs,
+      // 3 Cash to Close (Purchase), 4 Remaining Cash
+      const nodes = ['Sale Proceeds ($1,050,000)', 'Selling Costs (comm+tax+attny)', 'Net After Selling Costs ($1,000,800)',
+                     'Cash to Close ($99,704)', 'Remaining Cash ($901,096)'];
+      const data = [{
+        type: 'sankey',
+        node: { label: nodes, pad: 15, thickness: 18 },
+        link: {
+          source: [0, 2],
+          target: [2, 3],
+          value:  [1050000, 99704]
+        }
+      }];
+      const layout = { margin: {t:10,l:10,r:10,b:10} };
+      Plotly.newPlot(el, data, layout, {displayModeBar:false, responsive:true});
+    })();
+
+  </script>
+</body>
+</html>
