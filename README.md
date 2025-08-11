@@ -1,10 +1,12 @@
 # Relocation-Z-2025  
+
 **White Plains → Loudonville Buy–Sell Analysis**  
 
 ## Live Demo  
 🔗 **[Visit the live site](https://z.colonie.town)** – hosted on Cloudflare Pages.  
 
 ## Project Overview  
+
 Relocation-Z-2025 is a data-driven decision-support platform built to guide the sale of **54 Collyer Place, White Plains, NY** and the purchase of **8 Loudonwood East, Loudonville, NY**.  
 It integrates **real estate market intelligence**, **financial forecasting**, and **scenario planning** into a single, interactive web application.  
 
@@ -33,4 +35,4 @@ It integrates **real estate market intelligence**, **financial forecasting**, an
 Relocation-Z-2025 becomes the **single source of truth** for the move — replacing guesswork with **real-time, evidence-based modeling** so that the transition is **financially sound, strategically timed, and low-risk**.  
 
 **Source Code:** [GitHub – Relocation-Z-2025](https://github.com/jgwalsh02134/relocation-z-2025)  
-**Live Site:** [z.colonie.town](https://z.colonie.town)  
+**Live Site:** [z.colonie.town](https://z.colonie.town)
