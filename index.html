@@ -105,12 +105,35 @@
         <main class="flex-grow container mx-auto p-4 md:px-8 md:py-12 relative">
             <!-- Onboarding View -->
             <div id="onboarding-view" class="view text-center">
-                <div class="max-w-2xl mx-auto">
+                <div class="max-w-2xl mx-auto min-h-[70vh] flex flex-col justify-center">
+                    <div class="mb-6">
+                        <ol class="flex items-center justify-center gap-2 text-xs text-[#6B6864] select-none">
+                            <li class="flex items-center gap-2">
+                                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#4A5C6A] text-white font-bold">1</span>
+                                <span class="hidden sm:inline">Onboarding</span>
+                            </li>
+                            <li class="h-px w-8 bg-gray-300" aria-hidden="true"></li>
+                            <li class="flex items-center gap-2 opacity-70">
+                                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-200 text-[#4A5C6A] font-bold">2</span>
+                                <span class="hidden sm:inline">Overview</span>
+                            </li>
+                            <li class="h-px w-8 bg-gray-300" aria-hidden="true"></li>
+                            <li class="flex items-center gap-2 opacity-70">
+                                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-200 text-[#4A5C6A] font-bold">3</span>
+                                <span class="hidden sm:inline">Strategy</span>
+                            </li>
+                            <li class="h-px w-8 bg-gray-300" aria-hidden="true"></li>
+                            <li class="flex items-center gap-2 opacity-70">
+                                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-200 text-[#4A5C6A] font-bold">4</span>
+                                <span class="hidden sm:inline">Dashboard</span>
+                            </li>
+                        </ol>
+                    </div>
                     <!-- Remove static Lenny image (dynamic image is injected by JS) -->
                     <!-- <img src="assets/images/Lenny-Lodge copy.svg" alt="Lenny Lodge the Beaver" class="mx-auto mb-4 w-28 h-28" style="max-width:112px;max-height:112px;"> -->
                     <!-- Replace the single greeting paragraph with a flex wrapper so image + text align -->
                     <div id="lenny-hero" class="mx-auto flex items-start justify-center gap-3 md:gap-4 md:flex-row flex-col mb-8">
-                      <p class="text-lg text-[#6B6864] min-h-[56px] bg-white/80 border border-gray-200 rounded-lg px-4 py-3 shadow-sm inline-block text-left">
+                      <p id="lenny-bubble" class="text-lg text-[#6B6864] min-h-[56px] bg-white/80 border border-gray-200 rounded-lg px-4 py-3 shadow-sm inline-block text-left">
                         <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#4A5C6A]/10 text-[#4A5C6A] text-xs font-semibold mr-2 align-middle">Lenny</span>
                         <span id="typewriter"></span><span id="typewriter-cursor">|</span>
                       </p>
@@ -118,6 +141,14 @@
                     <button id="start-onboarding-btn" class="btn-primary font-bold py-3 px-8 rounded-lg text-lg">
                         Let's Plan
                     </button>
+                </div>
+                <div class="md:hidden fixed left-0 right-0 bottom-0 z-20">
+                    <div class="mx-auto container px-4 pb-4" style="padding-bottom: calc(env(safe-area-inset-bottom, 0) + 1rem);">
+                        <button id="start-onboarding-btn-mobile" class="w-full btn-primary font-bold py-3 rounded-lg text-lg shadow-md">
+                            Let's Plan
+                        </button>
+                        <p class="mt-2 text-center text-xs text-[#6B6864]">Takes ~2s to fetch a quick snapshot. No sign-in required.</p>
+                    </div>
                 </div>
             </div>
 
@@ -397,7 +428,13 @@
                 prospectAnchors: {
                     zillowUrl: 'https://www.zillow.com/homedetails/8-Loudonwood-E-Loudonville-NY-12211/29697778_zpid/',
                     listPrice: 449900,
-                    zestimate: 442100
+                    zestimate: 442100,
+                    beds: 3,
+                    baths: 3,
+                    sqft: 1508,
+                    yearBuilt: 1974,
+                    hoaMonthly: 383,
+                    taxesAnnual: 7325
                 }
             },
 
@@ -505,6 +542,8 @@
             // --- EVENT BINDING ---
             bindEventListeners() {
                 this.elements.buttons.startOnboarding.addEventListener('click', () => this.handleStartOnboarding());
+                const startMobile = document.getElementById('start-onboarding-btn-mobile');
+                if (startMobile) startMobile.addEventListener('click', () => this.handleStartOnboarding());
                 if (this.elements.buttons.gotoScenario) this.elements.buttons.gotoScenario.addEventListener('click', () => this.switchView('scenario'));
                 this.elements.buttons.confirmScenario.addEventListener('click', () => this.handleConfirmScenario());
                 this.elements.buttons.reset.addEventListener('click', () => this.resetApp());
@@ -515,6 +554,17 @@
                 // Lenny helpers
                 this.elements.buttons.exportLenny.addEventListener('click', () => window.exportLennyLibrary());
                 this.elements.buttons.copyLennyPrompt.addEventListener('click', () => navigator.clipboard.writeText(window.buildLennyPrompt()));
+
+                // Tap-to-skip for typewriter
+                const bubble = document.getElementById('lenny-bubble');
+                if (bubble) bubble.addEventListener('click', () => {
+                    if (!this.elements.typewriter || !this.elements.typewriterCursor) return;
+                    const targetText = String(this.config.typewriterText || '');
+                    const isTyping = this.elements.typewriterCursor.style.display !== 'none' && this.elements.typewriter.textContent.length < targetText.length;
+                    if (isTyping) {
+                        this.runTypewriterEffect(targetText, null, true);
+                    }
+                });
 
                 // Overview inline editor
                 const editBtn = this.elements.buttons.ovEditBuyRange;
@@ -545,6 +595,7 @@
                     }
                     if (!this.state.marketData) this.state.marketData = {};
                     this.state.marketData.targetBuyRange = [Math.round(low), Math.round(high)];
+                    this.state.marketData.userEditedBuyRange = true;
                     this.renderOverview();
                     editor.classList.add('hidden');
                     if (err) err.classList.add('hidden');
@@ -800,7 +851,8 @@
                 this.elements.typewriterCursor.style.display = 'inline';
                 this.elements.typewriter.innerHTML = '';
                 
-                if (immediate) {
+                const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                if (immediate || prefersReduced) {
                     this.elements.typewriter.textContent = text;
                     this.elements.typewriterCursor.style.display = 'none';
                     if (typeof onComplete === 'function') onComplete();
@@ -882,10 +934,21 @@
             // --- OVERVIEW RENDER ---
             renderOverview() {
                 const md = this.state.marketData || {};
+                // Normalize targetBuyRange around current prospect list price if present and range looks unrealistic
+                const listPrice = this.config.prospectAnchors?.listPrice;
+                if (listPrice && !md.userEditedBuyRange) {
+                    const currentLow = md.targetBuyRange?.[0];
+                    const currentHigh = md.targetBuyRange?.[1];
+                    const looksOff = !Number.isFinite(currentLow) || !Number.isFinite(currentHigh) || currentHigh > listPrice * 1.3 || currentLow < listPrice * 0.7;
+                    if (looksOff) {
+                        md.targetBuyRange = [Math.round(listPrice * 0.95), Math.round(listPrice * 1.05)];
+                        this.state.marketData = md;
+                    }
+                }
                 const saleLow = md.typicalSaleRange?.[0] ?? this.config.financials.defaultSalePrice;
                 const saleHigh = md.typicalSaleRange?.[1] ?? this.config.financials.defaultSalePrice;
-                const buyLow = md.targetBuyRange?.[0] ?? (this.config.prospectAnchors?.listPrice ? Math.round(this.config.prospectAnchors.listPrice * 0.95) : this.config.financials.defaultPurchasePrice);
-                const buyHigh = md.targetBuyRange?.[1] ?? (this.config.prospectAnchors?.listPrice ? Math.round(this.config.prospectAnchors.listPrice * 1.05) : this.config.financials.defaultPurchasePrice);
+                const buyLow = md.targetBuyRange?.[0] ?? (listPrice ? Math.round(listPrice * 0.95) : this.config.financials.defaultPurchasePrice);
+                const buyHigh = md.targetBuyRange?.[1] ?? (listPrice ? Math.round(listPrice * 1.05) : this.config.financials.defaultPurchasePrice);
                 const taxSave = md.taxSavingsAnnual ?? 0;
                 const utilDelta = md.monthlyUtilityDelta ?? 0;
 
