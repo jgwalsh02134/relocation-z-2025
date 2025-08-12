@@ -124,6 +124,7 @@
             <!-- Scenario Selection View -->
             <div id="scenario-view" class="view hidden">
                 <div class="text-center mb-12">
+                    <div id="lenny-scenario" class="mx-auto flex items-center justify-center gap-3 mb-4"></div>
                     <h2 class="text-3xl md:text-4xl font-bold text-[#4A5C6A] mb-3">Choose Your Core Strategy</h2>
                     <p class="text-lg text-[#6B6864] max-w-3xl mx-auto">This is the most important decision. It shapes our entire plan. Select the path that best fits your goals and comfort level.</p>
                 </div>
@@ -701,6 +702,17 @@
                 const poseName = this.config.lennyPoses[key] || this.config.lennyPoses.onboarding;
                 const candidateUrl = `assets/images/lenny/${poseName}.png`;
                 const fallbackUrl = 'assets/images/lenny-lodge-1.svg';
+
+                // Move Lenny image to the appropriate container per view
+                const containerByKey = {
+                    onboarding: document.getElementById('lenny-hero'),
+                    scenario: document.getElementById('lenny-scenario'),
+                    dashboard: document.getElementById('lenny-hero') // fallback if no dedicated container
+                };
+                const target = containerByKey[key];
+                if (target && this.elements.lennyImg && this.elements.lennyImg.parentElement !== target) {
+                    target.prepend(this.elements.lennyImg);
+                }
 
                 const probe = new Image();
                 probe.onload = () => { this.elements.lennyImg.src = candidateUrl; };
