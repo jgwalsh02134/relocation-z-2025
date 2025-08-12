@@ -121,6 +121,40 @@
                 </div>
             </div>
 
+            <!-- Overview View -->
+            <div id="overview-view" class="view hidden">
+                <div class="text-center mb-10">
+                    <div id="lenny-overview" class="mx-auto flex items-center justify-center gap-3 mb-4"></div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-[#4A5C6A] mb-3">Project Overview</h2>
+                    <p class="text-lg text-[#6B6864] max-w-3xl mx-auto">Here’s the high-level snapshot of your move before we choose a strategy.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
+                        <h4 class="text-sm font-semibold text-[#8B6E5A] uppercase tracking-wide mb-1">Selling</h4>
+                        <p class="text-[#4A5C6A] font-bold"> <span id="ov-sell-address"></span></p>
+                        <p class="text-[#6B6864]">Typical range: <span id="ov-sale-range" class="font-semibold text-[#4A5C6A]"></span></p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
+                        <h4 class="text-sm font-semibold text-[#8B6E5A] uppercase tracking-wide mb-1">Buying Target</h4>
+                        <p class="text-[#4A5C6A] font-bold"><span id="ov-buy-address"></span></p>
+                        <p class="text-[#6B6864]">Target range: <span id="ov-buy-range" class="font-semibold text-[#4A5C6A]"></span></p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
+                        <h4 class="text-sm font-semibold text-[#8B6E5A] uppercase tracking-wide mb-1">Annual Tax Savings</h4>
+                        <p id="ov-tax-savings" class="text-2xl font-bold text-[#4A5C6A]">$0</p>
+                        <p class="text-xs text-[#6B6864]">Estimate based on current comps</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
+                        <h4 class="text-sm font-semibold text-[#8B6E5A] uppercase tracking-wide mb-1">Monthly Utilities</h4>
+                        <p id="ov-utility-delta" class="text-2xl font-bold text-[#4A5C6A]">$0</p>
+                        <p class="text-xs text-[#6B6864]">Positive = more, negative = less</p>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button id="goto-scenario-btn" class="btn-primary font-bold py-3 px-8 rounded-lg text-lg">Choose Strategy</button>
+                </div>
+            </div>
+
             <!-- Scenario Selection View -->
             <div id="scenario-view" class="view hidden">
                 <div class="text-center mb-12">
@@ -319,6 +353,7 @@
                 typewriterText: "Hello, I’m Lenny Lodge. Relocating can be complex, but with a clear, structured plan, we’ll navigate each stage with confidence and precision.",
                 lennyPoses: {
                     onboarding: 'default_greeting',
+                    overview: 'map_pointing',
                     scenario: 'thinking_advising',
                     dashboard: 'map_pointing',
                     checklistSeller: 'sold_sign',
@@ -339,6 +374,7 @@
             elements: {
                 views: {
                     onboarding: document.getElementById('onboarding-view'),
+                    overview: document.getElementById('overview-view'),
                     scenario: document.getElementById('scenario-view'),
                     dashboard: document.getElementById('dashboard-view'),
                 },
@@ -352,10 +388,17 @@
                     netProfit: document.getElementById('net-profit'),
                     pitiEstimate: document.getElementById('piti-estimate'),
                     dashboardIntro: document.getElementById('dashboard-intro'),
+                    ovSellAddress: document.getElementById('ov-sell-address'),
+                    ovBuyAddress: document.getElementById('ov-buy-address'),
+                    ovSaleRange: document.getElementById('ov-sale-range'),
+                    ovBuyRange: document.getElementById('ov-buy-range'),
+                    ovTaxSavings: document.getElementById('ov-tax-savings'),
+                    ovUtilityDelta: document.getElementById('ov-utility-delta'),
                 },
                 buttons: {
                     startOnboarding: document.getElementById('start-onboarding-btn'),
                     confirmScenario: document.getElementById('confirm-scenario-btn'),
+                    gotoScenario: document.getElementById('goto-scenario-btn'),
                     reset: document.getElementById('reset-btn'),
                     exportLenny: document.getElementById('btnExportLenny'),
                     copyLennyPrompt: document.getElementById('btnCopyLennyPrompt'),
@@ -406,6 +449,7 @@
             // --- EVENT BINDING ---
             bindEventListeners() {
                 this.elements.buttons.startOnboarding.addEventListener('click', () => this.handleStartOnboarding());
+                if (this.elements.buttons.gotoScenario) this.elements.buttons.gotoScenario.addEventListener('click', () => this.switchView('scenario'));
                 this.elements.buttons.confirmScenario.addEventListener('click', () => this.handleConfirmScenario());
                 this.elements.buttons.reset.addEventListener('click', () => this.resetApp());
                 
@@ -446,21 +490,21 @@
                 this.runTypewriterEffect('Checking the latest market trends...', null, true);
                 try {
                     await this.fetchLatestMarketData();
-                    const { typicalSaleRange, targetBuyRange, taxSavingsAnnual, monthlyUtilityDelta } = this.state.marketData;
-                    const msg = `Here's our plan: sell ${this.config.sellingAddress} and buy ${this.config.prospectAddress}. ` +
-                        `Based on the most recent market trends, your sale is tracking between ` +
-                        `${this.formatCurrency(typicalSaleRange[0])} and ${this.formatCurrency(typicalSaleRange[1])}. ` +
-                        `The target home is trending between ` +
-                        `${this.formatCurrency(targetBuyRange[0])} and ${this.formatCurrency(targetBuyRange[1])}, ` +
-                        `with estimated savings of ${this.formatCurrency(taxSavingsAnnual)} in property taxes and ` +
-                        `${this.formatCurrency(Math.abs(monthlyUtilityDelta))} ${monthlyUtilityDelta < 0 ? 'less' : 'more'} in monthly utilities. ` +
-                        `Next, let’s choose your core strategy.`;
-                    this.runTypewriterEffect(msg, () => this.switchView('scenario'));
+                    this.renderOverview();
+                    this.switchView('overview');
                 } catch (err) {
                     console.error("Backend Error:", err);
-                    const errorMsg = `Here's our plan: sell ${this.config.sellingAddress} and buy ${this.config.prospectAddress}. ` +
-                        "We couldn't fetch the latest market data right now, but we can still move forward. Next, let’s choose your core strategy.";
-                    this.runTypewriterEffect(errorMsg, () => this.switchView('scenario'));
+                    // Build a lightweight fallback so user still gets an overview
+                    const d = this.config.financials;
+                    const fallback = {
+                        typicalSaleRange: [Math.round(d.defaultSalePrice * 0.9), Math.round(d.defaultSalePrice * 1.1)],
+                        targetBuyRange: [Math.round(d.defaultPurchasePrice * 0.9), Math.round(d.defaultPurchasePrice * 1.1)],
+                        taxSavingsAnnual: 0,
+                        monthlyUtilityDelta: 0
+                    };
+                    this.state.marketData = fallback;
+                    this.renderOverview();
+                    this.switchView('overview');
                 }
             },
 
@@ -537,6 +581,8 @@
                 this.elements.outputs.netProfit.textContent = this.formatCurrency(this.state.sellerCosts.netProfit);
                 this.elements.outputs.pitiEstimate.textContent = this.formatCurrency(this.state.buyerCosts.piti);
                 this.updateCharts();
+                // Keep overview in sync if it's visible
+                if (this.state.currentView === 'overview') this.renderOverview();
             },
 
             updateCharts() {
@@ -706,6 +752,7 @@
                 // Move Lenny image to the appropriate container per view
                 const containerByKey = {
                     onboarding: document.getElementById('lenny-hero'),
+                    overview: document.getElementById('lenny-overview'),
                     scenario: document.getElementById('lenny-scenario'),
                     dashboard: document.getElementById('lenny-hero') // fallback if no dedicated container
                 };
@@ -720,6 +767,24 @@
                 probe.src = candidateUrl;
                 
                 this.elements.lennyImg.alt = `Lenny Lodge (${poseName.replace(/_/g, ' ')})`;
+            }
+            ,
+            // --- OVERVIEW RENDER ---
+            renderOverview() {
+                const md = this.state.marketData || {};
+                const saleLow = md.typicalSaleRange?.[0] ?? this.config.financials.defaultSalePrice;
+                const saleHigh = md.typicalSaleRange?.[1] ?? this.config.financials.defaultSalePrice;
+                const buyLow = md.targetBuyRange?.[0] ?? this.config.financials.defaultPurchasePrice;
+                const buyHigh = md.targetBuyRange?.[1] ?? this.config.financials.defaultPurchasePrice;
+                const taxSave = md.taxSavingsAnnual ?? 0;
+                const utilDelta = md.monthlyUtilityDelta ?? 0;
+
+                if (this.elements.outputs.ovSellAddress) this.elements.outputs.ovSellAddress.textContent = this.config.sellingAddress;
+                if (this.elements.outputs.ovBuyAddress) this.elements.outputs.ovBuyAddress.textContent = this.config.prospectAddress;
+                if (this.elements.outputs.ovSaleRange) this.elements.outputs.ovSaleRange.textContent = `${this.formatCurrency(saleLow)} – ${this.formatCurrency(saleHigh)}`;
+                if (this.elements.outputs.ovBuyRange) this.elements.outputs.ovBuyRange.textContent = `${this.formatCurrency(buyLow)} – ${this.formatCurrency(buyHigh)}`;
+                if (this.elements.outputs.ovTaxSavings) this.elements.outputs.ovTaxSavings.textContent = this.formatCurrency(taxSave);
+                if (this.elements.outputs.ovUtilityDelta) this.elements.outputs.ovUtilityDelta.textContent = `${utilDelta >= 0 ? '+' : ''}${this.formatCurrency(utilDelta)}/mo`;
             }
         };
 
