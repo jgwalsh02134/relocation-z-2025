@@ -109,10 +109,13 @@
                     <!-- Remove static Lenny image (dynamic image is injected by JS) -->
                     <!-- <img src="assets/images/Lenny-Lodge copy.svg" alt="Lenny Lodge the Beaver" class="mx-auto mb-4 w-28 h-28" style="max-width:112px;max-height:112px;"> -->
                     <h1 class="text-4xl md:text-5xl font-bold text-[#4A5C6A] mb-4">Welcome to Your Relocation Journey!</h1>
-                    <p class="text-lg text-[#6B6864] mb-8 min-h-[56px]">
+                    <!-- Replace the single greeting paragraph with a flex wrapper so image + text align -->
+                    <div id="lenny-hero" class="mx-auto flex items-start justify-center gap-3 md:gap-4 md:flex-row flex-col mb-8">
+                      <p class="text-lg text-[#6B6864] min-h-[56px] bg-white/80 border border-gray-200 rounded-lg px-4 py-3 shadow-sm inline-block text-left">
                         <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#4A5C6A]/10 text-[#4A5C6A] text-xs font-semibold mr-2 align-middle">Lenny</span>
                         <span id="typewriter"></span><span id="typewriter-cursor">|</span>
-                    </p>
+                      </p>
+                    </div>
                     <button id="start-onboarding-btn" class="btn-primary font-bold py-3 px-8 rounded-lg text-lg">
                         Let's Plan
                     </button>
@@ -313,7 +316,16 @@
         pitiEstimate: document.getElementById('piti-estimate'),
         dashboardIntro: document.getElementById('dashboard-intro'),
     };
-    
+    // Missing helper: clearly attribute messages to Lenny
+    function speakAsLenny(targetEl, text) {
+      if (!targetEl) return;
+      targetEl.innerHTML = `<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#4A5C6A]/10 text-[#4A5C6A] text-xs font-semibold mr-2 align-middle">Lenny</span><span class="lenny-message-text"></span>`;
+      const textSpan = targetEl.querySelector('.lenny-message-text');
+      textSpan.textContent = String(text);
+      targetEl.setAttribute('aria-live', 'polite');
+      targetEl.setAttribute('aria-label', `Lenny says: ${textSpan.textContent}`);
+    }
+
     const buttons = {
         startOnboarding: document.getElementById('start-onboarding-btn'),
         confirmScenario: document.getElementById('confirm-scenario-btn'),
@@ -353,13 +365,16 @@
         }
     }
     
-    // ----- Dynamic Lenny integration -----
+    // ----- Dynamic Lenny integration (align image next to greeting) -----
     const lennyImg = document.createElement('img');
     lennyImg.id = 'lenny-img';
     lennyImg.src = 'assets/images/lenny/default_greeting.png';
     lennyImg.alt = 'Lenny Lodge the Beaver';
-    lennyImg.className = 'mx-auto mb-4 w-28 h-28';
-    if (views.onboarding) views.onboarding.prepend(lennyImg);
+    lennyImg.className = 'w-20 h-20 md:w-28 md:h-28 flex-shrink-0';
+
+    const hero = document.getElementById('lenny-hero');
+    if (hero) hero.prepend(lennyImg);
+    else if (views.onboarding) views.onboarding.prepend(lennyImg);
 
     const lennyPoses = {
       onboarding: 'default_greeting',
@@ -579,5 +594,7 @@
     buildChecklists();
 });
 </script>
+</body>
+</html>
 </body>
 </html>
