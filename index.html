@@ -186,6 +186,15 @@
                             <a id="ov-prospect-link" href="#" target="_blank" class="text-xs underline text-[#4A5C6A] ml-auto">View on Zillow</a>
                             <button id="ov-edit-buy-range-btn" class="text-xs px-2 py-1 border border-gray-300 rounded hover:bg-gray-50 text-[#4A5C6A]">Edit</button>
                         </div>
+                        <div class="mt-3 grid grid-cols-2 gap-2 text-sm text-[#6B6864]">
+                            <div><span class="font-semibold text-[#4A5C6A]">List</span>: <span id="ov-buy-list"></span></div>
+                            <div><span class="font-semibold text-[#4A5C6A]">Zestimate</span>: <span id="ov-buy-zest"></span></div>
+                            <div><span class="font-semibold text-[#4A5C6A]">Beds/Baths</span>: <span id="ov-buy-bb"></span></div>
+                            <div><span class="font-semibold text-[#4A5C6A]">Sq Ft</span>: <span id="ov-buy-sqft"></span></div>
+                            <div><span class="font-semibold text-[#4A5C6A]">Year</span>: <span id="ov-buy-year"></span></div>
+                            <div><span class="font-semibold text-[#4A5C6A]">HOA</span>: <span id="ov-buy-hoa"></span></div>
+                            <div class="col-span-2"><span class="font-semibold text-[#4A5C6A]">Taxes</span>: <span id="ov-buy-taxes"></span> /yr</div>
+                        </div>
                         <div id="ov-buy-range-editor" class="hidden mt-3 p-3 bg-[#F8F7F4] border border-gray-200 rounded-lg">
                             <div class="flex items-center gap-3">
                                 <label class="text-sm text-[#6B6864]">Low ($)
@@ -474,6 +483,13 @@
                     ovSaleZestLine: document.getElementById('ov-sale-zest-line'),
                     ovSaleZest: document.getElementById('ov-sale-zest'),
                     ovSaleZestLink: document.getElementById('ov-sale-zest-link'),
+                    ovBuyList: document.getElementById('ov-buy-list'),
+                    ovBuyZest: document.getElementById('ov-buy-zest'),
+                    ovBuyBB: document.getElementById('ov-buy-bb'),
+                    ovBuySqft: document.getElementById('ov-buy-sqft'),
+                    ovBuyYear: document.getElementById('ov-buy-year'),
+                    ovBuyHoa: document.getElementById('ov-buy-hoa'),
+                    ovBuyTaxes: document.getElementById('ov-buy-taxes'),
                 },
                 buttons: {
                     startOnboarding: document.getElementById('start-onboarding-btn'),
@@ -961,6 +977,15 @@
                 if (this.elements.anchors?.prospectLink && this.config.prospectAnchors?.zillowUrl) {
                     this.elements.anchors.prospectLink.href = this.config.prospectAnchors.zillowUrl;
                 }
+                // Buying detail anchors for credibility
+                const pa = this.config.prospectAnchors || {};
+                if (this.elements.outputs.ovBuyList && pa.listPrice) this.elements.outputs.ovBuyList.textContent = this.formatCurrency(pa.listPrice);
+                if (this.elements.outputs.ovBuyZest && pa.zestimate) this.elements.outputs.ovBuyZest.textContent = this.formatCurrency(pa.zestimate);
+                if (this.elements.outputs.ovBuyBB && (pa.beds || pa.baths)) this.elements.outputs.ovBuyBB.textContent = `${pa.beds || '?'} bd / ${pa.baths || '?'} ba`;
+                if (this.elements.outputs.ovBuySqft && pa.sqft) this.elements.outputs.ovBuySqft.textContent = `${pa.sqft.toLocaleString()} sf`;
+                if (this.elements.outputs.ovBuyYear && pa.yearBuilt) this.elements.outputs.ovBuyYear.textContent = `${pa.yearBuilt}`;
+                if (this.elements.outputs.ovBuyHoa && pa.hoaMonthly != null) this.elements.outputs.ovBuyHoa.textContent = this.formatCurrency(pa.hoaMonthly) + '/mo';
+                if (this.elements.outputs.ovBuyTaxes && pa.taxesAnnual != null) this.elements.outputs.ovBuyTaxes.textContent = this.formatCurrency(pa.taxesAnnual);
                 // Optional: surface a Zestimate anchor for selling address
                 const zlink = 'https://www.zillow.com/homedetails/54-Collyer-Pl-White-Plains-NY-10605/32982800_zpid/';
                 const zest = 1014200; // from provided reference
