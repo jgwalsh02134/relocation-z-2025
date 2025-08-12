@@ -7,6 +7,7 @@ import { parseStringPromise } from 'xml2js';
 dotenv.config();
 const app = express();
 app.use(cors({ origin: true }));
+app.use(express.json());
 
 app.get('/api/comps', async (req, res) => {
   const address = req.query.address;
@@ -26,6 +27,46 @@ app.get('/api/comps', async (req, res) => {
   } catch (e) {
     console.error(e);
     return res.status(500).json({ error: 'Failed to fetch comps' });
+  }
+});
+
+// Simple chat proxy to OpenAI for Lenny Assistant
+app.post('/api/chat', async (req, res) => {
+  try {
+    const { message, context } = req.body || {};
+    if (!message) return res.status(400).json({ error: 'Message is required' });
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) return res.status(500).json({ error: 'Missing OPENAI_API_KEY' });
+
+    const persona = `You are Lenny Lodge, a friendly, informed relocation assistant (a beaver mascot). 
+Speak concisely and clearly. Default to helpful, practical next steps. 
+Use the provided context (selling address, prospect, sale/buy ranges, net proceeds, cash to close, PITI) to give specific guidance. 
+Avoid legal/financial advice disclaimers unless necessary. Encourage informed decision-making.`;
+
+    const userContent = [
+      `User: ${String(message)}`,
+      '--- Context ---',
+      context ? JSON.stringify(context).slice(0, 6000) : '(none)'
+    ].join('\n');
+
+    const payload = {
+      model: 'gpt-4o-mini',
+      temperature: 0.2,
+      messages: [
+        { role: 'system', content: persona },
+        { role: 'user', content: userContent }
+      ]
+    };
+
+    const resp = await axios.post('https://api.openai.com/v1/chat/completions', payload, {
+      headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+      timeout: 20000
+    });
+    const reply = resp.data?.choices?.[0]?.message?.content || '';
+    return res.json({ reply });
+  } catch (e) {
+    console.error('Chat error', e?.response?.data || e.message);
+    return res.status(500).json({ error: 'Chat failed' });
   }
 });
 

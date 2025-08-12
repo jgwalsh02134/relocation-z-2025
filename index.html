@@ -98,6 +98,7 @@
                     <button id="btnExportLenny" class="hidden text-sm font-medium text-[#4A5C6A] hover:text-[#3D3B38] transition">Export Lenny JSON</button>
                     <button id="btnCopyLennyPrompt" class="hidden text-sm font-medium text-[#4A5C6A] hover:text-[#3D3B38] transition">Copy Lenny Prompt</button>
                     <button id="reset-btn" class="hidden text-sm font-medium text-[#4A5C6A] hover:text-[#3D3B38] transition">Start Over</button>
+                    <button id="open-lenny-chat" class="text-sm font-medium text-white bg-[#4A5C6A] hover:bg-[#3B4A58] transition px-3 py-1.5 rounded-lg shadow-sm">Chat</button>
                 </div>
             </nav>
         </header>
@@ -609,6 +610,20 @@
                 // Lenny helpers
                 this.elements.buttons.exportLenny.addEventListener('click', () => window.exportLennyLibrary());
                 this.elements.buttons.copyLennyPrompt.addEventListener('click', () => navigator.clipboard.writeText(window.buildLennyPrompt()));
+
+                // Tap-to-skip for typewriter
+                const bubble = document.getElementById('lenny-bubble');
+                if (bubble) bubble.addEventListener('click', () => {
+                    if (!this.elements.typewriter || !this.elements.typewriterCursor) return;
+                    const targetText = String(this.config.typewriterText || '');
+                    const isTyping = this.elements.typewriterCursor.style.display !== 'none' && this.elements.typewriter.textContent.length < targetText.length;
+                    if (isTyping) {
+                        this.runTypewriterEffect(targetText, null, true);
+                    }
+                });
+
+                // Chat (lazy init)
+                document.getElementById('open-lenny-chat')?.addEventListener('click', () => this.initChatUI());
 
                 // Tap-to-skip for typewriter
                 const bubble = document.getElementById('lenny-bubble');
