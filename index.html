@@ -95,8 +95,8 @@
                 </div>
                 <div class="flex items-center gap-2">
                     <!-- New: quick-access developer helpers -->
-                    <button id="btnExportLenny" class="text-sm font-medium text-[#4A5C6A] hover:text-[#3D3B38] transition">Export Lenny JSON</button>
-                    <button id="btnCopyLennyPrompt" class="text-sm font-medium text-[#4A5C6A] hover:text-[#3D3B38] transition">Copy Lenny Prompt</button>
+                    <button id="btnExportLenny" class="hidden text-sm font-medium text-[#4A5C6A] hover:text-[#3D3B38] transition">Export Lenny JSON</button>
+                    <button id="btnCopyLennyPrompt" class="hidden text-sm font-medium text-[#4A5C6A] hover:text-[#3D3B38] transition">Copy Lenny Prompt</button>
                     <button id="reset-btn" class="hidden text-sm font-medium text-[#4A5C6A] hover:text-[#3D3B38] transition">Start Over</button>
                 </div>
             </nav>
@@ -106,10 +106,13 @@
             <!-- Onboarding View -->
             <div id="onboarding-view" class="view text-center">
                 <div class="max-w-2xl mx-auto">
-                    <!-- Add Lenny Lodge SVG here -->
-                    <img src="assets/images/Lenny-Lodge copy.svg" alt="Lenny Lodge the Beaver" class="mx-auto mb-4 w-28 h-28" style="max-width:112px;max-height:112px;">
+                    <!-- Remove static Lenny image (dynamic image is injected by JS) -->
+                    <!-- <img src="assets/images/Lenny-Lodge copy.svg" alt="Lenny Lodge the Beaver" class="mx-auto mb-4 w-28 h-28" style="max-width:112px;max-height:112px;"> -->
                     <h1 class="text-4xl md:text-5xl font-bold text-[#4A5C6A] mb-4">Welcome to Your Relocation Journey!</h1>
-                    <p class="text-lg text-[#6B6864] mb-8 min-h-[56px]"><span id="typewriter"></span><span id="typewriter-cursor">|</span></p>
+                    <p class="text-lg text-[#6B6864] mb-8 min-h-[56px]">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#4A5C6A]/10 text-[#4A5C6A] text-xs font-semibold mr-2 align-middle">Lenny</span>
+                        <span id="typewriter"></span><span id="typewriter-cursor">|</span>
+                    </p>
                     <button id="start-onboarding-btn" class="btn-primary font-bold py-3 px-8 rounded-lg text-lg">
                         Let's Plan
                     </button>
@@ -344,11 +347,36 @@
             views[viewName].classList.remove('hidden');
             appState.currentView = viewName;
             buttons.reset.classList.toggle('hidden', viewName === 'onboarding-view');
+            // change Lenny pose when switching views
+            const poseKey = viewName.replace('-view', '');
+            updateLennyPose(poseKey);
         }
     }
     
+    // ----- Dynamic Lenny integration -----
+    const lennyImg = document.createElement('img');
+    lennyImg.id = 'lenny-img';
+    lennyImg.src = 'assets/images/lenny/default_greeting.png';
+    lennyImg.alt = 'Lenny Lodge the Beaver';
+    lennyImg.className = 'mx-auto mb-4 w-28 h-28';
+    if (views.onboarding) views.onboarding.prepend(lennyImg);
+
+    const lennyPoses = {
+      onboarding: 'default_greeting',
+      scenario: 'thinking_advising',
+      dashboard: 'map_pointing',
+      checklistSeller: 'sold_sign',
+      checklistBuyer: 'closing_day'
+    };
+
+    function updateLennyPose(key) {
+      const poseName = lennyPoses[key] || lennyPoses.onboarding;
+      lennyImg.src = `assets/images/lenny/${poseName}.png`;
+    }
+    // ----- end Dynamic Lenny integration -----
+
     function typeWriterEffect() {
-        const text = "Hi, I'm Lenny Lodge! Planning a big move can feel like chewing through a giant oak tree. Don't worry, I'm here to help you plan it all out, one log at a time.";
+        const text = "Hello, I’m Lenny Lodge. Relocating can be complex, but with a clear, structured plan, we’ll navigate each stage with confidence and precision.";
         const typewriterEl = document.getElementById('typewriter');
         const cursorEl = document.getElementById('typewriter-cursor');
         if (!typewriterEl || !cursorEl) return;
@@ -457,7 +485,7 @@
                         <p class="text-sm text-[#6B6864] mb-3">${item.what.replace(/\*(.*?)\*/g, '<em>$1</em>')}</p>
                         <ul class="list-disc list-inside text-sm space-y-2 mb-4 text-[#6B6864]">${howToList}</ul>
                         <div class="bg-[#F8F7F4] p-3 rounded-md text-sm">
-                            <strong class="font-semibold text-[#8B6E5A]">🦫 Lenny's Pro Tip:</strong> <span class="text-[#6B6864]">${item.tip}</span>
+                            <strong class="font-semibold text-[#8B6E5A]">Lenny’s Professional Insight:</strong> <span class="text-[#6B6864]">${item.tip}</span>
                         </div>
                     </div>
                 </div>`;
@@ -500,6 +528,12 @@
         
         document.getElementById('seller-progress').style.width = `${sellerProgress}%`;
         document.getElementById('buyer-progress').style.width = `${buyerProgress}%`;
+        // change Lenny pose on checklist completion
+        if (sellerCompleted === sellerTasks && sellerTasks > 0) {
+          updateLennyPose('checklistSeller');
+        } else if (buyerCompleted === buyerTasks && buyerTasks > 0) {
+          updateLennyPose('checklistBuyer');
+        }
     }
 
     function handleScenarioSelection(e) {
@@ -533,7 +567,8 @@
                 'scenario-buy-first': 'the Convenience Path',
                 'scenario-contingent': 'the Balancing Act'
             }[appState.chosenScenario];
-            outputs.dashboardIntro.textContent = `Your plan is based on ${scenarioText}. Everything here is interactive and will update as you make changes.`;
+            // was: outputs.dashboardIntro.textContent = `Your plan is based on ${scenarioText}. Everything here is interactive and will update as you make changes.`;
+            speakAsLenny(outputs.dashboardIntro, `Your plan is based on ${scenarioText}. Everything here is interactive and will update as you make changes.`);
             updateUI();
         }
     });
