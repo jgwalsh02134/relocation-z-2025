@@ -1,341 +1,483 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Decision-ready plan for relocating from White Plains to the Capital District with live sell/buy math, interactive timeline, and key metrics." />
-  <title>Relocation Project – White Plains → Capital District</title>
-  <meta name="theme-color" content="#0a3d62" />
-  <link rel="canonical" href="https://z.colonie.town/" />
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
-  <link rel="stylesheet" href="assets/style.css" />
-  <meta property="og:title" content="Relocation Project – White Plains → Capital District" />
-  <meta property="og:description" content="Interactive plan for moving from White Plains to the Capital District with live sell/buy analysis." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://z.colonie.town/" />
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Relocation Project – White Plains → Capital District" />
-  <meta name="twitter:description" content="Interactive plan for moving from White Plains to the Capital District with live sell/buy analysis." />
-  <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script defer src="assets/script.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relocation-Z-2025 | Your Personal Relocation Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F7F4;
+            color: #3D3B38;
+        }
+        .view {
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+        .view.hidden {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            position: absolute;
+            width: 100%;
+        }
+        .checklist-item-header {
+            cursor: pointer;
+        }
+        .checklist-item-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, padding-top 0.5s ease-in-out, padding-bottom 0.5s ease-in-out;
+        }
+        .checklist-item-body.open {
+            max-height: 1000px;
+            padding-top: 1rem;
+            padding-bottom: 1.25rem;
+        }
+        .btn-primary {
+            background-color: #4A5C6A;
+            color: #FFFFFF;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .btn-primary:hover {
+            background-color: #3B4A58;
+            transform: translateY(-2px);
+        }
+        .scenario-card {
+            border: 2px solid #EAE8E3;
+            transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+            transform-origin: center;
+        }
+        .scenario-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.07);
+        }
+        .scenario-card.selected {
+            border-color: #4A5C6A;
+            box-shadow: 0 8px 25px rgba(74, 92, 106, 0.2);
+            background-color: #FDFCFB;
+            transform: translateY(-5px) scale(1.02);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 280px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 280px;
+        }
+        #typewriter-cursor {
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            from, to { opacity: 1 }
+            50% { opacity: 0 }
+        }
+        .progress-bar-fill {
+            transition: width 0.5s ease-in-out;
+        }
+    </style>
 </head>
-<body>
-  <a class="skip-link" href="#main">Skip to main content</a>
-  <header class="site-header header-v2">
-  <div class="container nav-row">
-    <a class="brand" href="/">z.colonie.town</a>
-    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-controls="siteNav" aria-expanded="false">☰</button>
-    <nav id="siteNav" class="nav-links" aria-label="Primary">
-      <a href="#hero">Home</a>
-      <a href="#sale-strategy">Sell</a>
-      <a href="#metrics">Buy</a>
-      <a href="#timeline">Timeline</a>
-      <a href="#resources">Resources</a>
-    </nav>
-  </div>
+<body class="antialiased">
 
-  <section class="hero" id="hero">
-    <div class="container hero-inner">
-      <h1>Relocation Project</h1>
-      <p class="sub">Decision-ready plan for moving from White Plains to the Capital District — with live sell/buy math.</p>
-      <div class="hero-ctas">
-        <a class="btn btn-primary" href="#sale-strategy">Start with Sale</a>
-  <a class="btn btn-outline" href="#metrics">Evaluate Purchase</a>
-      </div>
+    <div id="app-container" class="min-h-screen flex flex-col">
+        <header class="w-full bg-white/80 backdrop-blur-lg border-b border-gray-200/80 sticky top-0 z-10">
+            <nav class="container mx-auto px-4 md:px-8 py-4 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <span class="font-bold text-xl text-[#4A5C6A]">Relocation-Z-2025</span>
+                </div>
+                <button id="reset-btn" class="hidden text-sm font-medium text-[#4A5C6A] hover:text-[#3D3B38] transition">Start Over</button>
+            </nav>
+        </header>
+
+        <main class="flex-grow container mx-auto p-4 md:px-8 md:py-12 relative">
+            <!-- Onboarding View -->
+            <div id="onboarding-view" class="view text-center">
+                <div class="max-w-2xl mx-auto">
+                    <!-- Add Lenny Lodge SVG here -->
+                    <img src="assets/images/Lenny-Lodge copy.svg" alt="Lenny Lodge the Beaver" class="mx-auto mb-4 w-28 h-28" style="max-width:112px;max-height:112px;">
+                    <h1 class="text-4xl md:text-5xl font-bold text-[#4A5C6A] mb-4">Welcome to Your Relocation Journey!</h1>
+                    <p class="text-lg text-[#6B6864] mb-8 min-h-[56px]"><span id="typewriter"></span><span id="typewriter-cursor">|</span></p>
+                    <button id="start-onboarding-btn" class="btn-primary font-bold py-3 px-8 rounded-lg text-lg">
+                        Let's Plan
+                    </button>
+                </div>
+            </div>
+
+            <!-- Scenario Selection View -->
+            <div id="scenario-view" class="view hidden">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-[#4A5C6A] mb-3">Choose Your Core Strategy</h2>
+                    <p class="text-lg text-[#6B6864] max-w-3xl mx-auto">This is the most important decision. It shapes our entire plan. Select the path that best fits your goals and comfort level.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div id="scenario-sell-first" class="scenario-card p-6 rounded-xl text-center cursor-pointer flex flex-col items-center">
+                        <svg class="w-16 h-16 mb-4 text-[#4A5C6A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                        <h3 class="text-2xl font-bold text-[#4A5C6A] mb-2">Safety-First Path</h3>
+                        <p class="font-semibold mb-3 text-[#8B6E5A]">(Sell First)</p>
+                        <p class="text-[#6B6864] flex-grow">Sell your home first. With cash in hand, you become a powerful, non-contingent buyer. The most financially secure route.</p>
+                    </div>
+                    <div id="scenario-buy-first" class="scenario-card p-6 rounded-xl text-center cursor-pointer flex flex-col items-center">
+                        <svg class="w-16 h-16 mb-4 text-[#4A5C6A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        <h3 class="text-2xl font-bold text-[#4A5C6A] mb-2">Convenience Path</h3>
+                        <p class="font-semibold mb-3 text-[#8B6E5A]">(Buy First)</p>
+                        <p class="text-[#6B6864] flex-grow">Buy a new home before selling your current one, likely using a bridge loan. Allows for a single, low-stress move but carries financial risk.</p>
+                    </div>
+                    <div id="scenario-contingent" class="scenario-card p-6 rounded-xl text-center cursor-pointer flex flex-col items-center">
+                        <svg class="w-16 h-16 mb-4 text-[#4A5C6A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path></svg>
+                        <h3 class="text-2xl font-bold text-[#4A5C6A] mb-2">Balancing Act</h3>
+                        <p class="font-semibold mb-3 text-[#8B6E5A]">(Contingent Offer)</p>
+                        <p class="text-[#6B6864] flex-grow">Find a home and make an offer that is contingent on the sale of your current home. This path balances security and convenience.</p>
+                    </div>
+                </div>
+                 <div class="text-center mt-12">
+                    <button id="confirm-scenario-btn" class="btn-primary font-bold py-3 px-8 rounded-lg text-lg opacity-50 cursor-not-allowed" disabled>
+                        Build My Plan
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard View -->
+            <div id="dashboard-view" class="view hidden">
+                <header class="text-center mb-12">
+                    <h2 class="text-4xl md:text-5xl font-bold text-[#4A5C6A] mb-3">Your Relocation Mission Control</h2>
+                    <p id="dashboard-intro" class="text-lg text-[#6B6864] max-w-3xl mx-auto"></p>
+                </header>
+
+                <section id="financials" class="mb-16">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                        <div class="bg-white p-6 rounded-xl shadow-lg">
+                            <h3 class="text-2xl font-bold text-[#4A5C6A] border-b-2 border-gray-100 pb-3 mb-6 flex items-center gap-3">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                                Selling: 54 Collyer Pl, White Plains
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="space-y-4">
+                                    <div>
+                                        <label for="sale-price" class="block text-sm font-medium text-[#6B6864]">Estimated Sale Price ($)</label>
+                                        <input type="number" id="sale-price" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4A5C6A] focus:ring-[#4A5C6A] sm:text-sm p-2" value="1128100">
+                                    </div>
+                                    <div>
+                                        <label for="mortgage-balance" class="block text-sm font-medium text-[#6B6864]">Remaining Mortgage ($)</label>
+                                        <input type="number" id="mortgage-balance" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4A5C6A] focus:ring-[#4A5C6A] sm:text-sm p-2" value="350000">
+                                    </div>
+                                    <div class="bg-[#F8F7F4] p-4 rounded-lg text-center">
+                                        <p class="text-sm font-medium text-[#6B6864]">Estimated Net Profit</p>
+                                        <p id="net-profit" class="text-3xl font-bold text-[#4A5C6A]">$0</p>
+                                    </div>
+                                </div>
+                                <div><div class="chart-container"><canvas id="seller-chart"></canvas></div></div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-lg">
+                            <h3 class="text-2xl font-bold text-[#4A5C6A] border-b-2 border-gray-100 pb-3 mb-6 flex items-center gap-3">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                Buying: Colonie Area
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="space-y-4">
+                                    <div>
+                                        <label for="purchase-price" class="block text-sm font-medium text-[#6B6864]">Target Purchase Price ($)</label>
+                                        <input type="number" id="purchase-price" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4A5C6A] focus:ring-[#4A5C6A] sm:text-sm p-2" value="750000">
+                                    </div>
+                                    <div>
+                                        <label for="down-payment-percent" class="block text-sm font-medium text-[#6B6864]">Down Payment (%)</label>
+                                        <input type="number" id="down-payment-percent" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4A5C6A] focus:ring-[#4A5C6A] sm:text-sm p-2" value="20">
+                                    </div>
+                                    <div class="bg-[#F8F7F4] p-4 rounded-lg text-center">
+                                        <p class="text-sm font-medium text-[#6B6864]">Est. Monthly PITI</p>
+                                        <p id="piti-estimate" class="text-3xl font-bold text-[#4A5C6A]">$0</p>
+                                    </div>
+                                </div>
+                                <div><div class="chart-container"><canvas id="buyer-chart"></canvas></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="checklists">
+                    <h3 class="text-3xl font-bold text-center text-[#4A5C6A] mb-8">Your Action Plan</h3>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div id="seller-checklist-container" class="bg-white p-6 rounded-xl shadow-lg">
+                            <h4 class="text-2xl font-semibold mb-2 text-[#4A5C6A]">Seller's Checklist</h4>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4"><div id="seller-progress" class="bg-[#4A5C6A] h-2.5 rounded-full progress-bar-fill" style="width: 0%"></div></div>
+                        </div>
+                        <div id="buyer-checklist-container" class="bg-white p-6 rounded-xl shadow-lg">
+                            <h4 class="text-2xl font-semibold mb-2 text-[#4A5C6A]">Buyer's Checklist</h4>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4"><div id="buyer-progress" class="bg-[#4A5C6A] h-2.5 rounded-full progress-bar-fill" style="width: 0%"></div></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
     </div>
-  </section>
 
-  <div class="kpi-strip">
-    <div class="container kpi-grid">
-      <div class="kpi">
-        <div class="kpi-label">Seller Baseline</div>
-        <div class="kpi-value" id="kpiSellBaseline" role="status" aria-live="polite">$—</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">Annual Taxes</div>
-        <div class="kpi-value" id="kpiTaxesAnnual" role="status" aria-live="polite">$—</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">Target Buy (default)</div>
-        <div class="kpi-value" id="kpiBuyDefault" role="status" aria-live="polite">$—</div>
-      </div>
-    </div>
-  </div>
-</header>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const appState = {
+        currentView: 'onboarding-view',
+        chosenScenario: null,
+        sellerCosts: {},
+        buyerCosts: {},
+    };
 
-  <main id="main" class="container">
-    <noscript>
-      <div class="alert alert-warning">This page includes interactive charts and calculators that require JavaScript. Please enable JavaScript to use all features.</div>
-    </noscript>
-    <section class="section featured featured-interactive" id="featured-interactive">
-      <h2>Transaction Timeline &amp; Strategy (Interactive)</h2>
-      <p class="sub">Generate a location-aware buy–sell sequence for White Plains → Loudonville/Colonie based on current conditions.</p>
+    const views = {
+        onboarding: document.getElementById('onboarding-view'),
+        scenario: document.getElementById('scenario-view'),
+        dashboard: document.getElementById('dashboard-view'),
+    };
 
-      <div class="resource-card">
-        <h4>Assumptions</h4>
-        <div class="grid-inputs">
-          <label>Start date
-            <input id="txStartDate" type="date" autocomplete="off">
-          </label>
+    const inputs = {
+        salePrice: document.getElementById('sale-price'),
+        mortgageBalance: document.getElementById('mortgage-balance'),
+        purchasePrice: document.getElementById('purchase-price'),
+        downPaymentPercent: document.getElementById('down-payment-percent'),
+    };
 
-          <label>Sell market (fixed)
-            <select id="sellMarket">
-              <option value="whiteplains" selected>White Plains (Westchester, NY)</option>
-            </select>
-          </label>
+    const outputs = {
+        netProfit: document.getElementById('net-profit'),
+        pitiEstimate: document.getElementById('piti-estimate'),
+        dashboardIntro: document.getElementById('dashboard-intro'),
+    };
+    
+    const buttons = {
+        startOnboarding: document.getElementById('start-onboarding-btn'),
+        confirmScenario: document.getElementById('confirm-scenario-btn'),
+        reset: document.getElementById('reset-btn'),
+    };
 
-          <label>Buy market
-            <select id="buyMarket">
-              <option value="loudonville" selected>Loudonville / Town of Colonie (Albany Co.)</option>
-              <option value="albany">Albany (City)</option>
-              <option value="colonie">Colonie (wider)</option>
-            </select>
-          </label>
+    const scenarioCards = {
+        sellFirst: document.getElementById('scenario-sell-first'),
+        buyFirst: document.getElementById('scenario-buy-first'),
+        contingent: document.getElementById('scenario-contingent'),
+    };
 
-          <label>Season
-            <select id="season">
-              <option value="auto" selected>Auto (from start date)</option>
-              <option value="spring">Spring (Mar–Jun)</option>
-              <option value="summer">Summer (Jul–Aug)</option>
-              <option value="fall">Fall (Sep–Nov)</option>
-              <option value="winter">Winter (Dec–Feb)</option>
-            </select>
-          </label>
+    let sellerChart, buyerChart;
 
-          <label>Sell market heat
-            <select id="sellHeat">
-              <option value="slow">Slow</option>
-              <option value="balanced" selected>Balanced</option>
-              <option value="competitive">Competitive</option>
-            </select>
-          </label>
+    const checklistData = {
+        seller: [
+            { id: 's1', title: "Conduct a Pre-Listing Inspection", what: "A pre-listing inspection is where you hire a licensed inspector to examine your home *before* you list it. This helps you identify potential issues on your own terms, avoiding surprises during the buyer's inspection.", how: ["**Find a Pro:** Search for a licensed Home Inspector in Westchester County. Look for certifications from organizations like ASHI or InterNACHI.", "**Schedule:** Contact a few inspectors to compare pricing and availability. The inspection will take 2-4 hours.", "**Review the Report:** You'll get a detailed report with photos. We'll go through it to categorize items into 'Must-Fix,' 'Good-to-Fix,' and 'Disclose-but-Don't-Fix'."], tip: "Addressing a major issue beforehand, or getting a quote for the repair, gives you negotiating power when an offer comes in." },
+            { id: 's2', title: "Declutter & Stage Your Home", what: "Making your home look spacious, clean, and impersonal helps buyers envision themselves living there.", how: ["**Declutter:** Go room by room. A good rule is to pack up 50% of your personal items, like family photos and knick-knacks.", "**Donate/Dispose:** For items you don't want, I can provide contact info for local donation centers or junk removal services.", "**Deep Clean:** A professional deep clean is almost always worth the investment before photos are taken."], tip: "Rent a small, temporary storage unit. It's an affordable way to make your home feel significantly larger during showings." },
+            { id: 's3', title: "Complete NYS Property Condition Disclosure", what: "This is a mandatory legal document in New York where you disclose known conditions of the property.", how: ["**Get the Form:** Your attorney will provide the official form. I have a link to a sample so you can see what it looks like.", "**Answer Honestly:** Answer every question based on your actual knowledge. If you don't know, 'Unknown' is a valid answer."], tip: "Many sellers in NY opt to give a $500 credit to the buyer in lieu of filling out the form to reduce potential liability. This is a strategic decision we can discuss with your attorney." }
+        ],
+        buyer: [
+            { id: 'b1', title: "Secure Full Mortgage Pre-Approval", what: "This is the most critical first step. A pre-approval from a lender shows sellers you are a serious, qualified buyer.", how: ["**Gather Documents:** You'll need pay stubs, W-2s, tax returns, and bank statements.", "**Choose a Lender:** Compare rates from at least three lenders (banks, credit unions, mortgage brokers).", "**Complete Application:** The lender will review your finances and credit to determine how much you can borrow."], tip: "A full pre-approval is much stronger than a pre-qualification. It means the lender has actually verified your information." },
+            { id: 'b2', title: "Find Your Buyer's Agent", what: "A great local agent is your expert guide and negotiator in the Colonie market.", how: ["**Get Referrals:** Ask for recommendations from friends or colleagues in the area.", "**Interview Agents:** Talk to a few agents to find someone you connect with and who understands your specific needs.", "**Sign an Agreement:** You'll sign a buyer-broker agreement to formalize the relationship."], tip: "Look for an agent who is a full-time professional and has a deep understanding of the specific neighborhoods you're interested in." },
+            { id: 'b3', title: "Understand NYS STAR Program", what: "The NYS School Tax Relief (STAR) program provides a partial exemption from school property taxes for eligible homeowners.", how: ["**Check Eligibility:** The Basic STAR exemption is for owner-occupied, primary residences where the owners' income is $500,000 or less.", "**Register:** You must register with the NYS Department of Taxation and Finance to receive the STAR credit."], tip: "This is a credit you receive as a check, not an upfront exemption on your tax bill. Make sure you register as soon as you close on your new home!" }
+        ]
+    };
 
-          <label>Buy market heat
-            <select id="buyHeat">
-              <option value="slow">Slow</option>
-              <option value="balanced">Balanced</option>
-              <option value="competitive" selected>Competitive</option>
-            </select>
-          </label>
+    function switchView(viewName) {
+        Object.values(views).forEach(view => view.classList.add('hidden'));
+        if (views[viewName]) {
+            views[viewName].classList.remove('hidden');
+            appState.currentView = viewName;
+            buttons.reset.classList.toggle('hidden', viewName === 'onboarding-view');
+        }
+    }
+    
+    function typeWriterEffect() {
+        const text = "Hi, I'm Lenny Lodge! Planning a big move can feel like chewing through a giant oak tree. Don't worry, I'm here to help you plan it all out, one log at a time.";
+        const typewriterEl = document.getElementById('typewriter');
+        const cursorEl = document.getElementById('typewriter-cursor');
+        if (!typewriterEl || !cursorEl) return;
+        cursorEl.style.display = 'inline';
+        let i = 0;
+        typewriterEl.innerHTML = "";
+        function type() {
+            if (i < text.length) {
+                typewriterEl.innerHTML += text.charAt(i);
+                i++;
+                setTimeout(type, 35);
+            } else {
+                cursorEl.style.display = 'none';
+            }
+        }
+        type();
+    }
 
-          <label>Property type (buy)
-            <select id="propType">
-              <option value="sfh" selected>Single-family</option>
-              <option value="hoa">Condo/HOA</option>
-            </select>
-          </label>
+    function formatCurrency(value) {
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
+    }
 
-          <label>Financing (buy)
-            <select id="financing">
-              <option value="cash">Cash</option>
-              <option value="conv20" selected>Conventional 20%+</option>
-              <option value="conv10">Conventional 10%</option>
-              <option value="fha">FHA</option>
-              <option value="va">VA</option>
-            </select>
-          </label>
+    function calculateSellerCosts() {
+        const salePrice = parseFloat(inputs.salePrice.value) || 0;
+        const mortgageBalance = parseFloat(inputs.mortgageBalance.value) || 0;
+        const commission = salePrice * 0.05;
+        const totalTransferTax = salePrice * (0.004 + 0.01);
+        const attorneyFee = 3000;
+        const otherFees = 500;
+        const totalClosingCosts = commission + totalTransferTax + attorneyFee + otherFees;
+        const netProfit = salePrice - totalClosingCosts - mortgageBalance;
+        appState.sellerCosts = { salePrice, mortgageBalance, commission, totalTransferTax, attorneyFee, otherFees, totalClosingCosts, netProfit };
+    }
+    
+    function calculateBuyerCosts() {
+        const purchasePrice = parseFloat(inputs.purchasePrice.value) || 0;
+        const downPaymentPercent = (parseFloat(inputs.downPaymentPercent.value) || 0) / 100;
+        const downPayment = purchasePrice * downPaymentPercent;
+        const mansionTax = purchasePrice >= 1000000 ? purchasePrice * 0.01 : 0;
+        const loanAmount = purchasePrice - downPayment;
+        const mortgageRecordingTax = loanAmount * 0.0125;
+        const otherClosingCosts = loanAmount * 0.015;
+        const totalClosingCosts = mansionTax + mortgageRecordingTax + otherClosingCosts;
+        const cashToClose = downPayment + totalClosingCosts;
+        const interestRate = 0.065 / 12;
+        const numberOfPayments = 30 * 12;
+        const monthlyPrincipalAndInterest = loanAmount > 0 ? (loanAmount * interestRate * Math.pow(1 + interestRate, numberOfPayments)) / (Math.pow(1 + interestRate, numberOfPayments) - 1) : 0;
+        const monthlyTaxes = (purchasePrice * 0.022) / 12;
+        const monthlyInsurance = (purchasePrice * 0.0035) / 12;
+        const piti = monthlyPrincipalAndInterest + monthlyTaxes + monthlyInsurance;
+        appState.buyerCosts = { purchasePrice, downPayment, mansionTax, mortgageRecordingTax, otherClosingCosts, totalClosingCosts, cashToClose, piti };
+    }
 
-          <label>Sale contingency on buy?
-            <select id="saleContingency">
-              <option value="yes">Yes (buy depends on sale)</option>
-              <option value="no" selected>No (bridge/rent-back/other)</option>
-            </select>
-          </label>
+    function updateUI() {
+        calculateSellerCosts();
+        calculateBuyerCosts();
+        outputs.netProfit.textContent = formatCurrency(appState.sellerCosts.netProfit);
+        outputs.pitiEstimate.textContent = formatCurrency(appState.buyerCosts.piti);
+        updateCharts();
+    }
+    
+    function createChart(ctx, type, data, options) {
+        return new Chart(ctx, { type, data, options });
+    }
 
-          <label>Close order
-            <select id="closeOrder">
-              <option value="same_day" selected>Same-day close (sell then buy)</option>
-              <option value="gap_3">Sell then buy (3-day gap)</option>
-              <option value="buy_first">Buy then sell (bridge)</option>
-            </select>
-          </label>
-        </div>
+    function updateCharts() {
+        const sellerData = {
+            labels: ['Net Profit', 'Commission', 'Taxes', 'Mortgage Payoff', 'Other Fees'],
+            datasets: [{ data: [Math.max(0, appState.sellerCosts.netProfit), appState.sellerCosts.commission, appState.sellerCosts.totalTransferTax, appState.sellerCosts.mortgageBalance, appState.sellerCosts.attorneyFee + appState.sellerCosts.otherFees], backgroundColor: ['#4A5C6A', '#8B6E5A', '#A89A8E', '#6B6864', '#DCDAD4'], borderColor: '#FDFCFB', borderWidth: 3 }]
+        };
+        const buyerData = {
+            labels: ['Down Payment', 'Mortgage Tax', 'Mansion Tax', 'Other Costs'],
+            datasets: [{ data: [appState.buyerCosts.downPayment, appState.buyerCosts.mortgageRecordingTax, appState.buyerCosts.mansionTax, appState.buyerCosts.otherClosingCosts], backgroundColor: ['#4A5C6A', '#8B6E5A', '#A89A8E', '#6B6864'], borderColor: '#FDFCFB', borderWidth: 3 }]
+        };
+        const chartOptions = {
+            responsive: true, maintainAspectRatio: false, cutout: '60%',
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: { label: (c) => `${c.label}: ${formatCurrency(c.parsed)}` }
+                }
+            }
+        };
+        if (!sellerChart) sellerChart = createChart(document.getElementById('seller-chart').getContext('2d'), 'doughnut', sellerData, chartOptions);
+        else { sellerChart.data = sellerData; sellerChart.update(); }
+        if (!buyerChart) buyerChart = createChart(document.getElementById('buyer-chart').getContext('2d'), 'doughnut', buyerData, chartOptions);
+        else { buyerChart.data = buyerData; buyerChart.update(); }
+    }
+    
+    function buildChecklists() {
+        const sellerContainer = document.getElementById('seller-checklist-container');
+        const buyerContainer = document.getElementById('buyer-checklist-container');
+        
+        function createChecklistHTML(item) {
+            const howToList = item.how.map(step => `<li>${step.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-[#3D3B38]">$1</strong>')}</li>`).join('');
+            return `
+                <div class="border-t border-gray-200">
+                    <div class="checklist-item-header p-4 flex justify-between items-center group">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" data-id="${item.id}" class="checklist-checkbox h-5 w-5 rounded border-gray-300 text-[#4A5C6A] focus:ring-[#4A5C6A]">
+                            <h5 class="font-semibold text-md group-hover:text-[#4A5C6A] transition">${item.title}</h5>
+                        </div>
+                        <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-600 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                    <div class="checklist-item-body px-4 ml-8 border-l-2 border-gray-200">
+                        <p class="text-sm text-[#6B6864] mb-3">${item.what.replace(/\*(.*?)\*/g, '<em>$1</em>')}</p>
+                        <ul class="list-disc list-inside text-sm space-y-2 mb-4 text-[#6B6864]">${howToList}</ul>
+                        <div class="bg-[#F8F7F4] p-3 rounded-md text-sm">
+                            <strong class="font-semibold text-[#8B6E5A]">🦫 Lenny's Pro Tip:</strong> <span class="text-[#6B6864]">${item.tip}</span>
+                        </div>
+                    </div>
+                </div>`;
+        }
 
-        <div class="control-row">
-          <button id="txRecalcBtn" class="btn btn-primary" type="button">Recalculate Plan</button>
-          <button id="txExportICS" class="btn" type="button">Export .ics</button>
-        </div>
-      </div>
+        checklistData.seller.forEach(item => { sellerContainer.innerHTML += createChecklistHTML(item); });
+        checklistData.buyer.forEach(item => { buyerContainer.innerHTML += createChecklistHTML(item); });
 
-      <div class="metrics-grid">
-        <div class="metric-card">
-          <h4>Estimated Total Duration</h4>
-          <div class="value" id="txTotalDuration">—</div>
-          <div class="detail">Start → final closing</div>
-        </div>
-        <div class="metric-card">
-          <h4>Recommended Rate-Lock</h4>
-          <div class="value" id="txRateLock">—</div>
-          <div class="detail">Consider 45–60 days for financed buys</div>
-        </div>
-        <div class="metric-card">
-          <h4>Risk Flags</h4>
-          <div class="detail" id="txFlags">None</div>
-        </div>
-      </div>
+        document.querySelectorAll('.checklist-item-header').forEach(header => {
+            header.addEventListener('click', (e) => {
+                if(e.target.type === 'checkbox') return;
+                const body = header.nextElementSibling;
+                const arrow = header.querySelector('svg');
+                body.classList.toggle('open');
+                arrow.classList.toggle('rotate-180');
+            });
+        });
+        
+        document.querySelectorAll('.checklist-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', updateProgress);
+        });
+    }
 
-      <div class="table-wrap">
-        <table class="guide" id="txPlanTable">
-          <caption>Auto-generated plan based on your assumptions</caption>
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Phase</th>
-              <th scope="col">Window</th>
-              <th scope="col">Days</th>
-              <th scope="col">Notes</th>
-            </tr>
-          </thead>
-          <tbody><!-- filled by JS --></tbody>
-        </table>
-      </div>
-    </section>
-    <!-- Key Metrics -->
-    <section class="section" id="metrics">
-      <!-- Compatibility anchor for older links -->
-      <span id="buy-8le" aria-hidden="true"></span>
-      <h2>Key Metrics</h2>
-      <div class="metrics">
-        <div class="metric-card">
-          <h3>Selling Property</h3>
-          <p>54 Collyer Pl, White Plains, NY</p>
-          <p class="metric-value" id="sellPrice" role="status" aria-live="polite">$0</p>
-        </div>
+    function updateProgress() {
+        const sellerTasks = checklistData.seller.length;
+        const buyerTasks = checklistData.buyer.length;
+        let sellerCompleted = 0;
+        let buyerCompleted = 0;
+        
+        document.querySelectorAll('.checklist-checkbox').forEach(checkbox => {
+            const id = checkbox.dataset.id;
+            if (checkbox.checked) {
+                if (id.startsWith('s')) sellerCompleted++;
+                else if (id.startsWith('b')) buyerCompleted++;
+            }
+        });
+        
+        const sellerProgress = (sellerCompleted / sellerTasks) * 100;
+        const buyerProgress = (buyerCompleted / buyerTasks) * 100;
+        
+        document.getElementById('seller-progress').style.width = `${sellerProgress}%`;
+        document.getElementById('buyer-progress').style.width = `${buyerProgress}%`;
+    }
 
-        <div class="metric-card">
-          <h3>Buying Property</h3>
-          <select id="buyPropertySelect" aria-label="Select target property"></select>
-          <p class="metric-value" id="buyPrice" role="status" aria-live="polite">$0</p>
-        </div>
+    function handleScenarioSelection(e) {
+        const card = e.currentTarget;
+        Object.values(scenarioCards).forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        appState.chosenScenario = card.id;
+        buttons.confirmScenario.disabled = false;
+        buttons.confirmScenario.classList.remove('opacity-50', 'cursor-not-allowed');
+    }
 
-        <div class="metric-card">
-          <h3>Net Difference</h3>
-          <p class="metric-value" id="netDifference" role="status" aria-live="polite">$0</p>
-        </div>
-      </div>
+    function resetApp() {
+        switchView('onboarding');
+        Object.values(scenarioCards).forEach(c => c.classList.remove('selected'));
+        buttons.confirmScenario.disabled = true;
+        buttons.confirmScenario.classList.add('opacity-50', 'cursor-not-allowed');
+        appState.chosenScenario = null;
+        document.querySelectorAll('.checklist-checkbox').forEach(c => c.checked = false);
+        updateProgress();
+        typeWriterEffect();
+    }
 
-      <div class="chart-container">
-        <canvas id="costChart"></canvas>
-      </div>
-    </section>
+    buttons.startOnboarding.addEventListener('click', () => switchView('scenario'));
+    buttons.reset.addEventListener('click', resetApp);
+    Object.values(scenarioCards).forEach(card => card.addEventListener('click', handleScenarioSelection));
+    buttons.confirmScenario.addEventListener('click', () => {
+        if (appState.chosenScenario) {
+            switchView('dashboard');
+            const scenarioText = {
+                'scenario-sell-first': 'the Safety-First Path',
+                'scenario-buy-first': 'the Convenience Path',
+                'scenario-contingent': 'the Balancing Act'
+            }[appState.chosenScenario];
+            outputs.dashboardIntro.textContent = `Your plan is based on ${scenarioText}. Everything here is interactive and will update as you make changes.`;
+            updateUI();
+        }
+    });
 
-    <!-- Overview -->
-    <section class="section" id="overview">
-      <h2>Relocation Overview</h2>
-      <p>This page tracks a White Plains → Capital District move with up-to-date values for the fixed seller address and candidate purchases in Colonie/Loudonville.</p>
-
-      <div class="metrics-grid">
-        <div class="metric-card guide">
-          <h4>Typical Sale Range</h4>
-          <div class="value" id="typicalSaleRange" role="status" aria-live="polite">$—</div>
-          <div class="detail">White Plains Market</div>
-        </div>
-        <div class="metric-card guide">
-          <h4>Target Purchase Range</h4>
-          <div class="value" id="targetBuyRange" role="status" aria-live="polite">$—</div>
-          <div class="detail">Colonie / Loudonville</div>
-        </div>
-        <div class="metric-card guide">
-          <h4>Monthly Utility Delta</h4>
-          <div class="value" id="utilDelta" role="status" aria-live="polite">$—</div>
-          <div class="detail">Difference vs current</div>
-        </div>
-        <div class="metric-card guide">
-          <h4>Tax Savings Potential</h4>
-          <div class="value" id="taxSavings" role="status" aria-live="polite">$—</div>
-          <div class="detail">Programs like STAR</div>
-        </div>
-      </div>
-
-      <div class="alert alert-info">
-        <strong>Note:</strong> NYS mansion tax (1%) applies to <strong>buyers</strong> at or above $1,000,000. It doesn’t hit your seller net directly, but it can reduce demand above that threshold.
-      </div>
-    </section>
-
-    <!-- Sale Strategy -->
-    <section class="section" id="sale-strategy">
-      <h2>White Plains Sale Strategy</h2>
-      <p>We model seller <strong>net proceeds</strong> including commission, NYS transfer tax (0.4%), attorney, staging, and standard closing costs. Adjust the assumptions to match reality.</p>
-
-      <div class="metrics-grid">
-        <div class="metric-card guide">
-          <h4>Fixed Selling Address</h4>
-          <div class="value" id="sellAddress">54 Collyer Pl, White Plains, NY 10605</div>
-          <div class="detail">Edit assumptions in <code>assets/script.js</code> if needed</div>
-        </div>
-        <div class="metric-card guide">
-          <h4>Best Listing Tactic</h4>
-          <div class="value">List $999,000</div>
-          <div class="detail">Avoid buyer-side mansion tax threshold</div>
-        </div>
-      </div>
-
-      <div class="table-wrap">
-        <table class="guide" id="pricingTable">
-          <caption>Seller pricing scenarios and estimated net proceeds</caption>
-          <thead>
-            <tr>
-              <th scope="col">Scenario</th>
-              <th scope="col">List</th>
-              <th scope="col">Expected Sale</th>
-              <th scope="col">Commission</th>
-              <th scope="col">Transfer Tax (0.4%)</th>
-              <th scope="col">Other Costs</th>
-              <th scope="col"><strong>Net Proceeds</strong></th>
-            </tr>
-          </thead>
-          <tbody><!-- Filled by JS --></tbody>
-        </table>
-      </div>
-
-      <div class="alert alert-warning">
-        <strong>Strategy:</strong> Staying just under $1,000,000 can expand demand. If comps justify $1.05–$1.10M, weigh demand vs buyer tax friction.
-      </div>
-    </section>
-
-    <!-- Unified Buy–Sell Timeline -->
-    <section class="section" id="timeline">
-      <h2>Unified Buy–Sell Timeline</h2>
-      <div class="timeline">
-        <div class="timeline-item">
-          <h4>Weeks 1–2: Prep</h4>
-          <p>Pre-inspection, minor fixes, staging, photography, loan pre-approval.</p>
-        </div>
-        <div class="timeline-item">
-          <h4>Weeks 3–4: List & Tour</h4>
-          <p>List White Plains; begin touring Colonie/Loudonville targets.</p>
-        </div>
-        <div class="timeline-item">
-          <h4>Weeks 5–6: Offers</h4>
-          <p>Negotiate sale; prepare purchase offer with suitable contingencies.</p>
-        </div>
-        <div class="timeline-item">
-          <h4>Weeks 7–8: Due Diligence</h4>
-          <p>Inspections, appraisal, mortgage commitment.</p>
-        </div>
-        <div class="timeline-item">
-          <h4>Weeks 9–10: Pre-Closing</h4>
-          <p>Final walkthroughs, movers, utilities, address changes.</p>
-        </div>
-        <div class="timeline-item">
-          <h4>Weeks 11–12: Close</h4>
-          <p>Close sale first if possible; then purchase close and move-in.</p>
-        </div>
-      </div>
-    </section>
-  </main>
-  
-  <!-- Resources -->
-  <section class="section" id="resources">
-    <div class="container">
-      <h2>Resources</h2>
-      <ul class="resource-list">
-        <li><a href="https://www.tax.ny.gov/pit/property/star/" target="_blank" rel="noopener">NYS STAR Program</a></li>
-        <li><a href="https://www.dos.ny.gov/licensing/docs/RealEstateSalesperson.pdf" target="_blank" rel="noopener">NY Real Estate Transaction Guide</a></li>
-        <li><a href="#featured-interactive">Interactive Timeline & Strategy</a></li>
-      </ul>
-    </div>
-  </section>
+    Object.values(inputs).forEach(input => input.addEventListener('input', updateUI));
+    
+    typeWriterEffect();
+    buildChecklists();
+});
+</script>
+</body>
+</html>
 </body>
 </html>
