@@ -368,7 +368,8 @@
     // ----- Dynamic Lenny integration (align image next to greeting) -----
     const lennyImg = document.createElement('img');
     lennyImg.id = 'lenny-img';
-    lennyImg.src = 'assets/images/lenny/default_greeting.png';
+    // Use local SVG so Lenny always appears
+    lennyImg.src = 'assets/images/lenny-lodge-1.svg';
     lennyImg.alt = 'Lenny Lodge the Beaver';
     lennyImg.className = 'w-20 h-20 md:w-28 md:h-28 flex-shrink-0';
 
@@ -384,9 +385,23 @@
       checklistBuyer: 'closing_day'
     };
 
+    // Try pose PNG; fall back to local SVG; final fallback to CDN SVG
     function updateLennyPose(key) {
       const poseName = lennyPoses[key] || lennyPoses.onboarding;
-      lennyImg.src = `assets/images/lenny/${poseName}.png`;
+      const candidate = `assets/images/lenny/${poseName}.png`;
+      const fallbackLocal = 'assets/images/lenny-lodge-1.svg';
+      const fallbackCdn = 'https://iconsusa.org/assets/icons_copy/project1/lenny-lodge-1.svg';
+
+      const probe = new Image();
+      let set = false;
+      probe.onload = () => { lennyImg.src = candidate; set = true; };
+      probe.onerror = () => { lennyImg.src = fallbackLocal; };
+      probe.src = candidate;
+
+      // Safety fallback in slow/error cases
+      setTimeout(() => { if (!set && lennyImg.src !== candidate) lennyImg.src = fallbackCdn; }, 1500);
+
+      lennyImg.alt = `Lenny Lodge (${poseName.replace(/_/g, ' ')})`;
     }
     // ----- end Dynamic Lenny integration -----
 
@@ -594,7 +609,5 @@
     buildChecklists();
 });
 </script>
-</body>
-</html>
 </body>
 </html>
