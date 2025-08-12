@@ -612,8 +612,8 @@
                 this.elements.buttons.copyLennyPrompt.addEventListener('click', () => navigator.clipboard.writeText(window.buildLennyPrompt()));
 
                 // Tap-to-skip for typewriter
-                const bubble = document.getElementById('lenny-bubble');
-                if (bubble) bubble.addEventListener('click', () => {
+                const lennyBubble = document.getElementById('lenny-bubble');
+                if (lennyBubble) lennyBubble.addEventListener('click', () => {
                     if (!this.elements.typewriter || !this.elements.typewriterCursor) return;
                     const targetText = String(this.config.typewriterText || '');
                     const isTyping = this.elements.typewriterCursor.style.display !== 'none' && this.elements.typewriter.textContent.length < targetText.length;
@@ -624,17 +624,6 @@
 
                 // Chat (lazy init)
                 document.getElementById('open-lenny-chat')?.addEventListener('click', () => this.initChatUI());
-
-                // Tap-to-skip for typewriter
-                const bubble = document.getElementById('lenny-bubble');
-                if (bubble) bubble.addEventListener('click', () => {
-                    if (!this.elements.typewriter || !this.elements.typewriterCursor) return;
-                    const targetText = String(this.config.typewriterText || '');
-                    const isTyping = this.elements.typewriterCursor.style.display !== 'none' && this.elements.typewriter.textContent.length < targetText.length;
-                    if (isTyping) {
-                        this.runTypewriterEffect(targetText, null, true);
-                    }
-                });
 
                 // Overview inline editor
                 const editBtn = this.elements.buttons.ovEditBuyRange;
@@ -1066,6 +1055,78 @@
                     this.elements.outputs.ovDecisionHint.textContent = hint;
                 }
                 this.setOverviewSkeleton(false);
+            }
+            ,
+            // --- Lenny Chat (frontend) ---
+            initChatUI(){
+                if (this.elements.chat?.panel) {
+                    this.elements.chat.panel.classList.toggle('hidden');
+                    return;
+                }
+                if (!this.elements.chat) this.elements.chat = {};
+                const panel = document.createElement('div');
+                panel.className = 'fixed bottom-4 right-4 z-30 w-[min(92vw,380px)] bg-white border border-gray-200 rounded-xl shadow-xl flex flex-col overflow-hidden';
+                panel.innerHTML = `
+                    <div class="px-3 py-2 bg-[#4A5C6A] text-white text-sm font-semibold flex items-center justify-between">
+                        <span>Chat with Lenny</span>
+                        <button id="close-lenny-chat" class="text-white/80 hover:text-white">✕</button>
+                    </div>
+                    <div id="lenny-chat-messages" class="p-3 space-y-2 overflow-y-auto" style="max-height: 40vh;"></div>
+                    <div class="p-3 border-t border-gray-200 flex items-center gap-2">
+                        <input id="lenny-chat-input" class="flex-1 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A5C6A]" placeholder="Ask Lenny anything..." />
+                        <button id="lenny-chat-send" class="btn-primary px-3 py-2 rounded-md text-sm">Send</button>
+                    </div>
+                `;
+                document.body.appendChild(panel);
+                this.elements.chat.panel = panel;
+                this.elements.chat.input = panel.querySelector('#lenny-chat-input');
+                this.elements.chat.messages = panel.querySelector('#lenny-chat-messages');
+                panel.querySelector('#close-lenny-chat').addEventListener('click', ()=> panel.classList.add('hidden'));
+                const sendBtn = panel.querySelector('#lenny-chat-send');
+                const doSend = () => this.sendChatMessage();
+                sendBtn.addEventListener('click', doSend);
+                this.elements.chat.input.addEventListener('keydown', (e)=>{ if (e.key==='Enter') doSend(); });
+                // Seed greeting
+                this.appendChat('Lenny', 'How can I help? Ask about ranges, net, cash to close, or which strategy fits.');
+            }
+            ,
+            appendChat(sender, text){
+                if (!this.elements.chat?.messages) return;
+                const row = document.createElement('div');
+                const mine = sender === 'You';
+                row.className = `text-sm ${mine ? 'text-right' : 'text-left'}`;
+                row.innerHTML = `<span class="inline-block ${mine ? 'bg-[#4A5C6A] text-white' : 'bg-gray-100 text-[#3D3B38]'} px-3 py-2 rounded-lg max-w-[80%]">${text}</span>`;
+                this.elements.chat.messages.appendChild(row);
+                this.elements.chat.messages.scrollTop = this.elements.chat.messages.scrollHeight;
+            }
+            ,
+            async sendChatMessage(){
+                const input = this.elements.chat?.input;
+                if (!input || !input.value.trim()) return;
+                const msg = input.value.trim();
+                input.value='';
+                this.appendChat('You', msg);
+                // Build context snapshot
+                const ctx = {
+                    sellingAddress: this.config.sellingAddress,
+                    prospectAddress: this.config.prospectAddress,
+                    saleRange: this.state.marketData?.typicalSaleRange,
+                    buyRange: this.state.marketData?.targetBuyRange,
+                    netProceeds: this.state.sellerCosts?.netProfit,
+                    cashToClose: this.state.buyerCosts?.cashToClose,
+                    piti: this.state.buyerCosts?.piti
+                };
+                try{
+                    const resp = await fetch(`${this.config.backendBase}/api/chat`, {
+                        method:'POST', headers:{'Content-Type':'application/json'},
+                        body: JSON.stringify({ message: msg, context: ctx })
+                    });
+                    const data = await resp.json();
+                    const reply = data?.reply || 'Sorry, I had trouble answering that.';
+                    this.appendChat('Lenny', reply);
+                } catch(err){
+                    this.appendChat('Lenny', 'The chat service is unavailable right now. Try again shortly.');
+                }
             }
             ,
             // Skeleton toggling for overview
