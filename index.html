@@ -289,325 +289,398 @@
     </script>
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const appState = {
-        currentView: 'onboarding-view',
-        chosenScenario: null,
-        sellerCosts: {},
-        buyerCosts: {},
-    };
+    // Backend base + simple state (placeholders you can adjust)
+const BACKEND_BASE = 'http://localhost:4000';
+const SELLING = { address: '54 Collyer Pl, White Plains, NY' };
+const OVERVIEW = {};
 
-    const views = {
-        onboarding: document.getElementById('onboarding-view'),
-        scenario: document.getElementById('scenario-view'),
-        dashboard: document.getElementById('dashboard-view'),
-    };
+// Live data helpers
+async function getCompsFromBackend(address) {
+  const res = await fetch(`${BACKEND_BASE}/api/comps?address=${encodeURIComponent(address)}`, {
+    method: 'GET',
+    headers: { Accept: 'application/json' }
+  });
+  if (!res.ok) throw new Error(`Backend fetch failed for ${address}`);
+  const data = await res.json();
+  if (data.low == null || data.high == null) throw new Error(`Incomplete comps for ${address}`);
+  return data;
+}
+function calcTaxSavings(oldTaxes, newTaxes) {
+  if (oldTaxes == null || newTaxes == null) return 0;
+  return Math.round(oldTaxes - newTaxes);
+}
+function calcUtilityDelta(oldUtilities, newUtilities) {
+  if (oldUtilities == null || newUtilities == null) return 0;
+  return Math.round(newUtilities - oldUtilities);
+}
+async function fetchLatestMarketData() {
+  const sellingData = await getCompsFromBackend(SELLING.address);
+  const buyingTargetAddress = '8 Loudonwood East, Loudonville, NY';
+  const buyingData = await getCompsFromBackend(buyingTargetAddress);
+  OVERVIEW.typicalSaleRange = [sellingData.low, sellingData.high];
+  OVERVIEW.targetBuyRange = [buyingData.low, buyingData.high];
+  OVERVIEW.taxSavingsAnnual = calcTaxSavings(sellingData.taxes, buyingData.taxes);
+  OVERVIEW.monthlyUtilityDelta = calcUtilityDelta(sellingData.utilities, buyingData.utilities);
+}
 
-    const inputs = {
-        salePrice: document.getElementById('sale-price'),
-        mortgageBalance: document.getElementById('mortgage-balance'),
-        purchasePrice: document.getElementById('purchase-price'),
-        downPaymentPercent: document.getElementById('down-payment-percent'),
-    };
-
-    const outputs = {
-        netProfit: document.getElementById('net-profit'),
-        pitiEstimate: document.getElementById('piti-estimate'),
-        dashboardIntro: document.getElementById('dashboard-intro'),
-    };
-    // Missing helper: clearly attribute messages to Lenny
-    function speakAsLenny(targetEl, text) {
-      if (!targetEl) return;
-      targetEl.innerHTML = `<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#4A5C6A]/10 text-[#4A5C6A] text-xs font-semibold mr-2 align-middle">Lenny</span><span class="lenny-message-text"></span>`;
-      const textSpan = targetEl.querySelector('.lenny-message-text');
-      textSpan.textContent = String(text);
-      targetEl.setAttribute('aria-live', 'polite');
-      targetEl.setAttribute('aria-label', `Lenny says: ${textSpan.textContent}`);
+// Typewriter with completion callback
+function runTypewriterEffect(text, done) {
+  const typewriterEl = document.getElementById('typewriter');
+  const cursorEl = document.getElementById('typewriter-cursor');
+  if (!typewriterEl || !cursorEl) return;
+  cursorEl.style.display = 'inline';
+  typewriterEl.innerHTML = '';
+  let i = 0;
+  (function type() {
+    if (i < text.length) {
+      typewriterEl.innerHTML += text.charAt(i++);
+      setTimeout(type, 35);
+    } else {
+      cursorEl.style.display = 'none';
+      if (typeof done === 'function') done();
     }
+  })();
+}
 
-    const buttons = {
-        startOnboarding: document.getElementById('start-onboarding-btn'),
-        confirmScenario: document.getElementById('confirm-scenario-btn'),
-        reset: document.getElementById('reset-btn'),
-    };
+document.addEventListener('DOMContentLoaded', () => {
+  const appState = {
+    currentView: 'onboarding-view',
+    chosenScenario: null,
+    sellerCosts: {},
+    buyerCosts: {},
+};
 
-    const scenarioCards = {
-        sellFirst: document.getElementById('scenario-sell-first'),
-        buyFirst: document.getElementById('scenario-buy-first'),
-        contingent: document.getElementById('scenario-contingent'),
-    };
+const views = {
+    onboarding: document.getElementById('onboarding-view'),
+    scenario: document.getElementById('scenario-view'),
+    dashboard: document.getElementById('dashboard-view'),
+};
 
-    let sellerChart, buyerChart;
+const inputs = {
+    salePrice: document.getElementById('sale-price'),
+    mortgageBalance: document.getElementById('mortgage-balance'),
+    purchasePrice: document.getElementById('purchase-price'),
+    downPaymentPercent: document.getElementById('down-payment-percent'),
+};
 
-    const checklistData = {
-        seller: [
-            { id: 's1', title: "Conduct a Pre-Listing Inspection", what: "A pre-listing inspection is where you hire a licensed inspector to examine your home *before* you list it. This helps you identify potential issues on your own terms, avoiding surprises during the buyer's inspection.", how: ["**Find a Pro:** Search for a licensed Home Inspector in Westchester County. Look for certifications from organizations like ASHI or InterNACHI.", "**Schedule:** Contact a few inspectors to compare pricing and availability. The inspection will take 2-4 hours.", "**Review the Report:** You'll get a detailed report with photos. We'll go through it to categorize items into 'Must-Fix,' 'Good-to-Fix,' and 'Disclose-but-Don't-Fix'."], tip: "Addressing a major issue beforehand, or getting a quote for the repair, gives you negotiating power when an offer comes in." },
-            { id: 's2', title: "Declutter & Stage Your Home", what: "Making your home look spacious, clean, and impersonal helps buyers envision themselves living there.", how: ["**Declutter:** Go room by room. A good rule is to pack up 50% of your personal items, like family photos and knick-knacks.", "**Donate/Dispose:** For items you don't want, I can provide contact info for local donation centers or junk removal services.", "**Deep Clean:** A professional deep clean is almost always worth the investment before photos are taken."], tip: "Rent a small, temporary storage unit. It's an affordable way to make your home feel significantly larger during showings." },
-            { id: 's3', title: "Complete NYS Property Condition Disclosure", what: "This is a mandatory legal document in New York where you disclose known conditions of the property.", how: ["**Get the Form:** Your attorney will provide the official form. I have a link to a sample so you can see what it looks like.", "**Answer Honestly:** Answer every question based on your actual knowledge. If you don't know, 'Unknown' is a valid answer."], tip: "Many sellers in NY opt to give a $500 credit to the buyer in lieu of filling out the form to reduce potential liability. This is a strategic decision we can discuss with your attorney." }
-        ],
-        buyer: [
-            { id: 'b1', title: "Secure Full Mortgage Pre-Approval", what: "This is the most critical first step. A pre-approval from a lender shows sellers you are a serious, qualified buyer.", how: ["**Gather Documents:** You'll need pay stubs, W-2s, tax returns, and bank statements.", "**Choose a Lender:** Compare rates from at least three lenders (banks, credit unions, mortgage brokers).", "**Complete Application:** The lender will review your finances and credit to determine how much you can borrow."], tip: "A full pre-approval is much stronger than a pre-qualification. It means the lender has actually verified your information." },
-            { id: 'b2', title: "Find Your Buyer's Agent", what: "A great local agent is your expert guide and negotiator in the Colonie market.", how: ["**Get Referrals:** Ask for recommendations from friends or colleagues in the area.", "**Interview Agents:** Talk to a few agents to find someone you connect with and who understands your specific needs.", "**Sign an Agreement:** You'll sign a buyer-broker agreement to formalize the relationship."], tip: "Look for an agent who is a full-time professional and has a deep understanding of the specific neighborhoods you're interested in." },
-            { id: 'b3', title: "Understand NYS STAR Program", what: "The NYS School Tax Relief (STAR) program provides a partial exemption from school property taxes for eligible homeowners.", how: ["**Check Eligibility:** The Basic STAR exemption is for owner-occupied, primary residences where the owners' income is $500,000 or less.", "**Register:** You must register with the NYS Department of Taxation and Finance to receive the STAR credit."], tip: "This is a credit you receive as a check, not an upfront exemption on your tax bill. Make sure you register as soon as you close on your new home!" }
-        ]
-    };
+const outputs = {
+    netProfit: document.getElementById('net-profit'),
+    pitiEstimate: document.getElementById('piti-estimate'),
+    dashboardIntro: document.getElementById('dashboard-intro'),
+};
+// Missing helper: clearly attribute messages to Lenny
+function speakAsLenny(targetEl, text) {
+  if (!targetEl) return;
+  targetEl.innerHTML = `<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#4A5C6A]/10 text-[#4A5C6A] text-xs font-semibold mr-2 align-middle">Lenny</span><span class="lenny-message-text"></span>`;
+  const textSpan = targetEl.querySelector('.lenny-message-text');
+  textSpan.textContent = String(text);
+  targetEl.setAttribute('aria-live', 'polite');
+  targetEl.setAttribute('aria-label', `Lenny says: ${textSpan.textContent}`);
+}
 
-    function switchView(viewName) {
-        Object.values(views).forEach(view => view.classList.add('hidden'));
-        if (views[viewName]) {
-            views[viewName].classList.remove('hidden');
-            appState.currentView = viewName;
-            buttons.reset.classList.toggle('hidden', viewName === 'onboarding-view');
-            // change Lenny pose when switching views
-            const poseKey = viewName.replace('-view', '');
-            updateLennyPose(poseKey);
+const buttons = {
+    startOnboarding: document.getElementById('start-onboarding-btn'),
+    confirmScenario: document.getElementById('confirm-scenario-btn'),
+    reset: document.getElementById('reset-btn'),
+};
+
+const scenarioCards = {
+    sellFirst: document.getElementById('scenario-sell-first'),
+    buyFirst: document.getElementById('scenario-buy-first'),
+    contingent: document.getElementById('scenario-contingent'),
+};
+
+let sellerChart, buyerChart;
+
+const checklistData = {
+    seller: [
+        { id: 's1', title: "Conduct a Pre-Listing Inspection", what: "A pre-listing inspection is where you hire a licensed inspector to examine your home *before* you list it. This helps you identify potential issues on your own terms, avoiding surprises during the buyer's inspection.", how: ["**Find a Pro:** Search for a licensed Home Inspector in Westchester County. Look for certifications from organizations like ASHI or InterNACHI.", "**Schedule:** Contact a few inspectors to compare pricing and availability. The inspection will take 2-4 hours.", "**Review the Report:** You'll get a detailed report with photos. We'll go through it to categorize items into 'Must-Fix,' 'Good-to-Fix,' and 'Disclose-but-Don't-Fix'."], tip: "Addressing a major issue beforehand, or getting a quote for the repair, gives you negotiating power when an offer comes in." },
+        { id: 's2', title: "Declutter & Stage Your Home", what: "Making your home look spacious, clean, and impersonal helps buyers envision themselves living there.", how: ["**Declutter:** Go room by room. A good rule is to pack up 50% of your personal items, like family photos and knick-knacks.", "**Donate/Dispose:** For items you don't want, I can provide contact info for local donation centers or junk removal services.", "**Deep Clean:** A professional deep clean is almost always worth the investment before photos are taken."], tip: "Rent a small, temporary storage unit. It's an affordable way to make your home feel significantly larger during showings." },
+        { id: 's3', title: "Complete NYS Property Condition Disclosure", what: "This is a mandatory legal document in New York where you disclose known conditions of the property.", how: ["**Get the Form:** Your attorney will provide the official form. I have a link to a sample so you can see what it looks like.", "**Answer Honestly:** Answer every question based on your actual knowledge. If you don't know, 'Unknown' is a valid answer."], tip: "Many sellers in NY opt to give a $500 credit to the buyer in lieu of filling out the form to reduce potential liability. This is a strategic decision we can discuss with your attorney." }
+    ],
+    buyer: [
+        { id: 'b1', title: "Secure Full Mortgage Pre-Approval", what: "This is the most critical first step. A pre-approval from a lender shows sellers you are a serious, qualified buyer.", how: ["**Gather Documents:** You'll need pay stubs, W-2s, tax returns, and bank statements.", "**Choose a Lender:** Compare rates from at least three lenders (banks, credit unions, mortgage brokers).", "**Complete Application:** The lender will review your finances and credit to determine how much you can borrow."], tip: "A full pre-approval is much stronger than a pre-qualification. It means the lender has actually verified your information." },
+        { id: 'b2', title: "Find Your Buyer's Agent", what: "A great local agent is your expert guide and negotiator in the Colonie market.", how: ["**Get Referrals:** Ask for recommendations from friends or colleagues in the area.", "**Interview Agents:** Talk to a few agents to find someone you connect with and who understands your specific needs.", "**Sign an Agreement:** You'll sign a buyer-broker agreement to formalize the relationship."], tip: "Look for an agent who is a full-time professional and has a deep understanding of the specific neighborhoods you're interested in." },
+        { id: 'b3', title: "Understand NYS STAR Program", what: "The NYS School Tax Relief (STAR) program provides a partial exemption from school property taxes for eligible homeowners.", how: ["**Check Eligibility:** The Basic STAR exemption is for owner-occupied, primary residences where the owners' income is $500,000 or less.", "**Register:** You must register with the NYS Department of Taxation and Finance to receive the STAR credit."], tip: "This is a credit you receive as a check, not an upfront exemption on your tax bill. Make sure you register as soon as you close on your new home!" }
+    ]
+};
+
+function switchView(viewName) {
+    Object.values(views).forEach(view => view.classList.add('hidden'));
+    if (views[viewName]) {
+        views[viewName].classList.remove('hidden');
+        appState.currentView = viewName;
+        buttons.reset.classList.toggle('hidden', viewName === 'onboarding-view');
+        // change Lenny pose when switching views
+        const poseKey = viewName.replace('-view', '');
+        updateLennyPose(poseKey);
+    }
+}
+
+// ----- Dynamic Lenny integration (align image next to greeting) -----
+const lennyImg = document.createElement('img');
+lennyImg.id = 'lenny-img';
+// Use local SVG so Lenny always appears
+lennyImg.src = 'assets/images/lenny-lodge-1.svg';
+lennyImg.alt = 'Lenny Lodge the Beaver';
+lennyImg.className = 'w-20 h-20 md:w-28 md:h-28 flex-shrink-0';
+
+const hero = document.getElementById('lenny-hero');
+if (hero) hero.prepend(lennyImg);
+else if (views.onboarding) views.onboarding.prepend(lennyImg);
+
+const lennyPoses = {
+  onboarding: 'default_greeting',
+  scenario: 'thinking_advising',
+  dashboard: 'map_pointing',
+  checklistSeller: 'sold_sign',
+  checklistBuyer: 'closing_day'
+};
+
+// Try pose PNG; fall back to local SVG; final fallback to CDN SVG
+function updateLennyPose(key) {
+  const poseName = lennyPoses[key] || lennyPoses.onboarding;
+  const candidate = `assets/images/lenny/${poseName}.png`;
+  const fallbackLocal = 'assets/images/lenny-lodge-1.svg';
+  const fallbackCdn = 'https://iconsusa.org/assets/icons_copy/project1/lenny-lodge-1.svg';
+
+  const probe = new Image();
+  let set = false;
+  probe.onload = () => { lennyImg.src = candidate; set = true; };
+  probe.onerror = () => { lennyImg.src = fallbackLocal; };
+  probe.src = candidate;
+
+  // Safety fallback in slow/error cases
+  setTimeout(() => { if (!set && lennyImg.src !== candidate) lennyImg.src = fallbackCdn; }, 1500);
+
+  lennyImg.alt = `Lenny Lodge (${poseName.replace(/_/g, ' ')})`;
+}
+// ----- end Dynamic Lenny integration -----
+
+function typeWriterEffect() {
+    const text = "Hello, I’m Lenny Lodge. Relocating can be complex, but with a clear, structured plan, we’ll navigate each stage with confidence and precision.";
+    const typewriterEl = document.getElementById('typewriter');
+    const cursorEl = document.getElementById('typewriter-cursor');
+    if (!typewriterEl || !cursorEl) return;
+    cursorEl.style.display = 'inline';
+    let i = 0;
+    typewriterEl.innerHTML = "";
+    function type() {
+        if (i < text.length) {
+            typewriterEl.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(type, 35);
+        } else {
+            cursorEl.style.display = 'none';
         }
     }
-    
-    // ----- Dynamic Lenny integration (align image next to greeting) -----
-    const lennyImg = document.createElement('img');
-    lennyImg.id = 'lenny-img';
-    // Use local SVG so Lenny always appears
-    lennyImg.src = 'assets/images/lenny-lodge-1.svg';
-    lennyImg.alt = 'Lenny Lodge the Beaver';
-    lennyImg.className = 'w-20 h-20 md:w-28 md:h-28 flex-shrink-0';
+    type();
+}
 
-    const hero = document.getElementById('lenny-hero');
-    if (hero) hero.prepend(lennyImg);
-    else if (views.onboarding) views.onboarding.prepend(lennyImg);
+function formatCurrency(value) {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
+}
 
-    const lennyPoses = {
-      onboarding: 'default_greeting',
-      scenario: 'thinking_advising',
-      dashboard: 'map_pointing',
-      checklistSeller: 'sold_sign',
-      checklistBuyer: 'closing_day'
+function calculateSellerCosts() {
+    const salePrice = parseFloat(inputs.salePrice.value) || 0;
+    const mortgageBalance = parseFloat(inputs.mortgageBalance.value) || 0;
+    const commission = salePrice * 0.05;
+    const totalTransferTax = salePrice * (0.004 + 0.01);
+    const attorneyFee = 3000;
+    const otherFees = 500;
+    const totalClosingCosts = commission + totalTransferTax + attorneyFee + otherFees;
+    const netProfit = salePrice - totalClosingCosts - mortgageBalance;
+    appState.sellerCosts = { salePrice, mortgageBalance, commission, totalTransferTax, attorneyFee, otherFees, totalClosingCosts, netProfit };
+}
+
+function calculateBuyerCosts() {
+    const purchasePrice = parseFloat(inputs.purchasePrice.value) || 0;
+    const downPaymentPercent = (parseFloat(inputs.downPaymentPercent.value) || 0) / 100;
+    const downPayment = purchasePrice * downPaymentPercent;
+    const mansionTax = purchasePrice >= 1000000 ? purchasePrice * 0.01 : 0;
+    const loanAmount = purchasePrice - downPayment;
+    const mortgageRecordingTax = loanAmount * 0.0125;
+    const otherClosingCosts = loanAmount * 0.015;
+    const totalClosingCosts = mansionTax + mortgageRecordingTax + otherClosingCosts;
+    const cashToClose = downPayment + totalClosingCosts;
+    const interestRate = 0.065 / 12;
+    const numberOfPayments = 30 * 12;
+    const monthlyPrincipalAndInterest = loanAmount > 0 ? (loanAmount * interestRate * Math.pow(1 + interestRate, numberOfPayments)) / (Math.pow(1 + interestRate, numberOfPayments) - 1) : 0;
+    const monthlyTaxes = (purchasePrice * 0.022) / 12;
+    const monthlyInsurance = (purchasePrice * 0.0035) / 12;
+    const piti = monthlyPrincipalAndInterest + monthlyTaxes + monthlyInsurance;
+    appState.buyerCosts = { purchasePrice, downPayment, mansionTax, mortgageRecordingTax, otherClosingCosts, totalClosingCosts, cashToClose, piti };
+}
+
+function updateUI() {
+    calculateSellerCosts();
+    calculateBuyerCosts();
+    outputs.netProfit.textContent = formatCurrency(appState.sellerCosts.netProfit);
+    outputs.pitiEstimate.textContent = formatCurrency(appState.buyerCosts.piti);
+    updateCharts();
+}
+
+function createChart(ctx, type, data, options) {
+    return new Chart(ctx, { type, data, options });
+}
+
+function updateCharts() {
+    const sellerData = {
+        labels: ['Net Profit', 'Commission', 'Taxes', 'Mortgage Payoff', 'Other Fees'],
+        datasets: [{ data: [Math.max(0, appState.sellerCosts.netProfit), appState.sellerCosts.commission, appState.sellerCosts.totalTransferTax, appState.sellerCosts.mortgageBalance, appState.sellerCosts.attorneyFee + appState.sellerCosts.otherFees], backgroundColor: ['#4A5C6A', '#8B6E5A', '#A89A8E', '#6B6864', '#DCDAD4'], borderColor: '#FDFCFB', borderWidth: 3 }]
     };
-
-    // Try pose PNG; fall back to local SVG; final fallback to CDN SVG
-    function updateLennyPose(key) {
-      const poseName = lennyPoses[key] || lennyPoses.onboarding;
-      const candidate = `assets/images/lenny/${poseName}.png`;
-      const fallbackLocal = 'assets/images/lenny-lodge-1.svg';
-      const fallbackCdn = 'https://iconsusa.org/assets/icons_copy/project1/lenny-lodge-1.svg';
-
-      const probe = new Image();
-      let set = false;
-      probe.onload = () => { lennyImg.src = candidate; set = true; };
-      probe.onerror = () => { lennyImg.src = fallbackLocal; };
-      probe.src = candidate;
-
-      // Safety fallback in slow/error cases
-      setTimeout(() => { if (!set && lennyImg.src !== candidate) lennyImg.src = fallbackCdn; }, 1500);
-
-      lennyImg.alt = `Lenny Lodge (${poseName.replace(/_/g, ' ')})`;
-    }
-    // ----- end Dynamic Lenny integration -----
-
-    function typeWriterEffect() {
-        const text = "Hello, I’m Lenny Lodge. Relocating can be complex, but with a clear, structured plan, we’ll navigate each stage with confidence and precision.";
-        const typewriterEl = document.getElementById('typewriter');
-        const cursorEl = document.getElementById('typewriter-cursor');
-        if (!typewriterEl || !cursorEl) return;
-        cursorEl.style.display = 'inline';
-        let i = 0;
-        typewriterEl.innerHTML = "";
-        function type() {
-            if (i < text.length) {
-                typewriterEl.innerHTML += text.charAt(i);
-                i++;
-                setTimeout(type, 35);
-            } else {
-                cursorEl.style.display = 'none';
+    const buyerData = {
+        labels: ['Down Payment', 'Mortgage Tax', 'Mansion Tax', 'Other Costs'],
+        datasets: [{ data: [appState.buyerCosts.downPayment, appState.buyerCosts.mortgageRecordingTax, appState.buyerCosts.mansionTax, appState.buyerCosts.otherClosingCosts], backgroundColor: ['#4A5C6A', '#8B6E5A', '#A89A8E', '#6B6864'], borderColor: '#FDFCFB', borderWidth: 3 }]
+    };
+    const chartOptions = {
+        responsive: true, maintainAspectRatio: false, cutout: '60%',
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                callbacks: { label: (c) => `${c.label}: ${formatCurrency(c.parsed)}` }
             }
         }
-        type();
-    }
+    };
+    if (!sellerChart) sellerChart = createChart(document.getElementById('seller-chart').getContext('2d'), 'doughnut', sellerData, chartOptions);
+    else { sellerChart.data = sellerData; sellerChart.update(); }
+    if (!buyerChart) buyerChart = createChart(document.getElementById('buyer-chart').getContext('2d'), 'doughnut', buyerData, chartOptions);
+    else { buyerChart.data = buyerData; buyerChart.update(); }
+}
 
-    function formatCurrency(value) {
-        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
-    }
-
-    function calculateSellerCosts() {
-        const salePrice = parseFloat(inputs.salePrice.value) || 0;
-        const mortgageBalance = parseFloat(inputs.mortgageBalance.value) || 0;
-        const commission = salePrice * 0.05;
-        const totalTransferTax = salePrice * (0.004 + 0.01);
-        const attorneyFee = 3000;
-        const otherFees = 500;
-        const totalClosingCosts = commission + totalTransferTax + attorneyFee + otherFees;
-        const netProfit = salePrice - totalClosingCosts - mortgageBalance;
-        appState.sellerCosts = { salePrice, mortgageBalance, commission, totalTransferTax, attorneyFee, otherFees, totalClosingCosts, netProfit };
-    }
+function buildChecklists() {
+    const sellerContainer = document.getElementById('seller-checklist-container');
+    const buyerContainer = document.getElementById('buyer-checklist-container');
     
-    function calculateBuyerCosts() {
-        const purchasePrice = parseFloat(inputs.purchasePrice.value) || 0;
-        const downPaymentPercent = (parseFloat(inputs.downPaymentPercent.value) || 0) / 100;
-        const downPayment = purchasePrice * downPaymentPercent;
-        const mansionTax = purchasePrice >= 1000000 ? purchasePrice * 0.01 : 0;
-        const loanAmount = purchasePrice - downPayment;
-        const mortgageRecordingTax = loanAmount * 0.0125;
-        const otherClosingCosts = loanAmount * 0.015;
-        const totalClosingCosts = mansionTax + mortgageRecordingTax + otherClosingCosts;
-        const cashToClose = downPayment + totalClosingCosts;
-        const interestRate = 0.065 / 12;
-        const numberOfPayments = 30 * 12;
-        const monthlyPrincipalAndInterest = loanAmount > 0 ? (loanAmount * interestRate * Math.pow(1 + interestRate, numberOfPayments)) / (Math.pow(1 + interestRate, numberOfPayments) - 1) : 0;
-        const monthlyTaxes = (purchasePrice * 0.022) / 12;
-        const monthlyInsurance = (purchasePrice * 0.0035) / 12;
-        const piti = monthlyPrincipalAndInterest + monthlyTaxes + monthlyInsurance;
-        appState.buyerCosts = { purchasePrice, downPayment, mansionTax, mortgageRecordingTax, otherClosingCosts, totalClosingCosts, cashToClose, piti };
-    }
-
-    function updateUI() {
-        calculateSellerCosts();
-        calculateBuyerCosts();
-        outputs.netProfit.textContent = formatCurrency(appState.sellerCosts.netProfit);
-        outputs.pitiEstimate.textContent = formatCurrency(appState.buyerCosts.piti);
-        updateCharts();
-    }
-    
-    function createChart(ctx, type, data, options) {
-        return new Chart(ctx, { type, data, options });
-    }
-
-    function updateCharts() {
-        const sellerData = {
-            labels: ['Net Profit', 'Commission', 'Taxes', 'Mortgage Payoff', 'Other Fees'],
-            datasets: [{ data: [Math.max(0, appState.sellerCosts.netProfit), appState.sellerCosts.commission, appState.sellerCosts.totalTransferTax, appState.sellerCosts.mortgageBalance, appState.sellerCosts.attorneyFee + appState.sellerCosts.otherFees], backgroundColor: ['#4A5C6A', '#8B6E5A', '#A89A8E', '#6B6864', '#DCDAD4'], borderColor: '#FDFCFB', borderWidth: 3 }]
-        };
-        const buyerData = {
-            labels: ['Down Payment', 'Mortgage Tax', 'Mansion Tax', 'Other Costs'],
-            datasets: [{ data: [appState.buyerCosts.downPayment, appState.buyerCosts.mortgageRecordingTax, appState.buyerCosts.mansionTax, appState.buyerCosts.otherClosingCosts], backgroundColor: ['#4A5C6A', '#8B6E5A', '#A89A8E', '#6B6864'], borderColor: '#FDFCFB', borderWidth: 3 }]
-        };
-        const chartOptions = {
-            responsive: true, maintainAspectRatio: false, cutout: '60%',
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: { label: (c) => `${c.label}: ${formatCurrency(c.parsed)}` }
-                }
-            }
-        };
-        if (!sellerChart) sellerChart = createChart(document.getElementById('seller-chart').getContext('2d'), 'doughnut', sellerData, chartOptions);
-        else { sellerChart.data = sellerData; sellerChart.update(); }
-        if (!buyerChart) buyerChart = createChart(document.getElementById('buyer-chart').getContext('2d'), 'doughnut', buyerData, chartOptions);
-        else { buyerChart.data = buyerData; buyerChart.update(); }
-    }
-    
-    function buildChecklists() {
-        const sellerContainer = document.getElementById('seller-checklist-container');
-        const buyerContainer = document.getElementById('buyer-checklist-container');
-        
-        function createChecklistHTML(item) {
-            const howToList = item.how.map(step => `<li>${step.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-[#3D3B38]">$1</strong>')}</li>`).join('');
-            return `
-                <div class="border-t border-gray-200">
-                    <div class="checklist-item-header p-4 flex justify-between items-center group">
-                        <div class="flex items-center gap-3">
-                            <input type="checkbox" data-id="${item.id}" class="checklist-checkbox h-5 w-5 rounded border-gray-300 text-[#4A5C6A] focus:ring-[#4A5C6A]">
-                            <h5 class="font-semibold text-md group-hover:text-[#4A5C6A] transition">${item.title}</h5>
-                        </div>
-                        <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-600 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+    function createChecklistHTML(item) {
+        const howToList = item.how.map(step => `<li>${step.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-[#3D3B38]">$1</strong>')}</li>`).join('');
+        return `
+            <div class="border-t border-gray-200">
+                <div class="checklist-item-header p-4 flex justify-between items-center group">
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" data-id="${item.id}" class="checklist-checkbox h-5 w-5 rounded border-gray-300 text-[#4A5C6A] focus:ring-[#4A5C6A]">
+                        <h5 class="font-semibold text-md group-hover:text-[#4A5C6A] transition">${item.title}</h5>
                     </div>
-                    <div class="checklist-item-body px-4 ml-8 border-l-2 border-gray-200">
-                        <p class="text-sm text-[#6B6864] mb-3">${item.what.replace(/\*(.*?)\*/g, '<em>$1</em>')}</p>
-                        <ul class="list-disc list-inside text-sm space-y-2 mb-4 text-[#6B6864]">${howToList}</ul>
-                        <div class="bg-[#F8F7F4] p-3 rounded-md text-sm">
-                            <strong class="font-semibold text-[#8B6E5A]">Lenny’s Professional Insight:</strong> <span class="text-[#6B6864]">${item.tip}</span>
-                        </div>
+                    <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-600 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+                <div class="checklist-item-body px-4 ml-8 border-l-2 border-gray-200">
+                    <p class="text-sm text-[#6B6864] mb-3">${item.what.replace(/\*(.*?)\*/g, '<em>$1</em>')}</p>
+                    <ul class="list-disc list-inside text-sm space-y-2 mb-4 text-[#6B6864]">${howToList}</ul>
+                    <div class="bg-[#F8F7F4] p-3 rounded-md text-sm">
+                        <strong class="font-semibold text-[#8B6E5A]">Lenny’s Professional Insight:</strong> <span class="text-[#6B6864]">${item.tip}</span>
                     </div>
-                </div>`;
-        }
+                </div>
+            </div>`;
+    }
 
-        checklistData.seller.forEach(item => { sellerContainer.innerHTML += createChecklistHTML(item); });
-        checklistData.buyer.forEach(item => { buyerContainer.innerHTML += createChecklistHTML(item); });
+    checklistData.seller.forEach(item => { sellerContainer.innerHTML += createChecklistHTML(item); });
+    checklistData.buyer.forEach(item => { buyerContainer.innerHTML += createChecklistHTML(item); });
 
-        document.querySelectorAll('.checklist-item-header').forEach(header => {
-            header.addEventListener('click', (e) => {
-                if(e.target.type === 'checkbox') return;
-                const body = header.nextElementSibling;
-                const arrow = header.querySelector('svg');
-                body.classList.toggle('open');
-                arrow.classList.toggle('rotate-180');
-            });
+    document.querySelectorAll('.checklist-item-header').forEach(header => {
+        header.addEventListener('click', (e) => {
+            if(e.target.type === 'checkbox') return;
+            const body = header.nextElementSibling;
+            const arrow = header.querySelector('svg');
+            body.classList.toggle('open');
+            arrow.classList.toggle('rotate-180');
         });
-        
-        document.querySelectorAll('.checklist-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', updateProgress);
-        });
-    }
+    });
+    
+    document.querySelectorAll('.checklist-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', updateProgress);
+    });
+}
 
-    function updateProgress() {
-        const sellerTasks = checklistData.seller.length;
-        const buyerTasks = checklistData.buyer.length;
-        let sellerCompleted = 0;
-        let buyerCompleted = 0;
-        
-        document.querySelectorAll('.checklist-checkbox').forEach(checkbox => {
-            const id = checkbox.dataset.id;
-            if (checkbox.checked) {
-                if (id.startsWith('s')) sellerCompleted++;
-                else if (id.startsWith('b')) buyerCompleted++;
-            }
-        });
-        
-        const sellerProgress = (sellerCompleted / sellerTasks) * 100;
-        const buyerProgress = (buyerCompleted / buyerTasks) * 100;
-        
-        document.getElementById('seller-progress').style.width = `${sellerProgress}%`;
-        document.getElementById('buyer-progress').style.width = `${buyerProgress}%`;
-        // change Lenny pose on checklist completion
-        if (sellerCompleted === sellerTasks && sellerTasks > 0) {
-          updateLennyPose('checklistSeller');
-        } else if (buyerCompleted === buyerTasks && buyerTasks > 0) {
-          updateLennyPose('checklistBuyer');
-        }
-    }
-
-    function handleScenarioSelection(e) {
-        const card = e.currentTarget;
-        Object.values(scenarioCards).forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
-        appState.chosenScenario = card.id;
-        buttons.confirmScenario.disabled = false;
-        buttons.confirmScenario.classList.remove('opacity-50', 'cursor-not-allowed');
-    }
-
-    function resetApp() {
-        switchView('onboarding');
-        Object.values(scenarioCards).forEach(c => c.classList.remove('selected'));
-        buttons.confirmScenario.disabled = true;
-        buttons.confirmScenario.classList.add('opacity-50', 'cursor-not-allowed');
-        appState.chosenScenario = null;
-        document.querySelectorAll('.checklist-checkbox').forEach(c => c.checked = false);
-        updateProgress();
-        typeWriterEffect();
-    }
-
-    buttons.startOnboarding.addEventListener('click', () => switchView('scenario'));
-    buttons.reset.addEventListener('click', resetApp);
-    Object.values(scenarioCards).forEach(card => card.addEventListener('click', handleScenarioSelection));
-    buttons.confirmScenario.addEventListener('click', () => {
-        if (appState.chosenScenario) {
-            switchView('dashboard');
-            const scenarioText = {
-                'scenario-sell-first': 'the Safety-First Path',
-                'scenario-buy-first': 'the Convenience Path',
-                'scenario-contingent': 'the Balancing Act'
-            }[appState.chosenScenario];
-            // was: outputs.dashboardIntro.textContent = `Your plan is based on ${scenarioText}. Everything here is interactive and will update as you make changes.`;
-            speakAsLenny(outputs.dashboardIntro, `Your plan is based on ${scenarioText}. Everything here is interactive and will update as you make changes.`);
-            updateUI();
+function updateProgress() {
+    const sellerTasks = checklistData.seller.length;
+    const buyerTasks = checklistData.buyer.length;
+    let sellerCompleted = 0;
+    let buyerCompleted = 0;
+    
+    document.querySelectorAll('.checklist-checkbox').forEach(checkbox => {
+        const id = checkbox.dataset.id;
+        if (checkbox.checked) {
+            if (id.startsWith('s')) sellerCompleted++;
+            else if (id.startsWith('b')) buyerCompleted++;
         }
     });
-
-    Object.values(inputs).forEach(input => input.addEventListener('input', updateUI));
     
+    const sellerProgress = (sellerCompleted / sellerTasks) * 100;
+    const buyerProgress = (buyerCompleted / buyerTasks) * 100;
+    
+    document.getElementById('seller-progress').style.width = `${sellerProgress}%`;
+    document.getElementById('buyer-progress').style.width = `${buyerProgress}%`;
+    // change Lenny pose on checklist completion
+    if (sellerCompleted === sellerTasks && sellerTasks > 0) {
+      updateLennyPose('checklistSeller');
+    } else if (buyerCompleted === buyerTasks && buyerTasks > 0) {
+      updateLennyPose('checklistBuyer');
+    }
+}
+
+function handleScenarioSelection(e) {
+    const card = e.currentTarget;
+    Object.values(scenarioCards).forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    appState.chosenScenario = card.id;
+    buttons.confirmScenario.disabled = false;
+    buttons.confirmScenario.classList.remove('opacity-50', 'cursor-not-allowed');
+}
+
+function resetApp() {
+    switchView('onboarding');
+    Object.values(scenarioCards).forEach(c => c.classList.remove('selected'));
+    buttons.confirmScenario.disabled = true;
+    buttons.confirmScenario.classList.add('opacity-50', 'cursor-not-allowed');
+    appState.chosenScenario = null;
+    document.querySelectorAll('.checklist-checkbox').forEach(c => c.checked = false);
+    updateProgress();
     typeWriterEffect();
-    buildChecklists();
+}
+
+buttons.startOnboarding.addEventListener('click', async () => {
+    const typewriterEl = document.getElementById('typewriter');
+    if (typewriterEl) typewriterEl.textContent = 'Checking the latest market trends...';
+    try {
+      await fetchLatestMarketData();
+      const msg =
+        `Based on the most recent market trends, your ${SELLING.address} could sell between ` +
+        `${formatCurrency(OVERVIEW.typicalSaleRange[0])} and ${formatCurrency(OVERVIEW.typicalSaleRange[1])}. ` +
+        `Your top Loudonville prospect is trending between ` +
+        `${formatCurrency(OVERVIEW.targetBuyRange[0])} and ${formatCurrency(OVERVIEW.targetBuyRange[1])}, ` +
+        `with estimated savings of ${formatCurrency(OVERVIEW.taxSavingsAnnual)} in property taxes and ` +
+        `${formatCurrency(Math.abs(OVERVIEW.monthlyUtilityDelta))} ${OVERVIEW.monthlyUtilityDelta < 0 ? 'less' : 'more'} in monthly utilities. ` +
+        `Let’s decide the best strategy to get you there.`;
+      runTypewriterEffect(msg, () => switchView('scenario'));
+    } catch (err) {
+      console.error(err);
+      runTypewriterEffect(
+        "Sorry, I couldn't fetch the latest market data right now. Let's continue to strategy selection.",
+        () => switchView('scenario')
+      );
+    }
+  });
+
+Object.values(scenarioCards).forEach(card => card.addEventListener('click', handleScenarioSelection));
+buttons.confirmScenario.addEventListener('click', () => {
+    if (appState.chosenScenario) {
+        switchView('dashboard');
+        const scenarioText = {
+            'scenario-sell-first': 'the Safety-First Path',
+            'scenario-buy-first': 'the Convenience Path',
+            'scenario-contingent': 'the Balancing Act'
+        }[appState.chosenScenario];
+        // was: outputs.dashboardIntro.textContent = `Your plan is based on ${scenarioText}. Everything here is interactive and will update as you make changes.`;
+        speakAsLenny(outputs.dashboardIntro, `Your plan is based on ${scenarioText}. Everything here is interactive and will update as you make changes.`);
+        updateUI();
+    }
+});
+
+Object.values(inputs).forEach(input => input.addEventListener('input', updateUI));
+
+typeWriterEffect();
+buildChecklists();
 });
 </script>
 </body>
-</html>
 </html>
