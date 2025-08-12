@@ -1,7 +1,7 @@
 // Example Data
 const sellingProperty = {
     address: "54 Collyer Pl, White Plains, NY 10605",
-    price: 785000,
+    price: 600000,
     taxes: 14500,
     insurance: 1800,
     utilities: 3200
@@ -49,7 +49,8 @@ function updateDashboard() {
     netElem.className = "metric-value " + (net >= 0 ? "metric-positive" : "metric-negative");
 
     // Property Details
-    document.getElementById("propertyDetails").innerHTML = `
+    const detailsEl = document.getElementById("propertyDetails");
+    if (detailsEl) detailsEl.innerHTML = `
         <h3>Selling</h3>
         <p>${sellingProperty.address}</p>
         <ul>
@@ -573,5 +574,25 @@ function exportTxPlanICS(){
 
   // initial render
   renderTxPlan();
+
+  // Mobile nav toggle for accessibility
+  const navToggle = document.getElementById('navToggle');
+  const siteNav = document.getElementById('siteNav');
+  if (navToggle && siteNav) {
+    navToggle.addEventListener('click', () => {
+      const isOpen = siteNav.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', String(isOpen));
+    });
+  }
+
+  // Header KPIs: reflect initial baseline numbers if present
+  const kpiSell = document.getElementById('kpiSellBaseline');
+  if (kpiSell) kpiSell.textContent = fmt$(SELLING.baseValue);
+  const kpiTaxes = document.getElementById('kpiTaxesAnnual');
+  if (kpiTaxes) kpiTaxes.textContent = fmt$(Math.round(SELLING.costs.taxes_annual));
+  const kpiBuy = document.getElementById('kpiBuyDefault');
+  if (kpiBuy && Array.isArray(buyingProperties) && buyingProperties.length) {
+    kpiBuy.textContent = fmt$(buyingProperties[0].price);
+  }
 })();
  
