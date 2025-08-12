@@ -30,16 +30,20 @@ app.get('/api/comps', async (req, res) => {
 });
 
 function mergeSources(sources) {
-  const avg = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
+  const median = arr => {
+    const a = [...arr].sort((x, y) => x - y);
+    const mid = Math.floor(a.length / 2);
+    return a.length % 2 ? a[mid] : (a[mid - 1] + a[mid]) / 2;
+  };
   const lows = sources.map(s => s.low).filter(Number.isFinite);
   const highs = sources.map(s => s.high).filter(Number.isFinite);
   const taxes = sources.map(s => s.taxes).filter(Number.isFinite);
   const utils = sources.map(s => s.utilities).filter(Number.isFinite);
   return {
-    low: lows.length ? Math.round(avg(lows)) : null,
-    high: highs.length ? Math.round(avg(highs)) : null,
-    taxes: taxes.length ? Math.round(avg(taxes)) : null,
-    utilities: utils.length ? Math.round(avg(utils)) : null
+    low: lows.length ? Math.round(median(lows)) : null,
+    high: highs.length ? Math.round(median(highs)) : null,
+    taxes: taxes.length ? Math.round(median(taxes)) : null,
+    utilities: utils.length ? Math.round(median(utils)) : null
   };
 }
 
