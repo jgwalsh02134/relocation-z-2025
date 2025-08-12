@@ -170,7 +170,12 @@
                             <span id="ov-sale-range" class="font-semibold text-[#4A5C6A]"></span>
                             <span class="ov-skel ov-skel-sale-range hidden inline-block h-4 bg-gray-200 rounded align-middle w-36 ml-2"></span>
                         </p>
-                        <p id="ov-sale-zest-line" class="text-xs text-[#6B6864] mt-1 hidden">Zestimate anchor: <a id="ov-sale-zest-link" href="#" target="_blank" class="underline text-[#4A5C6A]"><span id="ov-sale-zest"></span></a></p>
+                        <div class="mt-3 grid grid-cols-2 gap-2 text-sm text-[#6B6864]">
+                            <div><span class="font-semibold text-[#4A5C6A]">Zestimate</span>: <a id="ov-sale-zest-link" href="#" target="_blank" class="underline text-[#4A5C6A]"><span id="ov-sale-zest"></span></a></div>
+                            <div><span class="font-semibold text-[#4A5C6A]">Beds/Baths</span>: <span id="ov-sell-bb"></span></div>
+                            <div><span class="font-semibold text-[#4A5C6A]">Sq Ft</span>: <span id="ov-sell-sqft"></span></div>
+                            <div><span class="font-semibold text-[#4A5C6A]">Year</span>: <span id="ov-sell-year"></span></div>
+                        </div>
                     </div>
                     <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
                         <h4 class="text-sm font-semibold text-[#8B6E5A] uppercase tracking-wide mb-1">Buying Target</h4>
@@ -224,8 +229,27 @@
                         <p class="text-xs text-[#6B6864]">Positive = more, negative = less</p>
                     </div>
                 </div>
+                <!-- Financial snapshot to aid decision-making -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
+                        <h4 class="text-sm font-semibold text-[#8B6E5A] uppercase tracking-wide mb-1">Estimated Net Proceeds (Sell)</h4>
+                        <p id="ov-net-proceeds" class="text-2xl font-bold text-[#4A5C6A]">$0</p>
+                        <p class="text-xs text-[#6B6864]">After commission, transfer tax, attorney and other estimated fees, plus mortgage payoff.</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
+                        <h4 class="text-sm font-semibold text-[#8B6E5A] uppercase tracking-wide mb-1">Cash To Close + Monthly PITI (Buy)</h4>
+                        <p class="text-[#4A5C6A] font-bold text-xl"><span id="ov-cash-close">$0</span> <span class="text-sm text-[#6B6864]">cash to close</span></p>
+                        <p class="text-[#4A5C6A] font-bold text-xl"><span id="ov-piti">$0</span> <span class="text-sm text-[#6B6864]">/mo PITI</span></p>
+                        <p class="text-xs text-[#6B6864]">Based on current inputs (price, down payment, rates, taxes, insurance).</p>
+                    </div>
+                </div>
+                <!-- Quick guidance before strategy selection -->
+                <div class="bg-[#F8F7F4] border border-gray-200 rounded-xl p-4 mb-6">
+                    <p id="ov-decision-hint" class="text-sm text-[#3D3B38]"></p>
+                </div>
                 <div class="text-center">
                     <button id="goto-scenario-btn" class="btn-primary font-bold py-3 px-8 rounded-lg text-lg">Choose Strategy</button>
+                    <p class="mt-3 text-sm text-[#6B6864]">We’ll fine-tune your plan with these variables on the next step.</p>
                 </div>
             </div>
 
@@ -434,6 +458,14 @@
                     checklistBuyer: 'closing_day'
                 }
                 ,
+                sellingAnchors: {
+                    zillowUrl: 'https://www.zillow.com/homedetails/54-Collyer-Pl-White-Plains-NY-10605/32982800_zpid/',
+                    zestimate: 1014200,
+                    beds: 6,
+                    baths: 4,
+                    sqft: 3569,
+                    yearBuilt: 1924
+                },
                 prospectAnchors: {
                     zillowUrl: 'https://www.zillow.com/homedetails/8-Loudonwood-E-Loudonville-NY-12211/29697778_zpid/',
                     listPrice: 449900,
@@ -483,6 +515,9 @@
                     ovSaleZestLine: document.getElementById('ov-sale-zest-line'),
                     ovSaleZest: document.getElementById('ov-sale-zest'),
                     ovSaleZestLink: document.getElementById('ov-sale-zest-link'),
+                    ovSellBB: document.getElementById('ov-sell-bb'),
+                    ovSellSqft: document.getElementById('ov-sell-sqft'),
+                    ovSellYear: document.getElementById('ov-sell-year'),
                     ovBuyList: document.getElementById('ov-buy-list'),
                     ovBuyZest: document.getElementById('ov-buy-zest'),
                     ovBuyBB: document.getElementById('ov-buy-bb'),
@@ -490,6 +525,10 @@
                     ovBuyYear: document.getElementById('ov-buy-year'),
                     ovBuyHoa: document.getElementById('ov-buy-hoa'),
                     ovBuyTaxes: document.getElementById('ov-buy-taxes'),
+                    ovNetProceeds: document.getElementById('ov-net-proceeds'),
+                    ovCashClose: document.getElementById('ov-cash-close'),
+                    ovPiti: document.getElementById('ov-piti'),
+                    ovDecisionHint: document.getElementById('ov-decision-hint'),
                 },
                 buttons: {
                     startOnboarding: document.getElementById('start-onboarding-btn'),
@@ -987,12 +1026,29 @@
                 if (this.elements.outputs.ovBuyHoa && pa.hoaMonthly != null) this.elements.outputs.ovBuyHoa.textContent = this.formatCurrency(pa.hoaMonthly) + '/mo';
                 if (this.elements.outputs.ovBuyTaxes && pa.taxesAnnual != null) this.elements.outputs.ovBuyTaxes.textContent = this.formatCurrency(pa.taxesAnnual);
                 // Optional: surface a Zestimate anchor for selling address
-                const zlink = 'https://www.zillow.com/homedetails/54-Collyer-Pl-White-Plains-NY-10605/32982800_zpid/';
-                const zest = 1014200; // from provided reference
-                if (this.elements.outputs.ovSaleZestLine && this.elements.outputs.ovSaleZest && this.elements.outputs.ovSaleZestLink) {
-                    this.elements.outputs.ovSaleZest.textContent = this.formatCurrency(zest);
-                    this.elements.outputs.ovSaleZestLink.href = zlink;
-                    this.elements.outputs.ovSaleZestLine.classList.remove('hidden');
+                const sa = this.config.sellingAnchors || {};
+                if (this.elements.outputs.ovSaleZest && this.elements.outputs.ovSaleZestLink && sa.zestimate) {
+                    this.elements.outputs.ovSaleZest.textContent = this.formatCurrency(sa.zestimate);
+                    this.elements.outputs.ovSaleZestLink.href = sa.zillowUrl || '#';
+                }
+                if (this.elements.outputs.ovSellBB && (sa.beds || sa.baths)) this.elements.outputs.ovSellBB.textContent = `${sa.beds || '?'} bd / ${sa.baths || '?'} ba`;
+                if (this.elements.outputs.ovSellSqft && sa.sqft) this.elements.outputs.ovSellSqft.textContent = `${sa.sqft.toLocaleString()} sf`;
+                if (this.elements.outputs.ovSellYear && sa.yearBuilt) this.elements.outputs.ovSellYear.textContent = `${sa.yearBuilt}`;
+                // Financial snapshot
+                const net = this.state.sellerCosts?.netProfit ?? 0;
+                const cashToClose = this.state.buyerCosts?.cashToClose ?? 0;
+                const piti = this.state.buyerCosts?.piti ?? 0;
+                if (this.elements.outputs.ovNetProceeds) this.elements.outputs.ovNetProceeds.textContent = this.formatCurrency(net);
+                if (this.elements.outputs.ovCashClose) this.elements.outputs.ovCashClose.textContent = this.formatCurrency(cashToClose);
+                if (this.elements.outputs.ovPiti) this.elements.outputs.ovPiti.textContent = this.formatCurrency(piti);
+                // Decision hint
+                if (this.elements.outputs.ovDecisionHint) {
+                    let hint = '';
+                    if (net <= 0) hint = 'Your net proceeds are tight or negative. Consider Safety-First (Sell First) to avoid financing gaps.';
+                    else if (cashToClose > net * 0.8) hint = 'Cash to close uses most of your net. Safety-First or a short rent-back can reduce risk.';
+                    else if (piti > (this.state.buyerCosts?.purchasePrice || 0) * 0.0007) hint = 'Monthly PITI looks high versus target price. Adjust down payment or range before continuing.';
+                    else hint = 'You appear positioned to proceed. Choose the strategy that best matches your risk tolerance and convenience.';
+                    this.elements.outputs.ovDecisionHint.textContent = hint;
                 }
                 this.setOverviewSkeleton(false);
             }
