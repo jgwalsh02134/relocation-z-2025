@@ -289,65 +289,66 @@
     </script>
 
     <script>
-    // Backend base + simple state (placeholders you can adjust)
-const BACKEND_BASE = 'http://localhost:4000';
-const SELLING = { address: '54 Collyer Pl, White Plains, NY' };
-const OVERVIEW = {};
+  // Backend base + simple state (placeholders you can adjust)
+  const BACKEND_BASE = 'http://localhost:4000';
+  const SELLING = { address: '54 Collyer Pl, White Plains, NY' };
+  const PROSPECT = { address: '8 Loudonwood East, Loudonville, NY' }; // New: current buy prospect
+  const OVERVIEW = {};
 
-// Live data helpers
-async function getCompsFromBackend(address) {
-  const res = await fetch(`${BACKEND_BASE}/api/comps?address=${encodeURIComponent(address)}`, {
-    method: 'GET',
-    headers: { Accept: 'application/json' }
-  });
-  if (!res.ok) throw new Error(`Backend fetch failed for ${address}`);
-  const data = await res.json();
-  if (data.low == null || data.high == null) throw new Error(`Incomplete comps for ${address}`);
-  return data;
-}
-function calcTaxSavings(oldTaxes, newTaxes) {
-  if (oldTaxes == null || newTaxes == null) return 0;
-  return Math.round(oldTaxes - newTaxes);
-}
-function calcUtilityDelta(oldUtilities, newUtilities) {
-  if (oldUtilities == null || newUtilities == null) return 0;
-  return Math.round(newUtilities - oldUtilities);
-}
-async function fetchLatestMarketData() {
-  const sellingData = await getCompsFromBackend(SELLING.address);
-  const buyingTargetAddress = '8 Loudonwood East, Loudonville, NY';
-  const buyingData = await getCompsFromBackend(buyingTargetAddress);
-  OVERVIEW.typicalSaleRange = [sellingData.low, sellingData.high];
-  OVERVIEW.targetBuyRange = [buyingData.low, buyingData.high];
-  OVERVIEW.taxSavingsAnnual = calcTaxSavings(sellingData.taxes, buyingData.taxes);
-  OVERVIEW.monthlyUtilityDelta = calcUtilityDelta(sellingData.utilities, buyingData.utilities);
-}
+  // Live data helpers
+  async function getCompsFromBackend(address) {
+    const res = await fetch(`${BACKEND_BASE}/api/comps?address=${encodeURIComponent(address)}`, {
+      method: 'GET',
+      headers: { Accept: 'application/json' }
+    });
+    if (!res.ok) throw new Error(`Backend fetch failed for ${address}`);
+    const data = await res.json();
+    if (data.low == null || data.high == null) throw new Error(`Incomplete comps for ${address}`);
+    return data;
+  }
+  function calcTaxSavings(oldTaxes, newTaxes) {
+    if (oldTaxes == null || newTaxes == null) return 0;
+    return Math.round(oldTaxes - newTaxes);
+  }
+  function calcUtilityDelta(oldUtilities, newUtilities) {
+    if (oldUtilities == null || newUtilities == null) return 0;
+    return Math.round(newUtilities - oldUtilities);
+  }
+  async function fetchLatestMarketData() {
+    const sellingData = await getCompsFromBackend(SELLING.address);
+    // const buyingTargetAddress = '8 Loudonwood East, Loudonville, NY';
+    const buyingData = await getCompsFromBackend(PROSPECT.address); // use PROSPECT
+    OVERVIEW.typicalSaleRange = [sellingData.low, sellingData.high];
+    OVERVIEW.targetBuyRange = [buyingData.low, buyingData.high];
+    OVERVIEW.taxSavingsAnnual = calcTaxSavings(sellingData.taxes, buyingData.taxes);
+    OVERVIEW.monthlyUtilityDelta = calcUtilityDelta(sellingData.utilities, buyingData.utilities);
+  }
 
-// Typewriter with completion callback
-function runTypewriterEffect(text, done) {
-  const typewriterEl = document.getElementById('typewriter');
-  const cursorEl = document.getElementById('typewriter-cursor');
-  if (!typewriterEl || !cursorEl) return;
-  cursorEl.style.display = 'inline';
-  typewriterEl.innerHTML = '';
-  let i = 0;
-  (function type() {
-    if (i < text.length) {
-      typewriterEl.innerHTML += text.charAt(i++);
-      setTimeout(type, 35);
-    } else {
-      cursorEl.style.display = 'none';
-      if (typeof done === 'function') done();
-    }
-  })();
-}
+  // Typewriter with completion callback
+  function runTypewriterEffect(text, done) {
+    const typewriterEl = document.getElementById('typewriter');
+    const cursorEl = document.getElementById('typewriter-cursor');
+    if (!typewriterEl || !cursorEl) return;
+    cursorEl.style.display = 'inline';
+    typewriterEl.innerHTML = '';
+    let i = 0;
+    (function type() {
+      if (i < text.length) {
+        typewriterEl.innerHTML += text.charAt(i++);
+        setTimeout(type, 35);
+      } else {
+        cursorEl.style.display = 'none';
+        if (typeof done === 'function') done();
+      }
+    })();
+  }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const appState = {
-    currentView: 'onboarding-view',
-    chosenScenario: null,
-    sellerCosts: {},
-    buyerCosts: {},
+  document.addEventListener('DOMContentLoaded', () => {
+    const appState = {
+      currentView: 'onboarding-view',
+      chosenScenario: null,
+      sellerCosts: {},
+      buyerCosts: {},
 };
 
 const views = {
@@ -644,18 +645,20 @@ buttons.startOnboarding.addEventListener('click', async () => {
     try {
       await fetchLatestMarketData();
       const msg =
-        `Based on the most recent market trends, your ${SELLING.address} could sell between ` +
+        `Here's our plan: sell ${SELLING.address} and buy ${PROSPECT.address}. ` +
+        `Based on the most recent market trends, your sale is tracking between ` +
         `${formatCurrency(OVERVIEW.typicalSaleRange[0])} and ${formatCurrency(OVERVIEW.typicalSaleRange[1])}. ` +
-        `Your top Loudonville prospect is trending between ` +
+        `The target home is trending between ` +
         `${formatCurrency(OVERVIEW.targetBuyRange[0])} and ${formatCurrency(OVERVIEW.targetBuyRange[1])}, ` +
         `with estimated savings of ${formatCurrency(OVERVIEW.taxSavingsAnnual)} in property taxes and ` +
         `${formatCurrency(Math.abs(OVERVIEW.monthlyUtilityDelta))} ${OVERVIEW.monthlyUtilityDelta < 0 ? 'less' : 'more'} in monthly utilities. ` +
-        `Let’s decide the best strategy to get you there.`;
+        `Next, let’s choose your core strategy.`;
       runTypewriterEffect(msg, () => switchView('scenario'));
     } catch (err) {
       console.error(err);
       runTypewriterEffect(
-        "Sorry, I couldn't fetch the latest market data right now. Let's continue to strategy selection.",
+        `Here's our plan: sell ${SELLING.address} and buy ${PROSPECT.address}. ` +
+        "We couldn't fetch the latest market data right now, but we can still move forward. Next, let’s choose your core strategy.",
         () => switchView('scenario')
       );
     }
