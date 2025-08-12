@@ -119,9 +119,6 @@
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div id="scenario-sell-first" class="scenario-card p-6 rounded-xl text-center cursor-pointer flex flex-col items-center">
-                        <svg class="w-16 h-16 mb-4 text-[#4A5C6A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.0
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div id="scenario-sell-first" class="scenario-card p-6 rounded-xl text-center cursor-pointer flex flex-col items-center">
                         <svg class="w-16 h-16 mb-4 text-[#4A5C6A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                         <h3 class="text-2xl font-bold text-[#4A5C6A] mb-2">Safety-First Path</h3>
                         <p class="font-semibold mb-3 text-[#8B6E5A]">(Sell First)</p>
@@ -222,9 +219,68 @@
         </main>
     </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const appState = {
+    <!-- Lenny Lodge Pose Library + helper -->
+    <script>
+    const LennyPoseLibrary = {
+      "character": {
+        "name": "Lenny Lodge",
+        "master_style_prompt": "Hyper-detailed cartoon illustration of Lenny Lodge, a friendly, well-proportioned beaver mascot with all classic beaver traits: prominent buck teeth, broad flat textured tail, warm medium-brown fur with subtle shading, small rounded ears, and bright expressive eyes. He has a sturdy rounded build and is dressed in a professional business casual style: a light blue collared dress shirt with sleeves rolled just below the elbows, a neatly knotted dark navy tie, shirt tucked into his natural fur body (no pants or shoes). He wears round thin-framed glasses slightly askew. Rendered with bold clean outlines, subtle shading for depth, and a tasteful color palette of blues, browns, and warm accents, isolated with a transparent background, designed for high-resolution use and clean SVG conversion. --ar 1:1 --no: photorealism, background scenery, gradients, clutter",
+        "poses": [
+          { "name": "default_greeting", "description": "Standing upright, smiling warmly, right hand holding a clipboard with a neatly organized, color-coded relocation checklist, left hand gesturing outward in a welcoming manner, tail visible behind angled slightly to the side." },
+          { "name": "waving", "description": "Standing with one hand raised in a friendly wave, the other hand holding a clipboard close to the chest." },
+          { "name": "thinking_advising", "description": "Standing with one hand holding chin in a thoughtful pose, other hand pointing to a clipboard showing a floor plan." },
+          { "name": "map_pointing", "description": "Standing next to a simplified map graphic on the clipboard, pointing to a location with a confident smile." },
+          { "name": "sold_sign", "description": "Standing with both hands holding a bright red 'SOLD' sign, smiling proudly." },
+          { "name": "laptop_desk", "description": "Sitting at a desk, typing on a sleek laptop with a coffee cup nearby, tail visible draped to the side." },
+          { "name": "closing_day", "description": "Standing with an oversized cartoon house key held high in one hand, the other hand giving a thumbs-up." }
+        ]
+      }
+    };
+
+    function getLennyPrompt(poseName = 'default_greeting') {
+      const style = LennyPoseLibrary.character.master_style_prompt;
+      const poses = LennyPoseLibrary.character.poses;
+      const pose = poses.find(p => p.name === poseName)
+        || poses.find(p => p.name === 'default_greeting')
+        || poses[0];
+      return `${style} Pose: ${pose.description}`;
+    }
+
+    // Expose for programmatic use
+    window.LennyPoseLibrary = LennyPoseLibrary;
+    window.getLennyPrompt = getLennyPrompt;
+
+    // New: helper that matches the Node/Python examples (style + description)
+    function buildLennyPrompt(poseName = 'default_greeting') {
+      const style = LennyPoseLibrary.character.master_style_prompt;
+      const poses = LennyPoseLibrary.character.poses;
+      const pose = poses.find(p => p.name === poseName)
+        || poses.find(p => p.name === 'default_greeting')
+        || poses[0];
+      return `${style} ${pose.description}`;
+    }
+
+    // New: quick exporter for lenny_pose_library.json
+    function exportLennyLibrary() {
+      const blob = new Blob([JSON.stringify(LennyPoseLibrary, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'lenny_pose_library.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    // Expose new helpers
+    window.buildLennyPrompt = buildLennyPrompt;
+    window.exportLennyLibrary = exportLennyLibrary;
+    </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const appState = {
         currentView: 'onboarding-view',
         chosenScenario: null,
         sellerCosts: {},
