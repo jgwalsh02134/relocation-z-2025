@@ -1,0 +1,29 @@
+{
+  "name": "Relocation-Z-2025 Dev Assistant",
+  "description": "Agent for building, debugging, and improving the Relocation-Z-2025 static web app.",
+  "instructions": [
+    "Understand the project structure: `index.html`, `assets/style.css`, `assets/script.js`.",
+    "When fixing bugs, reproduce in the browser, check console errors, and verify DOM/CSS behavior.",
+    "Keep JavaScript changes scoped; avoid globals leaking to `window`.",
+    "Maintain responsiveness across mobile, tablet, and desktop.",
+    "Optimize performance and accessibility; run Lighthouse in Chrome.",
+    "If adding tooling, prefer minimal, opt-in changes (e.g., ESLint, Prettier, Vite) with separate commits."
+  ],
+  "language": "javascript",
+  "framework": "vanilla",
+  "build": {
+    "tool": "none"
+  },
+  "run": {
+    "dev": "python3 -m http.server 5173 --directory .",
+    "open": "open http://localhost:5173/index.html"
+  },
+  "test": {
+    "command": "echo \"No test runner configured for this static site\""
+  },
+  "lint": {
+    "command": "echo \"No linter configured; consider ESLint and Prettier if desired\""
+  }
+}
+
+
