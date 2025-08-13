@@ -80,9 +80,10 @@
     .progress-bar-fill {
       transition: width 0.5s ease-in-out;
     }
+    button, [role="button"], .chip { min-height: 44px; min-width: 44px; }
   </style>
 </head>
-<body class="antialiased">
+<body class="antialiased bg-[#F8F7F4] text-[#3D3B38] [padding-bottom:calc(env(safe-area-inset-bottom)+72px)]">
 
   <div id="app-container" class="min-h-screen flex flex-col">
     <header class="w-full bg-white/80 backdrop-blur-lg border-b border-gray-200/80 sticky top-0 z-10">
@@ -135,7 +136,7 @@
           <!-- Replace the single greeting paragraph with a flex wrapper so image + text align -->
           <div id="lenny-hero" class="mx-auto flex items-start justify-center gap-3 md:gap-4 md:flex-row flex-col mb-8">
             <p id="lenny-bubble" class="text-lg text-[#6B6864] min-h-[56px] bg-white/80 border border-gray-200 rounded-lg px-4 py-3 shadow-sm inline-block text-left">
-              <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#4A5C6A]/10 text-[#4A5C6A] text-xs font-semibold mr-2 align-middle">Lenny</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#4A5C6A]/10 text-[#4A5C6A] text-xs font-semibold mr-2 align-middle assistant-name">Lenny</span>
               <span id="typewriter"></span><span id="typewriter-cursor">|</span>
             </p>
           </div>
@@ -330,10 +331,18 @@
                   <div>
                     <label for="purchase-price" class="block text-sm font-medium text-[#6B6864]">Target Purchase Price ($)</label>
                     <input type="number" id="purchase-price" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4A5C6A] focus:ring-[#4A5C6A] sm:text-sm p-2" value="750000">
+                    <div id="pp-chips" class="mt-2 grid grid-cols-4 gap-2"></div>
                   </div>
                   <div>
                     <label for="down-payment-percent" class="block text-sm font-medium text-[#6B6864]">Down Payment (%)</label>
-                    <input type="number" id="down-payment-percent" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4A5C6A] focus:ring-[#4A5C6A] sm:text-sm p-2" value="20">
+                    <div id="dp-chips" class="mt-2 grid grid-cols-5 gap-2">
+                      <button class="chip px-2 py-2 rounded-lg border border-gray-300" data-val="10">10%</button>
+                      <button class="chip px-2 py-2 rounded-lg border border-gray-300" data-val="15">15%</button>
+                      <button class="chip px-2 py-2 rounded-lg border border-gray-300" data-val="20">20%</button>
+                      <button class="chip px-2 py-2 rounded-lg border border-gray-300" data-val="25">25%</button>
+                      <button class="chip px-2 py-2 rounded-lg border border-gray-300" data-val="custom">Custom</button>
+                    </div>
+                    <input type="number" id="down-payment-percent" class="mt-2 hidden w-full rounded-md border-gray-300 shadow-sm focus:border-[#4A5C6A] focus:ring-[#4A5C6A] sm:text-sm p-2" value="20">
                   </div>
                   <div class="bg-[#F8F7F4] p-4 rounded-lg text-center">
                     <p class="text-sm font-medium text-[#6B6864]">Est. Monthly PITI</p>
@@ -361,6 +370,14 @@
         </section>
       </div>
     </main>
+    <footer id="mobile-wizard"
+      class="fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-gray-200
+             px-4 py-3 md:hidden">
+      <div class="max-w-screen-sm mx-auto flex items-center gap-2">
+        <button id="btnPrev" class="flex-1 py-3 rounded-lg border border-gray-300">Back</button>
+        <button id="btnNext" class="flex-1 py-3 rounded-lg btn-primary font-bold">Next</button>
+      </div>
+    </footer>
   </div>
 
   <!-- Lenny Lodge Pose Library + helper -->
@@ -423,10 +440,53 @@
   </script>
 
   <script>
+  const LennyInlineSVG = `
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+    <stop offset="0" stop-color="#8B6E5A"/><stop offset="1" stop-color="#4A5C6A"/></linearGradient></defs>
+  <circle cx="64" cy="64" r="62" fill="url(#g)" opacity="0.12" />
+  <circle cx="64" cy="64" r="54" fill="#FDFCFB" stroke="#D9D7D2"/>
+  <text x="64" y="74" text-anchor="middle" font-family="Inter, system-ui, sans-serif"
+        font-weight="700" font-size="44" fill="#4A5C6A">L</text>
+</svg>`;
+
+  const LennyScripts = {
+    onboarding: {
+      text: "I’m Lenny! Let’s make this move simple. Ready for a quick snapshot?",
+      chips: [{id:'go_overview', label:'Show Snapshot'}],
+      next: 'overview'
+    },
+    overview: {
+      text: "Here’s your situation at a glance. Want a strategy recommendation?",
+      chips: [{id:'go_scenario', label:'Recommend Strategy'}],
+      next: 'scenario'
+    },
+    scenario: {
+      text: "Pick the approach that fits you. You can change it later.",
+      chips: [
+        {id:'pick_sell_first', label:'Safety-First'},
+        {id:'pick_buy_first',  label:'Convenience'},
+        {id:'pick_cont',       label:'Balancing Act'}
+      ],
+      next: 'dashboard'
+    },
+    dashboard: {
+      text: "Plan built. Want a checklist or payment tune-up?",
+      chips: [
+        {id:'open_seller_check', label:'Seller Checklist'},
+        {id:'open_buyer_check',  label:'Buyer Checklist'},
+        {id:'tweak_payments',    label:'Tune Payments'}
+      ]
+    }
+  };
+
   document.addEventListener('DOMContentLoaded', () => {
       const RelocationApp = {
           // --- CONFIGURATION ---
           config: {
+              appVersion: '2025-08-13',
+              stateTTLHours: 24,
+              assistantName: 'Lenny',
               backendBase: 'http://localhost:4000',
               sellingAddress: '54 Collyer Pl, White Plains, NY',
               prospectAddress: '8 Loudonwood East, Loudonville, NY 12211',
@@ -659,6 +719,36 @@
                   editor.classList.add('hidden');
                   if (err) err.classList.add('hidden');
               });
+
+              // Bottom wizard controls
+              const prev = document.getElementById('btnPrev');
+              const next = document.getElementById('btnNext');
+              const order = ['onboarding','overview','scenario','dashboard'];
+              const go = (delta) => {
+                const key = (this.state.currentView || 'onboarding').replace('-view','');
+                const idx = Math.max(0, Math.min(order.length-1, order.indexOf(key)+delta));
+                const dest = order[idx];
+                if (dest==='dashboard' && !this.state.chosenScenario) { this.switchView('scenario'); return; }
+                this.switchView(dest);
+              };
+              prev?.addEventListener('click', () => go(-1));
+              next?.addEventListener('click', () => {
+                if (this.state.currentView.includes('onboarding')) return this.handleStartOnboarding();
+                if (this.state.currentView.includes('scenario') && this.state.chosenScenario) return this.handleConfirmScenario();
+                go(+1);
+              });
+
+              // Down payment chips
+              const dp = this.elements.inputs.downPaymentPercent;
+              document.querySelectorAll('#dp-chips .chip').forEach(ch => {
+                ch.addEventListener('click', () => {
+                  document.querySelectorAll('#dp-chips .chip').forEach(x => x.dataset.on = "false");
+                  ch.dataset.on = "true";
+                  const v = ch.dataset.val;
+                  if (v === 'custom') { dp?.classList.remove('hidden'); dp?.focus(); }
+                  else { dp?.classList.add('hidden'); if (dp) dp.value = v; this.updateUI(); }
+                });
+              });
           },
 
           // --- CORE LOGIC ---
@@ -672,6 +762,7 @@
                   this.elements.buttons.copyLennyPrompt.classList.toggle('hidden', viewName !== 'dashboard');
                   this.updateLennyPose(viewName.replace('-view', ''));
                   if (typeof this.persistState === 'function') this.persistState();
+                  this.speakWithChips(viewName.replace('-view',''));
               }
           },
           
@@ -939,55 +1030,84 @@
               targetEl.setAttribute('aria-live', 'polite');
               targetEl.setAttribute('aria-label', `Lenny says: ${text}`);
           },
+          speakWithChips(stepKey) {
+            const step = LennyScripts[stepKey]; if (!step) return;
+            const target = document.getElementById(
+              stepKey==='onboarding' ? 'lenny-bubble' :
+              stepKey==='overview'   ? 'lenny-overview' :
+              stepKey==='scenario'   ? 'lenny-scenario' : 'dashboard-intro'
+            );
+            if (!target) return;
+            const name = this.config.assistantName || 'Lenny';
+            target.innerHTML = `
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#4A5C6A]/10 text-[#4A5C6A] text-xs font-semibold mr-2 assistant-name">${name}</span>
+              <span>${step.text}</span>
+              <div class="mt-3 flex flex-wrap gap-2">
+                ${(step.chips||[]).map(c=>`<button class=\"chip px-3 py-2 rounded-lg border border-gray-300\" data-id=\"${c.id}\">${c.label}</button>`).join('')}
+              </div>`;
+            target.querySelectorAll('.chip').forEach(btn=>{
+              btn.addEventListener('click', ()=> this.routeFromChip(stepKey, btn.dataset.id));
+            });
+          },
+          routeFromChip(stepKey, id) {
+            if (stepKey==='onboarding' && id==='go_overview') this.switchView('overview');
+            if (stepKey==='overview'   && id==='go_scenario') this.switchView('scenario');
+            if (stepKey==='scenario') {
+              const map = { pick_sell_first:'scenario-sell-first', pick_buy_first:'scenario-buy-first', pick_cont:'scenario-contingent' };
+              document.getElementById(map[id])?.click();
+              this.handleConfirmScenario();
+            }
+            if (stepKey==='dashboard') {
+              if (id==='open_seller_check') document.querySelector('#seller-checklist-container .checklist-item-header')?.click();
+              if (id==='open_buyer_check')  document.querySelector('#buyer-checklist-container .checklist-item-header')?.click();
+              if (id==='tweak_payments')    document.getElementById('down-payment-percent')?.scrollIntoView({behavior:'smooth', block:'center'});
+            }
+          },
 
           setupLenny() {
               const img = document.createElement('img');
               img.id = 'lenny-img';
-              img.src = 'assets/images/lenny-lodge-1.svg'; // Default fallback
-              img.alt = 'Lenny Lodge the Beaver';
+              img.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(LennyInlineSVG);
+              img.alt = (this.config.assistantName || 'Lenny') + ' the Assistant';
               img.className = 'w-20 h-20 md:w-28 md:h-28 flex-shrink-0';
               this.elements.lennyImg = img;
 
               const hero = document.getElementById('lenny-hero');
               if (hero) hero.prepend(img);
+              const nameEl = document.querySelector('#lenny-bubble .assistant-name');
+              if (nameEl) nameEl.textContent = this.config.assistantName;
           },
 
           updateLennyPose(key) {
               const poseName = this.config.lennyPoses[key] || this.config.lennyPoses.onboarding;
-              const candidateUrl = `assets/images/lenny/${poseName}.png`;
-              const fallbackUrl = 'assets/images/lenny-lodge-1.svg';
-
-              // Move Lenny image to the appropriate container per view
+              const candidate = (key === 'onboarding') ? 'assets/images/lenny/lenny-full.png' : `assets/images/lenny/${poseName}.png`;
+              const fallback = 'assets/images/lenny-lodge-1.svg';
               const containerByKey = {
                   onboarding: document.getElementById('lenny-hero'),
                   overview: document.getElementById('lenny-overview'),
                   scenario: document.getElementById('lenny-scenario'),
-                  dashboard: document.getElementById('lenny-hero') // fallback if no dedicated container
+                  dashboard: document.getElementById('lenny-hero')
               };
               const target = containerByKey[key];
               if (target && this.elements.lennyImg && this.elements.lennyImg.parentElement !== target) {
                   target.prepend(this.elements.lennyImg);
               }
-
-              // Adjust size based on context (bigger on initial onboarding)
               if (this.elements.lennyImg) {
-                  const sizeClasses = [
-                      'w-20','h-20','w-28','h-28','md:w-28','md:h-28','md:w-40','md:h-40','lg:w-48','lg:h-48'
-                  ];
+                  const sizeClasses = ['w-20','h-20','w-28','h-28','md:w-28','md:h-28','md:w-40','md:h-40','lg:w-48','lg:h-48'];
                   this.elements.lennyImg.classList.remove(...sizeClasses);
-                  if (key === 'onboarding') {
-                      this.elements.lennyImg.classList.add('w-28','h-28','md:w-40','md:h-40','lg:w-48','lg:h-48','flex-shrink-0');
-                  } else {
-                      this.elements.lennyImg.classList.add('w-20','h-20','md:w-28','md:h-28','flex-shrink-0');
-                  }
+                  if (key === 'onboarding') this.elements.lennyImg.classList.add('w-28','h-28','md:w-40','md:h-40','lg:w-48','lg:h-48','flex-shrink-0');
+                  else this.elements.lennyImg.classList.add('w-20','h-20','md:w-28','md:h-28','flex-shrink-0');
               }
-
               const probe = new Image();
-              probe.onload = () => { this.elements.lennyImg.src = candidateUrl; };
-              probe.onerror = () => { this.elements.lennyImg.src = fallbackUrl; };
-              probe.src = candidateUrl;
-              
-              this.elements.lennyImg.alt = `Lenny Lodge (${poseName.replace(/_/g, ' ')})`;
+              probe.onload = () => { this.elements.lennyImg.src = candidate; };
+              probe.onerror = () => {
+                  const try2 = new Image();
+                  try2.onload = () => { this.elements.lennyImg.src = fallback; };
+                  try2.onerror = () => { /* keep inline SVG */ };
+                  try2.src = fallback;
+              };
+              probe.src = candidate;
+              this.elements.lennyImg.alt = `${this.config.assistantName} (${poseName.replace(/_/g, ' ')})`;
           }
           ,
           // --- OVERVIEW RENDER ---
@@ -1010,6 +1130,31 @@
               const buyHigh = md.targetBuyRange?.[1] ?? (listPrice ? Math.round(listPrice * 1.05) : this.config.financials.defaultPurchasePrice);
               const taxSave = md.taxSavingsAnnual ?? 0;
               const utilDelta = md.monthlyUtilityDelta ?? 0;
+
+              // Purchase price chips (Low/Mid/High/Custom)
+              const ppWrap = document.getElementById('pp-chips');
+              if (ppWrap) {
+                const mid = Math.round((buyLow + buyHigh) / 2);
+                const opts = [
+                  {label:'Low',  val: buyLow},
+                  {label:'Mid',  val: mid},
+                  {label:'High', val: buyHigh},
+                  {label:'Custom', val:'custom'}
+                ];
+                ppWrap.innerHTML = opts.map(o =>
+                  `<button class="chip px-2 py-2 rounded-lg border border-gray-300" data-val="${o.val}">${o.label}${o.val!=='custom' ? ` ${this.formatCurrency(o.val)}`:''}</button>`
+                ).join('');
+                const pp = this.elements.inputs.purchasePrice;
+                ppWrap.querySelectorAll('.chip').forEach(btn=>{
+                  btn.addEventListener('click', ()=>{
+                    ppWrap.querySelectorAll('.chip').forEach(x=>x.dataset.on="false");
+                    btn.dataset.on="true";
+                    const v = btn.dataset.val;
+                    if (v === 'custom') { pp?.classList.remove('hidden'); pp?.focus(); }
+                    else { pp?.classList.add('hidden'); if (pp) pp.value = v; this.updateUI(); }
+                  });
+                });
+              }
 
               if (this.elements.outputs.ovSellAddress) this.elements.outputs.ovSellAddress.textContent = this.config.sellingAddress;
               if (this.elements.outputs.ovBuyAddress) this.elements.outputs.ovBuyAddress.textContent = this.config.prospectAddress;
@@ -1147,6 +1292,8 @@
           persistState(){
               try {
                   const payload = {
+                      version: this.config.appVersion,
+                      timestamp: Date.now(),
                       currentView: this.state.currentView,
                       chosenScenario: this.state.chosenScenario,
                       inputs: this.getFinancialInputs(),
@@ -1158,9 +1305,16 @@
           ,
           restoreState(){
               try {
+                  const params = new URLSearchParams(location.search);
+                  const forceOnboarding = params.get('start') === 'onboarding' || params.get('onboarding') === '1';
                   const raw = localStorage.getItem('rz25_state');
-                  if (!raw) return;
+                  if (forceOnboarding || !raw) { this.switchView('onboarding'); return; }
                   const data = JSON.parse(raw);
+                  const ageHrs = (Date.now() - (data.timestamp || 0)) / 36e5;
+                  const versionChanged = data.version !== this.config.appVersion;
+                  if (versionChanged || ageHrs > this.config.stateTTLHours) {
+                      localStorage.removeItem('rz25_state'); this.switchView('onboarding'); return;
+                  }
                   if (data.inputs) {
                       if (this.elements.inputs.salePrice) this.elements.inputs.salePrice.value = data.inputs.salePrice ?? this.config.financials.defaultSalePrice;
                       if (this.elements.inputs.mortgageBalance) this.elements.inputs.mortgageBalance.value = data.inputs.mortgageBalance ?? this.config.financials.defaultMortgageBalance;
@@ -1179,11 +1333,10 @@
                   }
                   if (data.marketData) this.state.marketData = data.marketData;
                   if (data.currentView && this.elements.views[data.currentView?.replace('-view','')] ? true : this.elements.views[data.currentView]) {
-                      // Accept either 'overview' or 'overview-view'
                       const viewKey = this.elements.views[data.currentView] ? data.currentView : `${data.currentView}-view`;
                       this.switchView(viewKey);
                   }
-              } catch (_) {}
+              } catch (_) { this.switchView('onboarding'); }
           }
       };
 
