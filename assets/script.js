@@ -574,9 +574,7 @@ function exportTxPlanICS(){
 
   // initial render
   renderTxPlan();
-<<<<<<< Current (Your changes)
-=======
-
+  
   // Mobile nav toggle for accessibility
   const navToggle = document.getElementById('navToggle');
   const siteNav = document.getElementById('siteNav');
@@ -596,6 +594,5 @@ function exportTxPlanICS(){
   if (kpiBuy && Array.isArray(buyingProperties) && buyingProperties.length) {
     kpiBuy.textContent = fmt$(buyingProperties[0].price);
   }
->>>>>>> Incoming (Background Agent changes)
 })();
  
