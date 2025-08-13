@@ -382,7 +382,16 @@ function computeTxPlan(opts){
   // 5) Due Diligence (buy)
   const insp = 7; // inspection period
   const appraisal = (opts.financing === 'cash') ? 0 : 10;
-  const commitment = (opts.financing === 'cash') ? 0 : (opts.financing === 'conv20' ? 25 : (opts.financing === 'conv10' ? 28 : 30));
+  let commitment = 0;
+  if (opts.financing === 'cash') {
+    commitment = 0;
+  } else if (opts.financing === 'conv20') {
+    commitment = 25;
+  } else if (opts.financing === 'conv10') {
+    commitment = 28;
+  } else {
+    commitment = 30;
+  }
   const ddDays = insp + Math.max(appraisal, 0) + Math.max(commitment, 0) + hoaLag;
 
   steps.push({

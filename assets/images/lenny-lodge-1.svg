@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-label="Lenny Lodge (fallback)">
+  <defs>
+    <linearGradient id="fur" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#9b6b4a"/>
+      <stop offset="100%" stop-color="#6e4a33"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="32" fill="#F8F7F4"/>
+  <!-- Head -->
+  <circle cx="128" cy="108" r="60" fill="url(#fur)"/>
+  <!-- Ears -->
+  <circle cx="88" cy="70" r="14" fill="#6e4a33"/>
+  <circle cx="168" cy="70" r="14" fill="#6e4a33"/>
+  <!-- Eyes -->
+  <circle cx="112" cy="104" r="8" fill="#1f2937"/>
+  <circle cx="144" cy="104" r="8" fill="#1f2937"/>
+  <!-- Glasses -->
+  <circle cx="112" cy="104" r="14" fill="none" stroke="#2b3a4a" stroke-width="3"/>
+  <circle cx="144" cy="104" r="14" fill="none" stroke="#2b3a4a" stroke-width="3"/>
+  <line x1="126" y1="104" x2="130" y2="104" stroke="#2b3a4a" stroke-width="3"/>
+  <!-- Nose -->
+  <ellipse cx="128" cy="120" rx="10" ry="8" fill="#3d2b20"/>
+  <!-- Teeth -->
+  <rect x="118" y="126" width="9" height="14" rx="2" fill="#ffffff"/>
+  <rect x="129" y="126" width="9" height="14" rx="2" fill="#ffffff"/>
+  <line x1="128" y1="126" x2="128" y2="140" stroke="#e5e7eb" stroke-width="2"/>
+  <!-- Body -->
+  <ellipse cx="128" cy="200" rx="60" ry="44" fill="url(#fur)"/>
+  <!-- Shirt collar -->
+  <path d="M88 156 L116 170 L128 156 L140 170 L168 156" fill="#bcd4ea"/>
+  <!-- Tie -->
+  <polygon points="128,156 120,170 136,170" fill="#223955"/>
+  <rect x="123" y="170" width="10" height="28" fill="#223955" rx="3"/>
+  <!-- Tail -->
+  <ellipse cx="186" cy="208" rx="24" ry="44" fill="#5b3f2c" transform="rotate(-18 186 208)"/>
+  <!-- Clipboard -->
+  <rect x="56" y="168" width="36" height="48" rx="6" fill="#ffffff" stroke="#d1d5db"/>
+  <rect x="66" y="172" width="16" height="6" rx="2" fill="#9ca3af"/>
+  <line x1="60" y1="186" x2="88" y2="186" stroke="#e5e7eb"/>
+  <line x1="60" y1="196" x2="88" y2="196" stroke="#e5e7eb"/>
+  <line x1="60" y1="206" x2="88" y2="206" stroke="#e5e7eb"/>
+</svg>
+
+
