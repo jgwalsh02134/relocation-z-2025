@@ -1,29 +1,44 @@
 {
-  "name": "Relocation-Z-2025 Dev Assistant",
-  "description": "Agent for building, debugging, and improving the Relocation-Z-2025 static web app.",
+  "name": "Relocation-Z-2025 Assistant",
+  "description": "Cursor AI agent for development, debugging, and optimization of the Relocation-Z-2025 static web app.",
   "instructions": [
     "Understand the project structure: `index.html`, `assets/style.css`, `assets/script.js`.",
-    "When fixing bugs, reproduce in the browser, check console errors, and verify DOM/CSS behavior.",
-    "Keep JavaScript changes scoped; avoid globals leaking to `window`.",
-    "Maintain responsiveness across mobile, tablet, and desktop.",
-    "Optimize performance and accessibility; run Lighthouse in Chrome.",
-    "If adding tooling, prefer minimal, opt-in changes (e.g., ESLint, Prettier, Vite) with separate commits."
+    "Reproduce bugs in browser, check DevTools console, and verify DOM/CSS behavior.",
+    "Keep JavaScript scoped; avoid leaking globals to `window`.",
+    "Maintain responsive layout across mobile, tablet, and desktop.",
+    "Optimize performance and accessibility; run Lighthouse and ensure good Core Web Vitals.",
+    "Preserve print-optimized CSS and semantic HTML.",
+    "If adding tooling (ESLint/Prettier/Vite), keep changes minimal and opt-in with separate commits."
+  ],
+  "setup": [
+    "Ensure Python 3 (for dev server) and Node.js v18+ (for scanner) are installed.",
+    "No dependencies to install; site is static.",
+    "Optional: run quick scan with `node scripts/scan.js` to catch missing assets/syntax issues."
+  ],
+  "scripts": {
+    "dev": "python3 -m http.server 5173 --directory .",
+    "open": "open http://localhost:5173/index.html",
+    "scan": "node scripts/scan.js",
+    "build": "echo 'No build step; static site'",
+    "lint": "echo 'No linter configured; consider ESLint/Prettier'",
+    "test": "echo 'No tests configured'"
+  },
+  "guidelines": [
+    "Ensure interactive features (selectors, calculators, Chart.js) remain functional.",
+    "Keep DOM updates efficient; avoid layout thrashing; prefer single DOM writes when possible.",
+    "Validate anchor targets exist; keep in-page navigation working.",
+    "Check keyboard accessibility and ARIA where applicable.",
+    "Prefer progressive enhancement; avoid breaking no-JS rendering."
   ],
   "language": "javascript",
   "framework": "vanilla",
-  "build": {
-    "tool": "none"
-  },
+  "build": { "tool": "none" },
   "run": {
     "dev": "python3 -m http.server 5173 --directory .",
     "open": "open http://localhost:5173/index.html"
   },
-  "test": {
-    "command": "echo \"No test runner configured for this static site\""
-  },
-  "lint": {
-    "command": "echo \"No linter configured; consider ESLint and Prettier if desired\""
-  }
+  "test": { "command": "echo \"No test runner configured for this static site\"" },
+  "lint": { "command": "echo \"No linter configured; consider ESLint and Prettier if desired\"" }
 }
 
 
