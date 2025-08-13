@@ -1,0 +1,82 @@
+{
+  "workflows": [
+    {
+      "name": "Code Review",
+      "description": "Review modified HTML/CSS/JS for issues, style consistency, responsiveness, and print-optimized styles.",
+      "instructions": [
+        "List modified files and summarize changes.",
+        "Run `node scripts/scan.js` and include any findings (missing assets, JS/CSS syntax).",
+        "Check HTML semantics, ARIA, and in-page anchors (e.g., #hero, #metrics, #timeline).",
+        "Verify responsive behavior against breakpoints used in `assets/style.css`.",
+        "Confirm Chart.js usage is correct and canvas elements are present.",
+        "Provide a concise checklist of suggested fixes."
+      ]
+    },
+    {
+      "name": "Feature Scaffolding",
+      "description": "Generate UI scaffolding consistent with current design and wire into existing data/Chart.js.",
+      "instructions": [
+        "Review `index.html` structure and `assets/style.css` patterns.",
+        "Propose minimal HTML markup aligned with existing classes and layout utilities.",
+        "Pre-wire Chart.js config consistent with current charts.",
+        "Integrate new JS into `assets/script.js` without leaking globals; gate code behind DOM existence checks.",
+        "Ensure keyboard navigation and accessibility for new controls."
+      ]
+    },
+    {
+      "name": "Data Wiring Verification",
+      "description": "Trace data from JS sources to DOM and charts; verify selectors and rendering flows.",
+      "instructions": [
+        "Identify primary data structures/constants in `assets/script.js`.",
+        "Trace how values populate KPIs, tables, and Chart.js datasets.",
+        "Validate that all selectors used in JS exist in `index.html`.",
+        "Flag unused variables or dead code.",
+        "Confirm no sensitive information is embedded client-side."
+      ]
+    },
+    {
+      "name": "Performance Optimization",
+      "description": "Optimize DOM work, reduce reflows, and trim asset weight where feasible.",
+      "instructions": [
+        "Identify heavy DOM manipulation paths; batch reads/writes and use fragment updates.",
+        "Review Chart.js updates; minimize full re-renders and reuse instances.",
+        "Recommend lazy-loading or conditional rendering for non-critical sections.",
+        "Suggest optional bundling strategy (e.g., Vite) as an opt-in, without breaking current static flow.",
+        "Propose image/CSS/JS size reductions if applicable."
+      ]
+    },
+    {
+      "name": "Documentation Update",
+      "description": "Generate or refresh README with accurate run/scan instructions and structure overview.",
+      "instructions": [
+        "Document dev server: `python3 -m http.server 5173 --directory .` and open URL.",
+        "Document scanner usage: `node scripts/scan.js` and expected outputs.",
+        "Summarize main features and key sections (hero, metrics, sale strategy, timeline, resources).",
+        "Provide a simple architecture diagram (HTML/CSS/JS + CDN Chart.js).",
+        "List maintenance tips: responsiveness, accessibility, print CSS."
+      ]
+    },
+    {
+      "name": "Full Run Check",
+      "description": "Smoke-test runtime locally and validate console cleanliness and UI behavior.",
+      "instructions": [
+        "Start server: `python3 -m http.server 5173 --directory .`.",
+        "Open page and confirm no console errors; validate nav anchors and interactive controls.",
+        "Run `node scripts/scan.js` and confirm no issues.",
+        "Optionally run Lighthouse and record scores (Performance/Accessibility/Best Practices/SEO)."
+      ]
+    },
+    {
+      "name": "Auto Pre-Merge",
+      "description": "Chain scan, code review, perf suggestions, and doc updates into a single pass.",
+      "instructions": [
+        "Run `node scripts/scan.js` and report findings.",
+        "Execute 'Code Review' workflow steps and compile a fix checklist.",
+        "Execute 'Performance Optimization' steps and list prioritized optimizations.",
+        "Execute 'Documentation Update' steps and draft README deltas.
+      ]
+    }
+  ]
+}
+
+
