@@ -1,0 +1,10 @@
+@media print {
+  body { background: #fff !important; }
+  header, nav, #resources { display: none !important; }
+  .view.hidden { display: none !important; }
+  .container, main { width: 100% !important; padding: 0 !important; }
+  .chart-container { height: 280px !important; }
+  .page-break { page-break-after: always; }
+}
+
+

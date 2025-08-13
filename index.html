@@ -82,6 +82,7 @@
     }
     button, [role="button"], .chip { min-height: 44px; min-width: 44px; }
   </style>
+  <link rel="stylesheet" href="assets/print.css" media="print">
 </head>
 <body class="antialiased bg-[#F8F7F4] text-[#3D3B38] [padding-bottom:calc(env(safe-area-inset-bottom)+72px)]">
 
@@ -1687,3 +1688,6 @@
   </section>
 </body>
 </html>
+
+<!-- Vite/TypeScript SPA bootstrap (non-blocking). Safe alongside existing assets/script.js. -->
+<script type="module" src="/assets/app.ts"></script>
