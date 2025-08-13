@@ -15,6 +15,14 @@
             background-color: #F8F7F4;
             color: #3D3B38;
         }
+        /* Mobile polish */
+        @media (max-width: 640px) {
+            #lenny-hero { gap: 10px; }
+            #lenny-bubble { font-size: 1rem; line-height: 1.5; }
+            nav.container { padding-left: 1rem; padding-right: 1rem; }
+            #overview-view .grid { gap: 14px; }
+            #overview-view .bg-white { border-radius: 12px; }
+        }
         .view {
             transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
         }
@@ -87,7 +95,7 @@
     <div id="app-container" class="min-h-screen flex flex-col">
         <header class="w-full bg-white/80 backdrop-blur-lg border-b border-gray-200/80 sticky top-0 z-10">
             <nav class="container mx-auto px-4 md:px-8 py-4 flex justify-between items-center">
-                <div class="flex items-center gap-2">
+                <div class="hidden md:flex items-center gap-2">
                     <!-- Provided SVG icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="48" height="48" viewBox="0 0 48 48">
                         <path fill="#795548" d="M12,14V4c0-1.105,0.895-2,2-2h17c1.105,0,2,0.895,2,2v10c0,1.105-0.895,2-2,2H14	C12.895,16,12,15.105,12,14z"></path><path fill="#8ecbf8" d="M22.5,8c-0.513,0-1.011,0.061-1.5,0.151v2.037C21.482,10.07,21.983,10,22.5,10	c3.584,0,6.5,3,6.5,6.688c0,1.204-0.311,2.335-0.855,3.313c-0.921,1.654-2.513,2.186-4.387,2.326	c0.799,0.643,1.427,1.486,1.813,2.453C28.742,23.517,31,20.37,31,16.688C31,11.897,27.187,8,22.5,8z"></path><path fill="#fb8c00" d="M41.242,34H39v-2.242L38.242,31H36v-2.242l-1.417-1.417c0.885-2.458,0.342-5.29-1.646-7.278	c-2.751-2.751-7.123-2.751-9.874,0c-0.401,0.401-0.739,0.84-1.023,1.3c1.235,0.447,2.281,1.284,2.987,2.367	C25.16,22.755,25.988,22,27,22c1.105,0,2,0.895,2,2s-0.895,2-2,2c-0.437,0-0.837-0.144-1.166-0.381C25.939,26.063,26,26.524,26,27	c0,1.54-0.585,2.94-1.539,4.002c1.797,1.072,3.943,1.25,5.866,0.567L37.758,39h2.875L42,37.539v-2.781L41.242,34z"></path><polygon fill="#ef6c00" points="42,37.539 34.586,30.125 33.172,31.539 40.633,39"></polygon><path fill="#ffc107" d="M27,27c0-3.9-3.1-7-7-7s-7,3.1-7,7c0,2.821,1.626,5.217,4,6.33V44l2,2h2l2-2v-2l-1.5-1.5L23,39v-1	l-1-1.5l1-1.5v-1.67C25.374,32.217,27,29.821,27,27z M20,23c1.105,0,2,0.895,2,2s-0.895,2-2,2s-2-0.895-2-2S18.895,23,20,23z"></path><path fill="#c98d09" d="M19,35h2v11h-2V35z"></path><path fill="#8ecbf8" d="M20.625,23.1c-0.197-0.065-0.607-0.234-0.607-0.234C17.662,21.861,16,19.471,16,16.688	c0-3.156,2.138-5.801,5-6.501V8.144c-3.973,0.727-7,4.278-7,8.544c0,4.605,3.528,8.375,7.965,8.66C21.985,25.234,22,25.119,22,25	C22,24.114,21.424,23.362,20.625,23.1z"></path><path fill="#54a8ed" d="M24,8.144v0.007C23.511,8.061,23.013,8,22.5,8S21.489,8.061,21,8.151V8.144	c-1.495,0.274-2.856,0.948-3.972,1.909c0.078,0.777,0.319,1.504,0.686,2.151c0.867-0.976,1.995-1.702,3.286-2.017v0.001	C21.482,10.07,21.983,10,22.5,10s1.018,0.07,1.5,0.188v-0.001c1.291,0.315,2.419,1.042,3.286,2.017	c0.367-0.647,0.609-1.375,0.686-2.151C26.856,9.092,25.495,8.418,24,8.144z"></path><circle cx="22.5" cy="9.5" r="3.5" fill="#af9a92"></circle>
@@ -98,7 +106,7 @@
                     <button id="btnExportLenny" class="hidden text-sm font-medium text-[#4A5C6A] hover:text-[#3D3B38] transition">Export Lenny JSON</button>
                     <button id="btnCopyLennyPrompt" class="hidden text-sm font-medium text-[#4A5C6A] hover:text-[#3D3B38] transition">Copy Lenny Prompt</button>
                     <button id="reset-btn" class="hidden text-sm font-medium text-[#4A5C6A] hover:text-[#3D3B38] transition">Start Over</button>
-                    <button id="open-lenny-chat" class="text-sm font-medium text-white bg-[#4A5C6A] hover:bg-[#3B4A58] transition px-3 py-1.5 rounded-lg shadow-sm">Chat</button>
+                    <button id="open-lenny-chat" class="hidden md:inline-flex text-sm font-medium text-white bg-[#4A5C6A] hover:bg-[#3B4A58] transition px-3 py-1.5 rounded-lg shadow-sm">Chat</button>
                 </div>
             </nav>
         </header>
@@ -143,8 +151,8 @@
                         Let's Plan
                     </button>
                 </div>
-                <div class="md:hidden fixed left-0 right-0 bottom-0 z-20">
-                    <div class="mx-auto container px-4 pb-4" style="padding-bottom: calc(env(safe-area-inset-bottom, 0) + 1rem);">
+                <div class="md:hidden fixed left-0 right-0 bottom-0 z-20 bg-white/90 backdrop-blur border-t border-gray-200">
+                    <div class="mx-auto container px-4 pt-3 pb-4" style="padding-bottom: calc(env(safe-area-inset-bottom, 0) + 1rem);">
                         <button id="start-onboarding-btn-mobile" class="w-full btn-primary font-bold py-3 rounded-lg text-lg shadow-md">
                             Let's Plan
                         </button>
@@ -158,7 +166,7 @@
                 <div class="text-center mb-10">
                     <div id="lenny-overview" class="mx-auto flex items-center justify-center gap-3 mb-4"></div>
                     <h2 class="text-3xl md:text-4xl font-bold text-[#4A5C6A] mb-3">Project Overview</h2>
-                    <p class="text-lg text-[#6B6864] max-w-3xl mx-auto">Here’s the high-level snapshot of your move before we choose a strategy.</p>
+                    <p class="text-base md:text-lg text-[#6B6864] max-w-3xl mx-auto">Here’s the high-level snapshot of your move before we choose a strategy.</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                     <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
