@@ -1,0 +1,12 @@
+name = "relocation-z-2025"
+compatibility_date = "2025-08-14"
+main = "web/src/worker.ts"
+
+[assets]
+directory = "web/dist"
+not_found_handling = "single-page-application"
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
+
+
+

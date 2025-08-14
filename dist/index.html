@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relocation-Z-2025 | Your Personal Relocation Guide</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #F8F7F4;
+      color: #3D3B38;
+    }
+    .view {
+      transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    }
+    .view.hidden {
+      opacity: 0;
+      transform: translateY(20px);
+      pointer-events: none;
+      position: absolute;
+      width: 100%;
+    }
+    .checklist-item-header {
+      cursor: pointer;
+    }
+    .checklist-item-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease-in-out, padding-top 0.5s ease-in-out, padding-bottom 0.5s ease-in-out;
+    }
+    .checklist-item-body.open {
+      max-height: 1000px;
+      padding-top: 1rem;
+      padding-bottom: 1.25rem;
+    }
+    .btn-primary {
+      background-color: #4A5C6A;
+      color: #FFFFFF;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    .btn-primary:hover {
+      background-color: #3B4A58;
+      transform: translateY(-2px);
+    }
+    .scenario-card {
+      border: 2px solid #EAE8E3;
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+      transform-origin: center;
+    }
+    .scenario-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.07);
+    }
+    .scenario-card.selected {
+      border-color: #4A5C6A;
+      box-shadow: 0 8px 25px rgba(74, 92, 106, 0.2);
+      background-color: #FDFCFB;
+      transform: translateY(-5px) scale(1.02);
+    }
+    .chart-container {
+      position: relative;
+      width: 100%;
+      max-width: 280px;
+      margin-left: auto;
+      margin-right: auto;
+      height: 280px;
+    }
+    #typewriter-cursor {
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink {
+      from, to { opacity: 1 }
+      50% { opacity: 0 }
+    }
+    .progress-bar-fill {
+      transition: width 0.5s ease-in-out;
+    }
+    button, [role="button"], .chip { min-height: 44px; min-width: 44px; }
+  </style>
+  <link rel="stylesheet" href="data:text/css;base64,QG1lZGlhIHByaW50IHsKICBib2R5IHsgYmFja2dyb3VuZDogI2ZmZiAhaW1wb3J0YW50OyB9CiAgaGVhZGVyLCBuYXYsICNyZXNvdXJjZXMgeyBkaXNwbGF5OiBub25lICFpbXBvcnRhbnQ7IH0KICAudmlldy5oaWRkZW4geyBkaXNwbGF5OiBub25lICFpbXBvcnRhbnQ7IH0KICAuY29udGFpbmVyLCBtYWluIHsgd2lkdGg6IDEwMCUgIWltcG9ydGFudDsgcGFkZGluZzogMCAhaW1wb3J0YW50OyB9CiAgLmNoYXJ0LWNvbnRhaW5lciB7IGhlaWdodDogMjgwcHggIWltcG9ydGFudDsgfQogIC5wYWdlLWJyZWFrIHsgcGFnZS1icmVhay1hZnRlcjogYWx3YXlzOyB9Cn0KCgo=" media="print">
+  <script type="module" crossorigin src="/assets/index-BVthYbL9.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-CtcZR5wA.css">
+</head>
+<body class="antialiased bg-[#F8F7F4] text-[#3D3B38] [padding-bottom:calc(env(safe-area-inset-bottom)+72px)]">
+
+  <div id="app-container" class="min-h-screen flex flex-col">
+    <header class="w-full bg-white/80 backdrop-blur-lg border-b border-gray-200/80 sticky top-0 z-10">
+      <nav class="container mx-auto px-4 md:px-8 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+          <!-- Provided SVG icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="48" height="48" viewBox="0 0 48 48">
+            <path fill="#795548" d="M12,14V4c0-1.105,0.895-2,2-2h17c1.105,0,2,0.895,2,2v10c0,1.105-0.895,2-2,2H14	C12.895,16,12,15.105,12,14z"></path><path fill="#8ecbf8" d="M22.5,8c-0.513,0-1.011,0.061-1.5,0.151v2.037C21.482,10.07,21.983,10,22.5,10	c3.584,0,6.5,3,6.5,6.688c0,1.204-0.311,2.335-0.855,3.313c-0.921,1.654-2.513,2.186-4.387,2.326	c0.799,0.643,1.427,1.486,1.813,2.453C28.742,23.517,31,20.37,31,16.688C31,11.897,27.187,8,22.5,8z"></path><path fill="#fb8c00" d="M41.242,34H39v-2.242L38.242,31H36v-2.242l-1.417-1.417c0.885-2.458,0.342-5.29-1.646-7.278	c-2.751-2.751-7.123-2.751-9.874,0c-0.401,0.401-0.739,0.84-1.023,1.3c1.235,0.447,2.281,1.284,2.987,2.367	C25.16,22.755,25.988,22,27,22c1.105,0,2,0.895,2,2s-0.895,2-2,2c-0.437,0-0.837-0.144-1.166-0.381C25.939,26.063,26,26.524,26,27	c0,1.54-0.585,2.94-1.539,4.002c1.797,1.072,3.943,1.25,5.866,0.567L37.758,39h2.875L42,37.539v-2.781L41.242,34z"></path><polygon fill="#ef6c00" points="42,37.539 34.586,30.125 33.172,31.539 40.633,39"></polygon><path fill="#ffc107" d="M27,27c0-3.9-3.1-7-7-7s-7,3.1-7,7c0,2.821,1.626,5.217,4,6.33V44l2,2h2l2-2v-2l-1.5-1.5L23,39v-1	l-1-1.5l1-1.5v-1.67C25.374,32.217,27,29.821,27,27z M20,23c1.105,0,2,0.895,2,2s-0.895,2-2,2s-2-0.895-2-2S18.895,23,20,23z"></path><path fill="#c98d09" d="M19,35h2v11h-2V35z"></path><path fill="#8ecbf8" d="M20.625,23.1c-0.197-0.065-0.607-0.234-0.607-0.234C17.662,21.861,16,19.471,16,16.688	c0-3.156,2.138-5.801,5-6.501V8.144c-3.973,0.727-7,4.278-7,8.544c0,4.605,3.528,8.375,7.965,8.66C21.985,25.234,22,25.119,22,25	C22,24.114,21.424,23.362,20.625,23.1z"></path><path fill="#54a8ed" d="M24,8.144v0.007C23.511,8.061,23.013,8,22.5,8S21.489,8.061,21,8.151V8.144	c-1.495,0.274-2.856,0.948-3.972,1.909c0.078,0.777,0.319,1.504,0.686,2.151c0.867-0.976,1.995-1.702,3.286-2.017v0.001	C21.482,10.07,21.983,10,22.5,10s1.018,0.07,1.5,0.188v-0.001c1.291,0.315,2.419,1.042,3.286,2.017	c0.367-0.647,0.609-1.375,0.686-2.151C26.856,9.092,25.495,8.418,24,8.144z"></path><circle cx="22.5" cy="9.5" r="3.5" fill="#af9a92"></circle>
+          </svg>
+        </div>
+        <div class="flex items-center gap-2">
+          <!-- New: quick-access developer helpers -->
+          <button id="btnExportLenny" class="hidden text-sm font-medium text-[#4A5C6A] hover:text-[#3D3B38] transition">Export Lenny JSON</button>
+          <button id="btnCopyLennyPrompt" class="hidden text-sm font-medium text-[#4A5C6A] hover:text-[#3D3B38] transition">Copy Lenny Prompt</button>
+          <button id="reset-btn" class="hidden text-sm font-medium text-[#4A5C6A] hover:text-[#3D3B38] transition">Start Over</button>
+          <button id="open-lenny-chat" class="text-sm font-medium text-white bg-[#4A5C6A] hover:bg-[#3B4A58] transition px-3 py-1.5 rounded-lg shadow-sm">Chat</button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="flex-grow container mx-auto p-4 md:px-8 md:py-12 relative">
+      <!-- Onboarding View -->
+      <div id="onboarding-view" class="view text-center pb-24 md:pb-0">
+        <div class="max-w-2xl mx-auto min-h-[70vh] flex flex-col justify-center">
+          <div class="mb-6">
+            <ol class="flex items-center justify-center gap-2 text-xs text-[#6B6864] select-none">
+              <li class="flex items-center gap-2">
+                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#4A5C6A] text-white font-bold">1</span>
+                <span class="hidden sm:inline">Onboarding</span>
+              </li>
+              <li class="h-px w-8 bg-gray-300" aria-hidden="true"></li>
+              <li class="flex items-center gap-2 opacity-70">
+                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-200 text-[#4A5C6A] font-bold">2</span>
+                <span class="hidden sm:inline">Overview</span>
+              </li>
+              <li class="h-px w-8 bg-gray-300" aria-hidden="true"></li>
+              <li class="flex items-center gap-2 opacity-70">
+                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-200 text-[#4A5C6A] font-bold">3</span>
+                <span class="hidden sm:inline">Strategy</span>
+              </li>
+              <li class="h-px w-8 bg-gray-300" aria-hidden="true"></li>
+              <li class="flex items-center gap-2 opacity-70">
+                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-200 text-[#4A5C6A] font-bold">4</span>
+                <span class="hidden sm:inline">Dashboard</span>
+              </li>
+            </ol>
+          </div>
+          <!-- Remove static Lenny image (dynamic image is injected by JS) -->
+          <!-- <img src="assets/images/Lenny-Lodge copy.svg" alt="Lenny Lodge the Beaver" class="mx-auto mb-4 w-28 h-28" style="max-width:112px;max-height:112px;"> -->
+          <!-- Replace the single greeting paragraph with a flex wrapper so image + text align -->
+          <div id="lenny-hero" class="mx-auto flex items-start justify-center gap-3 md:gap-4 md:flex-row flex-col mb-8">
+            <p id="lenny-bubble" class="text-lg text-[#6B6864] min-h-[56px] bg-white/80 border border-gray-200 rounded-lg px-4 py-3 shadow-sm inline-block text-left">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#4A5C6A]/10 text-[#4A5C6A] text-xs font-semibold mr-2 align-middle assistant-name">Lenny</span>
+              <span id="typewriter"></span><span id="typewriter-cursor">|</span>
+            </p>
+          </div>
+          <button id="start-onboarding-btn" class="hidden md:inline-flex btn-primary font-bold py-3 px-8 rounded-lg text-lg">
+            Let's Plan
+          </button>
+        </div>
+        <div class="md:hidden fixed left-0 right-0 bottom-0 z-20">
+          <div class="mx-auto container px-4 pb-4" style="padding-bottom: calc(env(safe-area-inset-bottom, 0) + 1rem);">
+            <button id="start-onboarding-btn-mobile" class="w-full btn-primary font-bold py-3 rounded-lg text-lg shadow-md">
+              Let's Plan
+            </button>
+            <p class="mt-2 text-center text-xs text-[#6B6864]">Takes ~2s to fetch a quick snapshot. No sign-in required.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Overview View -->
+      <div id="overview-view" class="view hidden">
+        <div class="text-center mb-10">
+          <div id="lenny-overview" class="mx-auto flex items-center justify-center gap-3 mb-4"></div>
+          <h2 class="text-3xl md:text-4xl font-bold text-[#4A5C6A] mb-3">Project Overview</h2>
+          <p class="text-lg text-[#6B6864] max-w-3xl mx-auto">Here’s the high-level snapshot of your move before we choose a strategy.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
+            <h4 class="text-sm font-semibold text-[#8B6E5A] uppercase tracking-wide mb-1">Selling</h4>
+            <p class="text-[#4A5C6A] font-bold">
+              <span id="ov-sell-address"></span>
+              <span class="ov-skel ov-skel-sell-address hidden inline-block h-4 bg-gray-200 rounded align-middle w-40 ml-2"></span>
+            </p>
+            <p class="text-[#6B6864]">Typical range:
+              <span id="ov-sale-range" class="font-semibold text-[#4A5C6A]"></span>
+              <span class="ov-skel ov-skel-sale-range hidden inline-block h-4 bg-gray-200 rounded align-middle w-36 ml-2"></span>
+            </p>
+            <div class="mt-3 grid grid-cols-2 gap-2 text-sm text-[#6B6864]">
+              <div><span class="font-semibold text-[#4A5C6A]">Zestimate</span>: <a id="ov-sale-zest-link" href="#" target="_blank" class="underline text-[#4A5C6A]"><span id="ov-sale-zest"></span></a></div>
+              <div><span class="font-semibold text-[#4A5C6A]">Beds/Baths</span>: <span id="ov-sell-bb"></span></div>
+              <div><span class="font-semibold text-[#4A5C6A]">Sq Ft</span>: <span id="ov-sell-sqft"></span></div>
+              <div><span class="font-semibold text-[#4A5C6A]">Year</span>: <span id="ov-sell-year"></span></div>
+            </div>
+          </div>
+          <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
+            <h4 class="text-sm font-semibold text-[#8B6E5A] uppercase tracking-wide mb-1">Buying Target</h4>
+            <p class="text-[#4A5C6A] font-bold">
+              <span id="ov-buy-address"></span>
+              <span class="ov-skel ov-skel-buy-address hidden inline-block h-4 bg-gray-200 rounded align-middle w-40 ml-2"></span>
+            </p>
+            <div class="text-[#6B6864] flex items-start gap-2">
+              <p>Target range:
+                <span id="ov-buy-range" class="font-semibold text-[#4A5C6A]"></span>
+                <span class="ov-skel ov-skel-buy-range hidden inline-block h-4 bg-gray-200 rounded align-middle w-36 ml-2"></span>
+              </p>
+              <a id="ov-prospect-link" href="#" target="_blank" class="text-xs underline text-[#4A5C6A] ml-auto">View on Zillow</a>
+              <button id="ov-edit-buy-range-btn" class="text-xs px-2 py-1 border border-gray-300 rounded hover:bg-gray-50 text-[#4A5C6A]">Edit</button>
+            </div>
+            <div class="mt-3 grid grid-cols-2 gap-2 text-sm text-[#6B6864]">
+              <div><span class="font-semibold text-[#4A5C6A]">List</span>: <span id="ov-buy-list"></span></div>
+              <div><span class="font-semibold text-[#4A5C6A]">Zestimate</span>: <span id="ov-buy-zest"></span></div>
+              <div><span class="font-semibold text-[#4A5C6A]">Beds/Baths</span>: <span id="ov-buy-bb"></span></div>
+              <div><span class="font-semibold text-[#4A5C6A]">Sq Ft</span>: <span id="ov-buy-sqft"></span></div>
+              <div><span class="font-semibold text-[#4A5C6A]">Year</span>: <span id="ov-buy-year"></span></div>
+              <div><span class="font-semibold text-[#4A5C6A]">HOA</span>: <span id="ov-buy-hoa"></span></div>
+              <div class="col-span-2"><span class="font-semibold text-[#4A5C6A]">Taxes</span>: <span id="ov-buy-taxes"></span> /yr</div>
+            </div>
+            <div id="ov-buy-range-editor" class="hidden mt-3 p-3 bg-[#F8F7F4] border border-gray-200 rounded-lg">
+              <div class="flex items-center gap-3">
+                <label class="text-sm text-[#6B6864]">Low ($)
+                  <input id="ov-buy-low-input" type="number" class="mt-1 block w-32 rounded-md border-gray-300 shadow-sm focus:border-[#4A5C6A] focus:ring-[#4A5C6A] sm:text-sm p-2">
+                </label>
+                <label class="text-sm text-[#6B6864]">High ($)
+                  <input id="ov-buy-high-input" type="number" class="mt-1 block w-32 rounded-md border-gray-300 shadow-sm focus:border-[#4A5C6A] focus:ring-[#4A5C6A] sm:text-sm p-2">
+                </label>
+                <div class="ml-auto flex items-center gap-2">
+                  <button id="ov-buy-save-btn" class="btn-primary text-sm font-semibold py-2 px-3 rounded">Save</button>
+                  <button id="ov-buy-cancel-btn" class="text-sm px-3 py-2 rounded border border-gray-300 hover:bg-gray-50 text-[#4A5C6A]">Cancel</button>
+                </div>
+              </div>
+              <p id="ov-buy-edit-error" class="hidden text-sm text-red-600 mt-2">Please enter valid numbers where Low ≤ High.</p>
+            </div>
+          </div>
+          <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
+            <h4 class="text-sm font-semibold text-[#8B6E5A] uppercase tracking-wide mb-1">Annual Tax Savings</h4>
+            <p id="ov-tax-savings" class="text-2xl font-bold text-[#4A5C6A]"></p>
+            <div class="ov-skel ov-skel-tax-savings hidden h-6 bg-gray-200 rounded w-24"></div>
+            <p class="text-xs text-[#6B6864]">Estimate based on current comps</p>
+          </div>
+          <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
+            <h4 class="text-sm font-semibold text-[#8B6E5A] uppercase tracking-wide mb-1">Monthly Utilities</h4>
+            <p id="ov-utility-delta" class="text-2xl font-bold text-[#4A5C6A]"></p>
+            <div class="ov-skel ov-skel-utility-delta hidden h-6 bg-gray-200 rounded w-28"></div>
+            <p class="text-xs text-[#6B6864]">Positive = more, negative = less</p>
+          </div>
+        </div>
+        <!-- Financial snapshot to aid decision-making -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
+            <h4 class="text-sm font-semibold text-[#8B6E5A] uppercase tracking-wide mb-1">Estimated Net Proceeds (Sell)</h4>
+            <p id="ov-net-proceeds" class="text-2xl font-bold text-[#4A5C6A]">$0</p>
+            <p class="text-xs text-[#6B6864]">After commission, transfer tax, attorney and other estimated fees, plus mortgage payoff.</p>
+          </div>
+          <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
+            <h4 class="text-sm font-semibold text-[#8B6E5A] uppercase tracking-wide mb-1">Cash To Close + Monthly PITI (Buy)</h4>
+            <p class="text-[#4A5C6A] font-bold text-xl"><span id="ov-cash-close">$0</span> <span class="text-sm text-[#6B6864]">cash to close</span></p>
+            <p class="text-[#4A5C6A] font-bold text-xl"><span id="ov-piti">$0</span> <span class="text-sm text-[#6B6864]">/mo PITI</span></p>
+            <p class="text-xs text-[#6B6864]">Based on current inputs (price, down payment, rates, taxes, insurance).</p>
+          </div>
+        </div>
+        <!-- Quick guidance before strategy selection -->
+        <div class="bg-[#F8F7F4] border border-gray-200 rounded-xl p-4 mb-6">
+          <p id="ov-decision-hint" class="text-sm text-[#3D3B38]"></p>
+        </div>
+        <div class="text-center">
+          <button id="goto-scenario-btn" class="btn-primary font-bold py-3 px-8 rounded-lg text-lg">Choose Strategy</button>
+          <p class="mt-3 text-sm text-[#6B6864]">We’ll fine-tune your plan with these variables on the next step.</p>
+        </div>
+      </div>
+
+      <!-- Scenario Selection View -->
+      <div id="scenario-view" class="view hidden">
+        <div class="text-center mb-12">
+          <div id="lenny-scenario" class="mx-auto flex items-center justify-center gap-3 mb-4"></div>
+          <h2 class="text-3xl md:text-4xl font-bold text-[#4A5C6A] mb-3">Choose Your Core Strategy</h2>
+          <p class="text-lg text-[#6B6864] max-w-3xl mx-auto">This is the most important decision. It shapes our entire plan. Select the path that best fits your goals and comfort level.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div id="scenario-sell-first" class="scenario-card p-6 rounded-xl text-center cursor-pointer flex flex-col items-center">
+            <svg class="w-16 h-16 mb-4 text-[#4A5C6A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+            <h3 class="text-2xl font-bold text-[#4A5C6A] mb-2">Safety-First Path</h3>
+            <p class="font-semibold mb-3 text-[#8B6E5A]">(Sell First)</p>
+            <p class="text-[#6B6864] flex-grow">Sell your home first. With cash in hand, you become a powerful, non-contingent buyer. The most financially secure route.</p>
+          </div>
+          <div id="scenario-buy-first" class="scenario-card p-6 rounded-xl text-center cursor-pointer flex flex-col items-center">
+            <svg class="w-16 h-16 mb-4 text-[#4A5C6A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            <h3 class="text-2xl font-bold text-[#4A5C6A] mb-2">Convenience Path</h3>
+            <p class="font-semibold mb-3 text-[#8B6E5A]">(Buy First)</p>
+            <p class="text-[#6B6864] flex-grow">Buy a new home before selling your current one, likely using a bridge loan. Allows for a single, low-stress move but carries financial risk.</p>
+          </div>
+          <div id="scenario-contingent" class="scenario-card p-6 rounded-xl text-center cursor-pointer flex flex-col items-center">
+            <svg class="w-16 h-16 mb-4 text-[#4A5C6A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path></svg>
+            <h3 class="text-2xl font-bold text-[#4A5C6A] mb-2">Balancing Act</h3>
+            <p class="font-semibold mb-3 text-[#8B6E5A]">(Contingent Offer)</p>
+            <p class="text-[#6B6864] flex-grow">Find a home and make an offer that is contingent on the sale of your current home. This path balances security and convenience.</p>
+          </div>
+        </div>
+         <div class="text-center mt-12">
+          <button id="confirm-scenario-btn" class="btn-primary font-bold py-3 px-8 rounded-lg text-lg opacity-50 cursor-not-allowed" disabled>
+            Build My Plan
+          </button>
+        </div>
+      </div>
+
+      <!-- Dashboard View -->
+      <div id="dashboard-view" class="view hidden">
+        <header class="text-center mb-12">
+          <h2 class="text-4xl md:text-5xl font-bold text-[#4A5C6A] mb-3">Your Relocation Mission Control</h2>
+          <p id="dashboard-intro" class="text-lg text-[#6B6864] max-w-3xl mx-auto"></p>
+        </header>
+
+        <section id="financials" class="mb-16">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+              <h3 class="text-2xl font-bold text-[#4A5C6A] border-b-2 border-gray-100 pb-3 mb-6 flex items-center gap-3">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                Selling: 54 Collyer Pl, White Plains
+              </h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                  <div>
+                    <label for="sale-price" class="block text-sm font-medium text-[#6B6864]">Estimated Sale Price ($)</label>
+                    <input type="number" id="sale-price" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4A5C6A] focus:ring-[#4A5C6A] sm:text-sm p-2" value="1128100">
+                  </div>
+                  <div>
+                    <label for="mortgage-balance" class="block text-sm font-medium text-[#6B6864]">Remaining Mortgage ($)</label>
+                    <input type="number" id="mortgage-balance" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4A5C6A] focus:ring-[#4A5C6A] sm:text-sm p-2" value="350000">
+                  </div>
+                  <div class="bg-[#F8F7F4] p-4 rounded-lg text-center">
+                    <p class="text-sm font-medium text-[#6B6864]">Estimated Net Profit</p>
+                    <p id="net-profit" class="text-3xl font-bold text-[#4A5C6A]">$0</p>
+                  </div>
+                </div>
+                <div><div class="chart-container"><canvas id="seller-chart"></canvas></div></div>
+              </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+              <h3 class="text-2xl font-bold text-[#4A5C6A] border-b-2 border-gray-100 pb-3 mb-6 flex items-center gap-3">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                Buying: Colonie Area
+              </h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                  <div>
+                    <label for="purchase-price" class="block text-sm font-medium text-[#6B6864]">Target Purchase Price ($)</label>
+                    <input type="number" id="purchase-price" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#4A5C6A] focus:ring-[#4A5C6A] sm:text-sm p-2" value="750000">
+                    <div id="pp-chips" class="mt-2 grid grid-cols-4 gap-2"></div>
+                  </div>
+                  <div>
+                    <label for="down-payment-percent" class="block text-sm font-medium text-[#6B6864]">Down Payment (%)</label>
+                    <div id="dp-chips" class="mt-2 grid grid-cols-5 gap-2">
+                      <button class="chip px-2 py-2 rounded-lg border border-gray-300" data-val="10">10%</button>
+                      <button class="chip px-2 py-2 rounded-lg border border-gray-300" data-val="15">15%</button>
+                      <button class="chip px-2 py-2 rounded-lg border border-gray-300" data-val="20">20%</button>
+                      <button class="chip px-2 py-2 rounded-lg border border-gray-300" data-val="25">25%</button>
+                      <button class="chip px-2 py-2 rounded-lg border border-gray-300" data-val="custom">Custom</button>
+                    </div>
+                    <input type="number" id="down-payment-percent" class="mt-2 hidden w-full rounded-md border-gray-300 shadow-sm focus:border-[#4A5C6A] focus:ring-[#4A5C6A] sm:text-sm p-2" value="20">
+                  </div>
+                  <div class="bg-[#F8F7F4] p-4 rounded-lg text-center">
+                    <p class="text-sm font-medium text-[#6B6864]">Est. Monthly PITI</p>
+                    <p id="piti-estimate" class="text-3xl font-bold text-[#4A5C6A]">$0</p>
+                  </div>
+                </div>
+                <div><div class="chart-container"><canvas id="buyer-chart"></canvas></div></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="checklists">
+          <h3 class="text-3xl font-bold text-center text-[#4A5C6A] mb-8">Your Action Plan</h3>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div id="seller-checklist-container" class="bg-white p-6 rounded-xl shadow-lg">
+              <h4 class="text-2xl font-semibold mb-2 text-[#4A5C6A]">Seller's Checklist</h4>
+              <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4"><div id="seller-progress" class="bg-[#4A5C6A] h-2.5 rounded-full progress-bar-fill" style="width: 0%"></div></div>
+            </div>
+            <div id="buyer-checklist-container" class="bg-white p-6 rounded-xl shadow-lg">
+              <h4 class="text-2xl font-semibold mb-2 text-[#4A5C6A]">Buyer's Checklist</h4>
+              <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4"><div id="buyer-progress" class="bg-[#4A5C6A] h-2.5 rounded-full progress-bar-fill" style="width: 0%"></div></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+    <footer id="mobile-wizard"
+      class="fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-gray-200
+             px-4 py-3 md:hidden">
+      <div class="max-w-screen-sm mx-auto flex items-center gap-2">
+        <button id="btnPrev" class="flex-1 py-3 rounded-lg border border-gray-300">Back</button>
+        <button id="btnNext" class="flex-1 py-3 rounded-lg btn-primary font-bold">Next</button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Lenny Lodge Pose Library + helper -->
+  <script>
+  const LennyPoseLibrary = {
+    "character": {
+      "name": "Lenny Lodge",
+      "master_style_prompt": "Hyper-detailed cartoon illustration of Lenny Lodge, a friendly, well-proportioned beaver mascot with all classic beaver traits: prominent buck teeth, broad flat textured tail, warm medium-brown fur with subtle shading, small rounded ears, and bright expressive eyes. He has a sturdy rounded build and is dressed in a professional business casual style: a light blue collared dress shirt with sleeves rolled just below the elbows, a neatly knotted dark navy tie, shirt tucked into his natural fur body (no pants or shoes). He wears round thin-framed glasses slightly askew. Rendered with bold clean outlines, subtle shading for depth, and a tasteful color palette of blues, browns, and warm accents, isolated with a transparent background, designed for high-resolution use and clean SVG conversion. --ar 1:1 --no: photorealism, background scenery, gradients, clutter",
+      "poses": [
+        { "name": "default_greeting", "description": "Standing upright, smiling warmly, right hand holding a clipboard with a neatly organized, color-coded relocation checklist, left hand gesturing outward in a welcoming manner, tail visible behind angled slightly to the side." },
+        { "name": "waving", "description": "Standing with one hand raised in a friendly wave, the other hand holding a clipboard close to the chest." },
+        { "name": "thinking_advising", "description": "Standing with one hand holding chin in a thoughtful pose, other hand pointing to a clipboard showing a floor plan." },
+        { "name": "map_pointing", "description": "Standing next to a simplified map graphic on the clipboard, pointing to a location with a confident smile." },
+        { "name": "sold_sign", "description": "Standing with both hands holding a bright red 'SOLD' sign, smiling proudly." },
+        { "name": "laptop_desk", "description": "Sitting at a desk, typing on a sleek laptop with a coffee cup nearby, tail visible draped to the side." },
+        { "name": "closing_day", "description": "Standing with an oversized cartoon house key held high in one hand, the other hand giving a thumbs-up." }
+      ]
+    }
+  };
+
+  function getLennyPrompt(poseName = 'default_greeting') {
+    const style = LennyPoseLibrary.character.master_style_prompt;
+    const poses = LennyPoseLibrary.character.poses;
+    const pose = poses.find(p => p.name === poseName)
+      || poses.find(p => p.name === 'default_greeting')
+      || poses[0];
+    return `${style} Pose: ${pose.description}`;
+  }
+
+  // Expose for programmatic use
+  window.LennyPoseLibrary = LennyPoseLibrary;
+  window.getLennyPrompt = getLennyPrompt;
+
+  // New: helper that matches the Node/Python examples (style + description)
+  function buildLennyPrompt(poseName = 'default_greeting') {
+    const style = LennyPoseLibrary.character.master_style_prompt;
+    const poses = LennyPoseLibrary.character.poses;
+    const pose = poses.find(p => p.name === poseName)
+      || poses.find(p => p.name === 'default_greeting')
+      || poses[0];
+    return `${style} ${pose.description}`;
+  }
+
+  // New: quick exporter for lenny_pose_library.json
+  function exportLennyLibrary() {
+    const blob = new Blob([JSON.stringify(LennyPoseLibrary, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'lenny_pose_library.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  // Expose new helpers
+  window.buildLennyPrompt = buildLennyPrompt;
+  window.exportLennyLibrary = exportLennyLibrary;
+  </script>
+
+  <script>
+  const LennyInlineSVG = `
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+    <stop offset="0" stop-color="#8B6E5A"/><stop offset="1" stop-color="#4A5C6A"/></linearGradient></defs>
+  <circle cx="64" cy="64" r="62" fill="url(#g)" opacity="0.12" />
+  <circle cx="64" cy="64" r="54" fill="#FDFCFB" stroke="#D9D7D2"/>
+  <text x="64" y="74" text-anchor="middle" font-family="Inter, system-ui, sans-serif"
+        font-weight="700" font-size="44" fill="#4A5C6A">L</text>
+</svg>`;
+
+  const LennyScripts = {
+    onboarding: {
+      text: "I’m Lenny! Let’s make this move simple. Ready for a quick snapshot?",
+      chips: [{id:'go_overview', label:'Show Snapshot'}],
+      next: 'overview'
+    },
+    overview: {
+      text: "Here’s your situation at a glance. Want a strategy recommendation?",
+      chips: [{id:'go_scenario', label:'Recommend Strategy'}],
+      next: 'scenario'
+    },
+    scenario: {
+      text: "Pick the approach that fits you. You can change it later.",
+      chips: [
+        {id:'pick_sell_first', label:'Safety-First'},
+        {id:'pick_buy_first',  label:'Convenience'},
+        {id:'pick_cont',       label:'Balancing Act'}
+      ],
+      next: 'dashboard'
+    },
+    dashboard: {
+      text: "Plan built. Want a checklist or payment tune-up?",
+      chips: [
+        {id:'open_seller_check', label:'Seller Checklist'},
+        {id:'open_buyer_check',  label:'Buyer Checklist'},
+        {id:'tweak_payments',    label:'Tune Payments'}
+      ]
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+      const RelocationApp = {
+          // --- CONFIGURATION ---
+          config: {
+              appVersion: '2025-08-13',
+              stateTTLHours: 24,
+              assistantName: 'Lenny',
+              backendBase: 'http://localhost:4000',
+              sellingAddress: '54 Collyer Pl, White Plains, NY',
+              prospectAddress: '8 Loudonwood East, Loudonville, NY 12211',
+              financials: {
+                  defaultSalePrice: 1128100,
+                  defaultMortgageBalance: 350000,
+                  defaultPurchasePrice: 750000,
+                  defaultDownPaymentPercent: 20,
+                  commissionRate: 0.05,
+                  nyStateTransferTaxRate: 0.004,
+                  nyCityTransferTaxRate: 0.01,
+                  attorneyFee: 3000,
+                  otherSellerFees: 500,
+                  mansionTaxThreshold: 1000000,
+                  mansionTaxRate: 0.01,
+                  mortgageRecordingTaxRate: 0.0125,
+                  otherBuyerClosingCostsRate: 0.015,
+                  interestRate: 0.065,
+                  loanTermYears: 30,
+                  propertyTaxRate: 0.022,
+                  homeInsuranceRate: 0.0035,
+              },
+              typewriterText: "Hello, I’m Lenny Lodge. Relocating can be complex, but with a clear, structured plan, we’ll navigate each stage with confidence and precision.",
+              lennyPoses: {
+                  onboarding: 'default_greeting',
+                  overview: 'map_pointing',
+                  scenario: 'thinking_advising',
+                  dashboard: 'map_pointing',
+                  checklistSeller: 'sold_sign',
+                  checklistBuyer: 'closing_day'
+              }
+              ,
+              sellingAnchors: {
+                  zillowUrl: 'https://www.zillow.com/homedetails/54-Collyer-Pl-White-Plains-NY-10605/32982800_zpid/',
+                  zestimate: 1014200,
+                  beds: 6,
+                  baths: 4,
+                  sqft: 3569,
+                  yearBuilt: 1924
+              },
+              prospectAnchors: {
+                  zillowUrl: 'https://www.zillow.com/homedetails/8-Loudonwood-E-Loudonville-NY-12211/29697778_zpid/',
+                  listPrice: 449900,
+                  zestimate: 442100,
+                  beds: 3,
+                  baths: 3,
+                  sqft: 1508,
+                  yearBuilt: 1974,
+                  hoaMonthly: 383,
+                  taxesAnnual: 7325
+              }
+          },
+
+          // --- STATE ---
+          state: {
+              currentView: 'onboarding-view',
+              chosenScenario: null,
+              sellerCosts: {},
+              buyerCosts: {},
+              marketData: {}
+          },
+
+          // --- DOM ELEMENTS ---
+          elements: {
+              views: {
+                  onboarding: document.getElementById('onboarding-view'),
+                  overview: document.getElementById('overview-view'),
+                  scenario: document.getElementById('scenario-view'),
+                  dashboard: document.getElementById('dashboard-view'),
+              },
+              inputs: {
+                  salePrice: document.getElementById('sale-price'),
+                  mortgageBalance: document.getElementById('mortgage-balance'),
+                  purchasePrice: document.getElementById('purchase-price'),
+                  downPaymentPercent: document.getElementById('down-payment-percent'),
+              },
+              outputs: {
+                  netProfit: document.getElementById('net-profit'),
+                  pitiEstimate: document.getElementById('piti-estimate'),
+                  dashboardIntro: document.getElementById('dashboard-intro'),
+                  ovSellAddress: document.getElementById('ov-sell-address'),
+                  ovBuyAddress: document.getElementById('ov-buy-address'),
+                  ovSaleRange: document.getElementById('ov-sale-range'),
+                  ovBuyRange: document.getElementById('ov-buy-range'),
+                  ovTaxSavings: document.getElementById('ov-tax-savings'),
+                  ovUtilityDelta: document.getElementById('ov-utility-delta'),
+                  ovSaleZestLine: document.getElementById('ov-sale-zest-line'),
+                  ovSaleZest: document.getElementById('ov-sale-zest'),
+                  ovSaleZestLink: document.getElementById('ov-sale-zest-link'),
+                  ovSellBB: document.getElementById('ov-sell-bb'),
+                  ovSellSqft: document.getElementById('ov-sell-sqft'),
+                  ovSellYear: document.getElementById('ov-sell-year'),
+                  ovBuyList: document.getElementById('ov-buy-list'),
+                  ovBuyZest: document.getElementById('ov-buy-zest'),
+                  ovBuyBB: document.getElementById('ov-buy-bb'),
+                  ovBuySqft: document.getElementById('ov-buy-sqft'),
+                  ovBuyYear: document.getElementById('ov-buy-year'),
+                  ovBuyHoa: document.getElementById('ov-buy-hoa'),
+                  ovBuyTaxes: document.getElementById('ov-buy-taxes'),
+                  ovNetProceeds: document.getElementById('ov-net-proceeds'),
+                  ovCashClose: document.getElementById('ov-cash-close'),
+                  ovPiti: document.getElementById('ov-piti'),
+                  ovDecisionHint: document.getElementById('ov-decision-hint'),
+              },
+              buttons: {
+                  startOnboarding: document.getElementById('start-onboarding-btn'),
+                  confirmScenario: document.getElementById('confirm-scenario-btn'),
+                  gotoScenario: document.getElementById('goto-scenario-btn'),
+                  reset: document.getElementById('reset-btn'),
+                  exportLenny: document.getElementById('btnExportLenny'),
+                  copyLennyPrompt: document.getElementById('btnCopyLennyPrompt'),
+                  ovEditBuyRange: document.getElementById('ov-edit-buy-range-btn'),
+                  ovBuySave: document.getElementById('ov-buy-save-btn'),
+                  ovBuyCancel: document.getElementById('ov-buy-cancel-btn'),
+              },
+              inputsInline: {
+                  ovBuyLow: document.getElementById('ov-buy-low-input'),
+                  ovBuyHigh: document.getElementById('ov-buy-high-input'),
+              },
+              anchors: {
+                  prospectLink: document.getElementById('ov-prospect-link')
+              },
+              scenarioCards: {
+                  sellFirst: document.getElementById('scenario-sell-first'),
+                  buyFirst: document.getElementById('scenario-buy-first'),
+                  contingent: document.getElementById('scenario-contingent'),
+              },
+              lennyImg: null,
+              typewriter: document.getElementById('typewriter'),
+              typewriterCursor: document.getElementById('typewriter-cursor'),
+              sellerChecklistContainer: document.getElementById('seller-checklist-container'),
+              buyerChecklistContainer: document.getElementById('buyer-checklist-container'),
+              sellerProgress: document.getElementById('seller-progress'),
+              buyerProgress: document.getElementById('buyer-progress'),
+          },
+
+          // --- CHARTS ---
+          charts: {
+              sellerChart: null,
+              buyerChart: null,
+          },
+
+          // --- CHECKLIST DATA ---
+          checklistData: {
+              seller: [
+                  { id: 's1', title: "Conduct a Pre-Listing Inspection", what: "A pre-listing inspection is where you hire a licensed inspector to examine your home *before* you list it. This helps you identify potential issues on your own terms, avoiding surprises during the buyer's inspection.", how: ["**Find a Pro:** Search for a licensed Home Inspector in Westchester County. Look for certifications from organizations like ASHI or InterNACHI.", "**Schedule:** Contact a few inspectors to compare pricing and availability. The inspection will take 2-4 hours.", "**Review the Report:** You'll get a detailed report with photos. We'll go through it to categorize items into 'Must-Fix,' 'Good-to-Fix,' and 'Disclose-but-Don't-Fix'."], tip: "Addressing a major issue beforehand, or getting a quote for the repair, gives you negotiating power when an offer comes in." },
+                  { id: 's2', title: "Declutter & Stage Your Home", what: "Making your home look spacious, clean, and impersonal helps buyers envision themselves living there.", how: ["**Declutter:** Go room by room. A good rule is to pack up 50% of your personal items, like family photos and knick-knacks.", "**Donate/Dispose:** For items you don't want, I can provide contact info for local donation centers or junk removal services.", "**Deep Clean:** A professional deep clean is almost always worth the investment before photos are taken."], tip: "Rent a small, temporary storage unit. It's an affordable way to make your home feel significantly larger during showings." },
+                  { id: 's3', title: "Complete NYS Property Condition Disclosure", what: "This is a mandatory legal document in New York where you disclose known conditions of the property.", how: ["**Get the Form:** Your attorney will provide the official form. I have a link to a sample so you can see what it looks like.", "**Answer Honestly:** Answer every question based on your actual knowledge. If you don't know, 'Unknown' is a valid answer."], tip: "Many sellers in NY opt to give a $500 credit to the buyer in lieu of filling out the form to reduce potential liability. This is a strategic decision we can discuss with your attorney." }
+              ],
+              buyer: [
+                  { id: 'b1', title: "Secure Full Mortgage Pre-Approval", what: "This is the most critical first step. A pre-approval from a lender shows sellers you are a serious, qualified buyer.", how: ["**Gather Documents:** You'll need pay stubs, W-2s, tax returns, and bank statements.", "**Choose a Lender:** Compare rates from at least three lenders (banks, credit unions, mortgage brokers).", "**Complete Application:** The lender will review your finances and credit to determine how much you can borrow."], tip: "A full pre-approval is much stronger than a pre-qualification. It means the lender has actually verified your information." },
+                  { id: 'b2', title: "Find Your Buyer's Agent", what: "A great local agent is your expert guide and negotiator in the Colonie market.", how: ["**Get Referrals:** Ask for recommendations from friends or colleagues in the area.", "**Interview Agents:** Talk to a few agents to find someone you connect with and who understands your specific needs.", "**Sign an Agreement:** You'll sign a buyer-broker agreement to formalize the relationship."], tip: "Look for an agent who is a full-time professional and has a deep understanding of the specific neighborhoods you're interested in." },
+                  { id: 'b3', title: "Understand NYS STAR Program", what: "The NYS School Tax Relief (STAR) program provides a partial exemption from school property taxes for eligible homeowners.", how: ["**Check Eligibility:** The Basic STAR exemption is for owner-occupied, primary residences where the owners' income is $500,000 or less.", "**Register:** You must register with the NYS Department of Taxation and Finance to receive the STAR credit."], tip: "This is a credit you receive as a check, not an upfront exemption on your tax bill. Make sure you register as soon as you close on your new home!" }
+              ]
+          },
+
+          // --- INITIALIZATION ---
+          init() {
+              this.setupLenny();
+              this.bindEventListeners();
+              this.buildChecklists();
+              this.restoreState();
+              if (this.state.currentView === 'onboarding-view') {
+                  this.runTypewriterEffect(this.config.typewriterText);
+              }
+              this.updateUI();
+          },
+
+          // --- EVENT BINDING ---
+          bindEventListeners() {
+              this.elements.buttons.startOnboarding.addEventListener('click', () => this.handleStartOnboarding());
+              const startMobile = document.getElementById('start-onboarding-btn-mobile');
+              if (startMobile) startMobile.addEventListener('click', () => this.handleStartOnboarding());
+              if (this.elements.buttons.gotoScenario) this.elements.buttons.gotoScenario.addEventListener('click', () => this.switchView('scenario'));
+              this.elements.buttons.confirmScenario.addEventListener('click', () => this.handleConfirmScenario());
+              this.elements.buttons.reset.addEventListener('click', () => this.resetApp());
+              
+              Object.values(this.elements.scenarioCards).forEach(card => card.addEventListener('click', (e) => this.handleScenarioSelection(e)));
+              Object.values(this.elements.inputs).forEach(input => input.addEventListener('input', () => this.updateUI()));
+
+              // Lenny helpers
+              this.elements.buttons.exportLenny.addEventListener('click', () => window.exportLennyLibrary());
+              this.elements.buttons.copyLennyPrompt.addEventListener('click', () => navigator.clipboard.writeText(window.buildLennyPrompt()));
+
+              // Tap-to-skip for typewriter
+              const lennyBubble = document.getElementById('lenny-bubble');
+              if (lennyBubble) lennyBubble.addEventListener('click', () => {
+                  if (!this.elements.typewriter || !this.elements.typewriterCursor) return;
+                  const targetText = String(this.config.typewriterText || '');
+                  const isTyping = this.elements.typewriterCursor.style.display !== 'none' && this.elements.typewriter.textContent.length < targetText.length;
+                  if (isTyping) {
+                      this.runTypewriterEffect(targetText, null, true);
+                  }
+              });
+
+              // Chat (lazy init)
+              document.getElementById('open-lenny-chat')?.addEventListener('click', () => this.initChatUI());
+
+              // Overview inline editor
+              const editBtn = this.elements.buttons.ovEditBuyRange;
+              const saveBtn = this.elements.buttons.ovBuySave;
+              const cancelBtn = this.elements.buttons.ovBuyCancel;
+              const editor = document.getElementById('ov-buy-range-editor');
+              if (editBtn && editor) editBtn.addEventListener('click', () => {
+                  const md = this.state.marketData || {};
+                  const low = md.targetBuyRange?.[0] ?? this.config.financials.defaultPurchasePrice;
+                  const high = md.targetBuyRange?.[1] ?? this.config.financials.defaultPurchasePrice;
+                  if (this.elements.inputsInline.ovBuyLow) this.elements.inputsInline.ovBuyLow.value = low;
+                  if (this.elements.inputsInline.ovBuyHigh) this.elements.inputsInline.ovBuyHigh.value = high;
+                  editor.classList.remove('hidden');
+              });
+              if (cancelBtn && editor) cancelBtn.addEventListener('click', () => {
+                  editor.classList.add('hidden');
+                  const err = document.getElementById('ov-buy-edit-error');
+                  if (err) err.classList.add('hidden');
+              });
+              if (saveBtn && editor) saveBtn.addEventListener('click', () => {
+                  const low = parseFloat(this.elements.inputsInline.ovBuyLow?.value ?? '');
+                  const high = parseFloat(this.elements.inputsInline.ovBuyHigh?.value ?? '');
+                  const err = document.getElementById('ov-buy-edit-error');
+                  const valid = Number.isFinite(low) && Number.isFinite(high) && low > 0 && high > 0 && low <= high;
+                  if (!valid) {
+                      if (err) err.classList.remove('hidden');
+                      return;
+                  }
+                  if (!this.state.marketData) this.state.marketData = {};
+                  this.state.marketData.targetBuyRange = [Math.round(low), Math.round(high)];
+                  this.state.marketData.userEditedBuyRange = true;
+                  this.renderOverview();
+                  editor.classList.add('hidden');
+                  if (err) err.classList.add('hidden');
+              });
+
+              // Bottom wizard controls
+              const prev = document.getElementById('btnPrev');
+              const next = document.getElementById('btnNext');
+              const order = ['onboarding','overview','scenario','dashboard'];
+              const go = (delta) => {
+                const key = (this.state.currentView || 'onboarding').replace('-view','');
+                const idx = Math.max(0, Math.min(order.length-1, order.indexOf(key)+delta));
+                const dest = order[idx];
+                if (dest==='dashboard' && !this.state.chosenScenario) { this.switchView('scenario'); return; }
+                this.switchView(dest);
+              };
+              prev?.addEventListener('click', () => go(-1));
+              next?.addEventListener('click', () => {
+                if (this.state.currentView.includes('onboarding')) return this.handleStartOnboarding();
+                if (this.state.currentView.includes('scenario') && this.state.chosenScenario) return this.handleConfirmScenario();
+                go(+1);
+              });
+
+              // Down payment chips
+              const dp = this.elements.inputs.downPaymentPercent;
+              document.querySelectorAll('#dp-chips .chip').forEach(ch => {
+                ch.addEventListener('click', () => {
+                  document.querySelectorAll('#dp-chips .chip').forEach(x => x.dataset.on = "false");
+                  ch.dataset.on = "true";
+                  const v = ch.dataset.val;
+                  if (v === 'custom') { dp?.classList.remove('hidden'); dp?.focus(); }
+                  else { dp?.classList.add('hidden'); if (dp) dp.value = v; this.updateUI(); }
+                });
+              });
+          },
+
+          // --- CORE LOGIC ---
+          switchView(viewName) {
+              Object.values(this.elements.views).forEach(view => view.classList.add('hidden'));
+              if (this.elements.views[viewName]) {
+                  this.elements.views[viewName].classList.remove('hidden');
+                  this.state.currentView = viewName;
+                  this.elements.buttons.reset.classList.toggle('hidden', viewName === 'onboarding');
+                  this.elements.buttons.exportLenny.classList.toggle('hidden', viewName !== 'dashboard');
+                  this.elements.buttons.copyLennyPrompt.classList.toggle('hidden', viewName !== 'dashboard');
+                  this.updateLennyPose(viewName.replace('-view', ''));
+                  if (typeof this.persistState === 'function') this.persistState();
+                  this.speakWithChips(viewName.replace('-view',''));
+              }
+          },
+          
+          resetApp() {
+              this.switchView('onboarding');
+              Object.values(this.elements.scenarioCards).forEach(c => c.classList.remove('selected'));
+              this.elements.buttons.confirmScenario.disabled = true;
+              this.elements.buttons.confirmScenario.classList.add('opacity-50', 'cursor-not-allowed');
+              this.state.chosenScenario = null;
+              document.querySelectorAll('.checklist-checkbox').forEach(c => c.checked = false);
+              this.updateProgress();
+              this.runTypewriterEffect(this.config.typewriterText);
+              try { localStorage.removeItem('rz25_state'); } catch (_) {}
+          },
+
+          // --- HANDLERS ---
+          async handleStartOnboarding() {
+              this.runTypewriterEffect('Checking the latest market trends...', null, true);
+              this.setOverviewSkeleton(true);
+              try {
+                  await this.fetchLatestMarketData();
+                  this.renderOverview();
+                  this.switchView('overview');
+              } catch (err) {
+                  console.error("Backend Error:", err);
+                  // Build a lightweight fallback so user still gets an overview
+                  const d = this.config.financials;
+                  const fallback = {
+                      typicalSaleRange: [Math.round(d.defaultSalePrice * 0.9), Math.round(d.defaultSalePrice * 1.1)],
+                      targetBuyRange: [Math.round(d.defaultPurchasePrice * 0.9), Math.round(d.defaultPurchasePrice * 1.1)],
+                      taxSavingsAnnual: 0,
+                      monthlyUtilityDelta: 0
+                  };
+                  this.state.marketData = fallback;
+                  this.renderOverview();
+                  this.switchView('overview');
+              }
+              this.setOverviewSkeleton(false);
+          },
+
+          handleScenarioSelection(e) {
+              const card = e.currentTarget;
+              Object.values(this.elements.scenarioCards).forEach(c => c.classList.remove('selected'));
+              card.classList.add('selected');
+              this.state.chosenScenario = card.id;
+              this.elements.buttons.confirmScenario.disabled = false;
+              this.elements.buttons.confirmScenario.classList.remove('opacity-50', 'cursor-not-allowed');
+              if (typeof this.persistState === 'function') this.persistState();
+          },
+
+          handleConfirmScenario() {
+              if (this.state.chosenScenario) {
+                  this.switchView('dashboard');
+                  const scenarioText = {
+                      'scenario-sell-first': 'the Safety-First Path',
+                      'scenario-buy-first': 'the Convenience Path',
+                      'scenario-contingent': 'the Balancing Act'
+                  }[this.state.chosenScenario];
+                  this.speakAsLenny(this.elements.outputs.dashboardIntro, `Your plan is based on ${scenarioText}. Everything here is interactive and will update as you make changes.`);
+                  this.updateUI();
+                  if (typeof this.persistState === 'function') this.persistState();
+              }
+          },
+
+          // --- FINANCIAL CALCULATIONS ---
+          calculateSellerCosts() {
+              const { salePrice, mortgageBalance } = this.getFinancialInputs();
+              const { commissionRate, nyStateTransferTaxRate, nyCityTransferTaxRate, attorneyFee, otherSellerFees } = this.config.financials;
+              
+              const commission = salePrice * commissionRate;
+              const totalTransferTax = salePrice * (nyStateTransferTaxRate + nyCityTransferTaxRate);
+              const totalClosingCosts = commission + totalTransferTax + attorneyFee + otherSellerFees;
+              const netProfit = salePrice - totalClosingCosts - mortgageBalance;
+
+              this.state.sellerCosts = { salePrice, mortgageBalance, commission, totalTransferTax, attorneyFee, otherSellerFees, totalClosingCosts, netProfit };
+          },
+
+          calculateBuyerCosts() {
+              const { purchasePrice, downPaymentPercent } = this.getFinancialInputs();
+              const { mansionTaxThreshold, mansionTaxRate, mortgageRecordingTaxRate, otherBuyerClosingCostsRate, interestRate, loanTermYears, propertyTaxRate, homeInsuranceRate } = this.config.financials;
+
+              const downPayment = purchasePrice * (downPaymentPercent / 100);
+              const loanAmount = purchasePrice - downPayment;
+              const mansionTax = purchasePrice >= mansionTaxThreshold ? purchasePrice * mansionTaxRate : 0;
+              const mortgageRecordingTax = loanAmount * mortgageRecordingTaxRate;
+              const otherClosingCosts = loanAmount * otherBuyerClosingCostsRate;
+              const totalClosingCosts = mansionTax + mortgageRecordingTax + otherClosingCosts;
+              const cashToClose = downPayment + totalClosingCosts;
+
+              const monthlyInterestRate = interestRate / 12;
+              const numberOfPayments = loanTermYears * 12;
+              const monthlyPrincipalAndInterest = loanAmount > 0 ? (loanAmount * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1) : 0;
+              const monthlyTaxes = (purchasePrice * propertyTaxRate) / 12;
+              const monthlyInsurance = (purchasePrice * homeInsuranceRate) / 12;
+              const piti = monthlyPrincipalAndInterest + monthlyTaxes + monthlyInsurance;
+
+              this.state.buyerCosts = { purchasePrice, downPayment, mansionTax, mortgageRecordingTax, otherClosingCosts, totalClosingCosts, cashToClose, piti };
+          },
+
+          getFinancialInputs() {
+              return {
+                  salePrice: parseFloat(this.elements.inputs.salePrice.value) || 0,
+                  mortgageBalance: parseFloat(this.elements.inputs.mortgageBalance.value) || 0,
+                  purchasePrice: parseFloat(this.elements.inputs.purchasePrice.value) || 0,
+                  downPaymentPercent: parseFloat(this.elements.inputs.downPaymentPercent.value) || 0,
+              };
+          },
+
+          // --- UI UPDATES ---
+          updateUI() {
+              this.calculateSellerCosts();
+              this.calculateBuyerCosts();
+              this.elements.outputs.netProfit.textContent = this.formatCurrency(this.state.sellerCosts.netProfit);
+              this.elements.outputs.pitiEstimate.textContent = this.formatCurrency(this.state.buyerCosts.piti);
+              this.updateCharts();
+              // Keep overview in sync if it's visible
+              if (this.state.currentView === 'overview') this.renderOverview();
+              if (typeof this.persistState === 'function') this.persistState();
+          },
+
+          updateCharts() {
+              const sellerData = {
+                  labels: ['Net Profit', 'Commission', 'Taxes', 'Mortgage Payoff', 'Other Fees'],
+                  datasets: [{ data: [Math.max(0, this.state.sellerCosts.netProfit), this.state.sellerCosts.commission, this.state.sellerCosts.totalTransferTax, this.state.sellerCosts.mortgageBalance, this.state.sellerCosts.attorneyFee + this.state.sellerCosts.otherSellerFees], backgroundColor: ['#4A5C6A', '#8B6E5A', '#A89A8E', '#6B6864', '#DCDAD4'], borderColor: '#FDFCFB', borderWidth: 3 }]
+              };
+              const buyerData = {
+                  labels: ['Down Payment', 'Mortgage Tax', 'Mansion Tax', 'Other Costs'],
+                  datasets: [{ data: [this.state.buyerCosts.downPayment, this.state.buyerCosts.mortgageRecordingTax, this.state.buyerCosts.mansionTax, this.state.buyerCosts.otherClosingCosts], backgroundColor: ['#4A5C6A', '#8B6E5A', '#A89A8E', '#6B6864'], borderColor: '#FDFCFB', borderWidth: 3 }]
+              };
+              const chartOptions = {
+                  responsive: true, maintainAspectRatio: false, cutout: '60%',
+                  plugins: {
+                      legend: { display: false },
+                      tooltip: { callbacks: { label: (c) => `${c.label}: ${this.formatCurrency(c.parsed)}` } }
+                  }
+              };
+              if (!this.charts.sellerChart) this.charts.sellerChart = new Chart(document.getElementById('seller-chart').getContext('2d'), { type: 'doughnut', data: sellerData, options: chartOptions });
+              else { this.charts.sellerChart.data = sellerData; this.charts.sellerChart.update(); }
+              if (!this.charts.buyerChart) this.charts.buyerChart = new Chart(document.getElementById('buyer-chart').getContext('2d'), { type: 'doughnut', data: buyerData, options: chartOptions });
+              else { this.charts.buyerChart.data = buyerData; this.charts.buyerChart.update(); }
+          },
+
+          // --- CHECKLISTS ---
+          buildChecklists() {
+              const createChecklistHTML = (item) => {
+                  const howToList = item.how.map(step => `<li>${step.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-[#3D3B38]">$1</strong>')}</li>`).join('');
+                  return `
+                      <div class="border-t border-gray-200">
+                          <div class="checklist-item-header p-4 flex justify-between items-center group">
+                              <div class="flex items-center gap-3">
+                                  <input type="checkbox" data-id="${item.id}" class="checklist-checkbox h-5 w-5 rounded border-gray-300 text-[#4A5C6A] focus:ring-[#4A5C6A]">
+                                  <h5 class="font-semibold text-md group-hover:text-[#4A5C6A] transition">${item.title}</h5>
+                              </div>
+                              <svg class="w-5 h-5 text-gray-400 group-hover:text-gray-600 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                          </div>
+                          <div class="checklist-item-body px-4 ml-8 border-l-2 border-gray-200">
+                              <p class="text-sm text-[#6B6864] mb-3">${item.what.replace(/\*(.*?)\*/g, '<em>$1</em>')}</p>
+                              <ul class="list-disc list-inside text-sm space-y-2 mb-4 text-[#6B6864]">${howToList}</ul>
+                              <div class="bg-[#F8F7F4] p-3 rounded-md text-sm">
+                                  <strong class="font-semibold text-[#8B6E5A]">Lenny’s Professional Insight:</strong> <span class="text-[#6B6864]">${item.tip}</span>
+                              </div>
+                          </div>
+                      </div>`;
+              };
+
+              this.checklistData.seller.forEach(item => { this.elements.sellerChecklistContainer.innerHTML += createChecklistHTML(item); });
+              this.checklistData.buyer.forEach(item => { this.elements.buyerChecklistContainer.innerHTML += createChecklistHTML(item); });
+
+              document.querySelectorAll('.checklist-item-header').forEach(header => {
+                  header.addEventListener('click', (e) => {
+                      if (e.target.type === 'checkbox') return;
+                      const body = header.nextElementSibling;
+                      const arrow = header.querySelector('svg');
+                      body.classList.toggle('open');
+                      arrow.classList.toggle('rotate-180');
+                  });
+              });
+              
+              document.querySelectorAll('.checklist-checkbox').forEach(checkbox => {
+                  checkbox.addEventListener('change', () => this.updateProgress());
+              });
+          },
+
+          updateProgress() {
+              const sellerTasks = this.checklistData.seller.length;
+              const buyerTasks = this.checklistData.buyer.length;
+              let sellerCompleted = 0;
+              let buyerCompleted = 0;
+              
+              document.querySelectorAll('.checklist-checkbox').forEach(checkbox => {
+                  if (checkbox.checked) {
+                      if (checkbox.dataset.id.startsWith('s')) sellerCompleted++;
+                      else buyerCompleted++;
+                  }
+              });
+              
+              const sellerProgress = sellerTasks > 0 ? (sellerCompleted / sellerTasks) * 100 : 0;
+              const buyerProgress = buyerTasks > 0 ? (buyerCompleted / buyerTasks) * 100 : 0;
+              
+              this.elements.sellerProgress.style.width = `${sellerProgress}%`;
+              this.elements.buyerProgress.style.width = `${buyerProgress}%`;
+
+              if (sellerProgress === 100) this.updateLennyPose('checklistSeller');
+              else if (buyerProgress === 100) this.updateLennyPose('checklistBuyer');
+          },
+
+          // --- API & DATA FETCHING ---
+          async fetchLatestMarketData() {
+              const fetchWithThrow = async (address) => {
+                  const res = await fetch(`${this.config.backendBase}/api/comps?address=${encodeURIComponent(address)}`);
+                  if (!res.ok) throw new Error(`Backend fetch failed for ${address} with status ${res.status}`);
+                  const data = await res.json();
+                  if (data.low == null || data.high == null) throw new Error(`Incomplete comps data for ${address}`);
+                  return data;
+              };
+              
+              const sellingData = await fetchWithThrow(this.config.sellingAddress);
+              const buyingData = await fetchWithThrow(this.config.prospectAddress);
+
+              this.state.marketData = {
+                  typicalSaleRange: [sellingData.low, sellingData.high],
+                  targetBuyRange: [buyingData.low, buyingData.high],
+                  taxSavingsAnnual: Math.round(sellingData.taxes - buyingData.taxes),
+                  monthlyUtilityDelta: Math.round(buyingData.utilities - sellingData.utilities)
+              };
+          },
+
+          // --- HELPERS & UTILITIES ---
+          formatCurrency(value) {
+              return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
+          },
+
+          runTypewriterEffect(text, onComplete, immediate = false) {
+              if (!this.elements.typewriter || !this.elements.typewriterCursor) return;
+              
+              this.elements.typewriterCursor.style.display = 'inline';
+              this.elements.typewriter.innerHTML = '';
+              
+              const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+              if (immediate || prefersReduced) {
+                  this.elements.typewriter.textContent = text;
+                  this.elements.typewriterCursor.style.display = 'none';
+                  if (typeof onComplete === 'function') onComplete();
+                  return;
+              }
+
+              let i = 0;
+              const type = () => {
+                  if (i < text.length) {
+                      this.elements.typewriter.innerHTML += text.charAt(i++);
+                      setTimeout(type, 35);
+                  } else {
+                      this.elements.typewriterCursor.style.display = 'none';
+                      if (typeof onComplete === 'function') onComplete();
+                  }
+              };
+              type();
+          },
+
+          speakAsLenny(targetEl, text) {
+              if (!targetEl) return;
+              targetEl.innerHTML = `<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#4A5C6A]/10 text-[#4A5C6A] text-xs font-semibold mr-2 align-middle">Lenny</span><span class="lenny-message-text"></span>`;
+              const textSpan = targetEl.querySelector('.lenny-message-text');
+              textSpan.textContent = String(text);
+              targetEl.setAttribute('aria-live', 'polite');
+              targetEl.setAttribute('aria-label', `Lenny says: ${text}`);
+          },
+          speakWithChips(stepKey) {
+            const step = LennyScripts[stepKey]; if (!step) return;
+            const target = document.getElementById(
+              stepKey==='onboarding' ? 'lenny-bubble' :
+              stepKey==='overview'   ? 'lenny-overview' :
+              stepKey==='scenario'   ? 'lenny-scenario' : 'dashboard-intro'
+            );
+            if (!target) return;
+            const name = this.config.assistantName || 'Lenny';
+            target.innerHTML = `
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#4A5C6A]/10 text-[#4A5C6A] text-xs font-semibold mr-2 assistant-name">${name}</span>
+              <span>${step.text}</span>
+              <div class="mt-3 flex flex-wrap gap-2">
+                ${(step.chips||[]).map(c=>`<button class=\"chip px-3 py-2 rounded-lg border border-gray-300\" data-id=\"${c.id}\">${c.label}</button>`).join('')}
+              </div>`;
+            target.querySelectorAll('.chip').forEach(btn=>{
+              btn.addEventListener('click', ()=> this.routeFromChip(stepKey, btn.dataset.id));
+            });
+          },
+          routeFromChip(stepKey, id) {
+            if (stepKey==='onboarding' && id==='go_overview') this.switchView('overview');
+            if (stepKey==='overview'   && id==='go_scenario') this.switchView('scenario');
+            if (stepKey==='scenario') {
+              const map = { pick_sell_first:'scenario-sell-first', pick_buy_first:'scenario-buy-first', pick_cont:'scenario-contingent' };
+              document.getElementById(map[id])?.click();
+              this.handleConfirmScenario();
+            }
+            if (stepKey==='dashboard') {
+              if (id==='open_seller_check') document.querySelector('#seller-checklist-container .checklist-item-header')?.click();
+              if (id==='open_buyer_check')  document.querySelector('#buyer-checklist-container .checklist-item-header')?.click();
+              if (id==='tweak_payments')    document.getElementById('down-payment-percent')?.scrollIntoView({behavior:'smooth', block:'center'});
+            }
+          },
+
+          setupLenny() {
+              const img = document.createElement('img');
+              img.id = 'lenny-img';
+              img.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(LennyInlineSVG);
+              img.alt = (this.config.assistantName || 'Lenny') + ' the Assistant';
+              img.className = 'w-20 h-20 md:w-28 md:h-28 flex-shrink-0';
+              this.elements.lennyImg = img;
+
+              const hero = document.getElementById('lenny-hero');
+              if (hero) hero.prepend(img);
+              const nameEl = document.querySelector('#lenny-bubble .assistant-name');
+              if (nameEl) nameEl.textContent = this.config.assistantName;
+          },
+
+          updateLennyPose(key) {
+              const poseName = this.config.lennyPoses[key] || this.config.lennyPoses.onboarding;
+              const candidate = (key === 'onboarding') ? 'assets/images/lenny/lenny-full.png' : `assets/images/lenny/${poseName}.png`;
+              const fallback = 'assets/images/lenny-lodge-1.svg';
+              const containerByKey = {
+                  onboarding: document.getElementById('lenny-hero'),
+                  overview: document.getElementById('lenny-overview'),
+                  scenario: document.getElementById('lenny-scenario'),
+                  dashboard: document.getElementById('lenny-hero')
+              };
+              const target = containerByKey[key];
+              if (target && this.elements.lennyImg && this.elements.lennyImg.parentElement !== target) {
+                  target.prepend(this.elements.lennyImg);
+              }
+              if (this.elements.lennyImg) {
+                  const sizeClasses = ['w-20','h-20','w-28','h-28','md:w-28','md:h-28','md:w-40','md:h-40','lg:w-48','lg:h-48'];
+                  this.elements.lennyImg.classList.remove(...sizeClasses);
+                  if (key === 'onboarding') this.elements.lennyImg.classList.add('w-28','h-28','md:w-40','md:h-40','lg:w-48','lg:h-48','flex-shrink-0');
+                  else this.elements.lennyImg.classList.add('w-20','h-20','md:w-28','md:h-28','flex-shrink-0');
+              }
+              const probe = new Image();
+              probe.onload = () => { this.elements.lennyImg.src = candidate; };
+              probe.onerror = () => {
+                  const try2 = new Image();
+                  try2.onload = () => { this.elements.lennyImg.src = fallback; };
+                  try2.onerror = () => { /* keep inline SVG */ };
+                  try2.src = fallback;
+              };
+              probe.src = candidate;
+              this.elements.lennyImg.alt = `${this.config.assistantName} (${poseName.replace(/_/g, ' ')})`;
+          }
+          ,
+          // --- OVERVIEW RENDER ---
+          renderOverview() {
+              const md = this.state.marketData || {};
+              // Normalize targetBuyRange around current prospect list price if present and range looks unrealistic
+              const listPrice = this.config.prospectAnchors?.listPrice;
+              if (listPrice && !md.userEditedBuyRange) {
+                  const currentLow = md.targetBuyRange?.[0];
+                  const currentHigh = md.targetBuyRange?.[1];
+                  const looksOff = !Number.isFinite(currentLow) || !Number.isFinite(currentHigh) || currentHigh > listPrice * 1.3 || currentLow < listPrice * 0.7;
+                  if (looksOff) {
+                      md.targetBuyRange = [Math.round(listPrice * 0.95), Math.round(listPrice * 1.05)];
+                      this.state.marketData = md;
+                  }
+              }
+              const saleLow = md.typicalSaleRange?.[0] ?? this.config.financials.defaultSalePrice;
+              const saleHigh = md.typicalSaleRange?.[1] ?? this.config.financials.defaultSalePrice;
+              const buyLow = md.targetBuyRange?.[0] ?? (listPrice ? Math.round(listPrice * 0.95) : this.config.financials.defaultPurchasePrice);
+              const buyHigh = md.targetBuyRange?.[1] ?? (listPrice ? Math.round(listPrice * 1.05) : this.config.financials.defaultPurchasePrice);
+              const taxSave = md.taxSavingsAnnual ?? 0;
+              const utilDelta = md.monthlyUtilityDelta ?? 0;
+
+              // Purchase price chips (Low/Mid/High/Custom)
+              const ppWrap = document.getElementById('pp-chips');
+              if (ppWrap) {
+                const mid = Math.round((buyLow + buyHigh) / 2);
+                const opts = [
+                  {label:'Low',  val: buyLow},
+                  {label:'Mid',  val: mid},
+                  {label:'High', val: buyHigh},
+                  {label:'Custom', val:'custom'}
+                ];
+                ppWrap.innerHTML = opts.map(o =>
+                  `<button class="chip px-2 py-2 rounded-lg border border-gray-300" data-val="${o.val}">${o.label}${o.val!=='custom' ? ` ${this.formatCurrency(o.val)}`:''}</button>`
+                ).join('');
+                const pp = this.elements.inputs.purchasePrice;
+                ppWrap.querySelectorAll('.chip').forEach(btn=>{
+                  btn.addEventListener('click', ()=>{
+                    ppWrap.querySelectorAll('.chip').forEach(x=>x.dataset.on="false");
+                    btn.dataset.on="true";
+                    const v = btn.dataset.val;
+                    if (v === 'custom') { pp?.classList.remove('hidden'); pp?.focus(); }
+                    else { pp?.classList.add('hidden'); if (pp) pp.value = v; this.updateUI(); }
+                  });
+                });
+              }
+
+              if (this.elements.outputs.ovSellAddress) this.elements.outputs.ovSellAddress.textContent = this.config.sellingAddress;
+              if (this.elements.outputs.ovBuyAddress) this.elements.outputs.ovBuyAddress.textContent = this.config.prospectAddress;
+              if (this.elements.outputs.ovSaleRange) this.elements.outputs.ovSaleRange.textContent = `${this.formatCurrency(saleLow)} – ${this.formatCurrency(saleHigh)}`;
+              if (this.elements.outputs.ovBuyRange) this.elements.outputs.ovBuyRange.textContent = `${this.formatCurrency(buyLow)} – ${this.formatCurrency(buyHigh)}`;
+              if (this.elements.outputs.ovTaxSavings) this.elements.outputs.ovTaxSavings.textContent = this.formatCurrency(taxSave);
+              if (this.elements.outputs.ovUtilityDelta) this.elements.outputs.ovUtilityDelta.textContent = `${utilDelta >= 0 ? '+' : ''}${this.formatCurrency(utilDelta)}/mo`;
+              if (this.elements.anchors?.prospectLink && this.config.prospectAnchors?.zillowUrl) {
+                  this.elements.anchors.prospectLink.href = this.config.prospectAnchors.zillowUrl;
+              }
+              // Buying detail anchors for credibility
+              const pa = this.config.prospectAnchors || {};
+              if (this.elements.outputs.ovBuyList && pa.listPrice) this.elements.outputs.ovBuyList.textContent = this.formatCurrency(pa.listPrice);
+              if (this.elements.outputs.ovBuyZest && pa.zestimate) this.elements.outputs.ovBuyZest.textContent = this.formatCurrency(pa.zestimate);
+              if (this.elements.outputs.ovBuyBB && (pa.beds || pa.baths)) this.elements.outputs.ovBuyBB.textContent = `${pa.beds || '?'} bd / ${pa.baths || '?'} ba`;
+              if (this.elements.outputs.ovBuySqft && pa.sqft) this.elements.outputs.ovBuySqft.textContent = `${pa.sqft.toLocaleString()} sf`;
+              if (this.elements.outputs.ovBuyYear && pa.yearBuilt) this.elements.outputs.ovBuyYear.textContent = `${pa.yearBuilt}`;
+              if (this.elements.outputs.ovBuyHoa && pa.hoaMonthly != null) this.elements.outputs.ovBuyHoa.textContent = this.formatCurrency(pa.hoaMonthly) + '/mo';
+              if (this.elements.outputs.ovBuyTaxes && pa.taxesAnnual != null) this.elements.outputs.ovBuyTaxes.textContent = this.formatCurrency(pa.taxesAnnual);
+              // Optional: surface a Zestimate anchor for selling address
+              const sa = this.config.sellingAnchors || {};
+              if (this.elements.outputs.ovSaleZest && this.elements.outputs.ovSaleZestLink && sa.zestimate) {
+                  this.elements.outputs.ovSaleZest.textContent = this.formatCurrency(sa.zestimate);
+                  this.elements.outputs.ovSaleZestLink.href = sa.zillowUrl || '#';
+              }
+              if (this.elements.outputs.ovSellBB && (sa.beds || sa.baths)) this.elements.outputs.ovSellBB.textContent = `${sa.beds || '?'} bd / ${sa.baths || '?'} ba`;
+              if (this.elements.outputs.ovSellSqft && sa.sqft) this.elements.outputs.ovSellSqft.textContent = `${sa.sqft.toLocaleString()} sf`;
+              if (this.elements.outputs.ovSellYear && sa.yearBuilt) this.elements.outputs.ovSellYear.textContent = `${sa.yearBuilt}`;
+              // Financial snapshot
+              const net = this.state.sellerCosts?.netProfit ?? 0;
+              const cashToClose = this.state.buyerCosts?.cashToClose ?? 0;
+              const piti = this.state.buyerCosts?.piti ?? 0;
+              if (this.elements.outputs.ovNetProceeds) this.elements.outputs.ovNetProceeds.textContent = this.formatCurrency(net);
+              if (this.elements.outputs.ovCashClose) this.elements.outputs.ovCashClose.textContent = this.formatCurrency(cashToClose);
+              if (this.elements.outputs.ovPiti) this.elements.outputs.ovPiti.textContent = this.formatCurrency(piti);
+              // Decision hint
+              if (this.elements.outputs.ovDecisionHint) {
+                  let hint = '';
+                  if (net <= 0) hint = 'Your net proceeds are tight or negative. Consider Safety-First (Sell First) to avoid financing gaps.';
+                  else if (cashToClose > net * 0.8) hint = 'Cash to close uses most of your net. Safety-First or a short rent-back can reduce risk.';
+                  else if (piti > (this.state.buyerCosts?.purchasePrice || 0) * 0.0007) hint = 'Monthly PITI looks high versus target price. Adjust down payment or range before continuing.';
+                  else hint = 'You appear positioned to proceed. Choose the strategy that best matches your risk tolerance and convenience.';
+                  this.elements.outputs.ovDecisionHint.textContent = hint;
+              }
+              this.setOverviewSkeleton(false);
+          }
+          ,
+          // --- Lenny Chat (frontend) ---
+          initChatUI(){
+              if (this.elements.chat?.panel) {
+                  this.elements.chat.panel.classList.toggle('hidden');
+                  return;
+              }
+              if (!this.elements.chat) this.elements.chat = {};
+              const panel = document.createElement('div');
+              panel.className = 'fixed bottom-4 right-4 z-30 w-[min(92vw,380px)] bg-white border border-gray-200 rounded-xl shadow-xl flex flex-col overflow-hidden';
+              panel.innerHTML = `
+                  <div class="px-3 py-2 bg-[#4A5C6A] text-white text-sm font-semibold flex items-center justify-between">
+                      <span>Chat with Lenny</span>
+                      <button id="close-lenny-chat" class="text-white/80 hover:text-white">✕</button>
+                  </div>
+                  <div id="lenny-chat-messages" class="p-3 space-y-2 overflow-y-auto" style="max-height: 40vh;"></div>
+                  <div class="p-3 border-t border-gray-200 flex items-center gap-2">
+                      <input id="lenny-chat-input" class="flex-1 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A5C6A]" placeholder="Ask Lenny anything..." />
+                      <button id="lenny-chat-send" class="btn-primary px-3 py-2 rounded-md text-sm">Send</button>
+                  </div>
+              `;
+              document.body.appendChild(panel);
+              this.elements.chat.panel = panel;
+              this.elements.chat.input = panel.querySelector('#lenny-chat-input');
+              this.elements.chat.messages = panel.querySelector('#lenny-chat-messages');
+              panel.querySelector('#close-lenny-chat').addEventListener('click', ()=> panel.classList.add('hidden'));
+              const sendBtn = panel.querySelector('#lenny-chat-send');
+              const doSend = () => this.sendChatMessage();
+              sendBtn.addEventListener('click', doSend);
+              this.elements.chat.input.addEventListener('keydown', (e)=>{ if (e.key==='Enter') doSend(); });
+              // Seed greeting
+              this.appendChat('Lenny', 'How can I help? Ask about ranges, net, cash to close, or which strategy fits.');
+          }
+          ,
+          appendChat(sender, text){
+              if (!this.elements.chat?.messages) return;
+              const row = document.createElement('div');
+              const mine = sender === 'You';
+              row.className = `text-sm ${mine ? 'text-right' : 'text-left'}`;
+              row.innerHTML = `<span class="inline-block ${mine ? 'bg-[#4A5C6A] text-white' : 'bg-gray-100 text-[#3D3B38]'} px-3 py-2 rounded-lg max-w-[80%]">${text}</span>`;
+              this.elements.chat.messages.appendChild(row);
+              this.elements.chat.messages.scrollTop = this.elements.chat.messages.scrollHeight;
+          }
+          ,
+          async sendChatMessage(){
+              const input = this.elements.chat?.input;
+              if (!input || !input.value.trim()) return;
+              const msg = input.value.trim();
+              input.value='';
+              this.appendChat('You', msg);
+              // Build context snapshot
+              const ctx = {
+                  sellingAddress: this.config.sellingAddress,
+                  prospectAddress: this.config.prospectAddress,
+                  saleRange: this.state.marketData?.typicalSaleRange,
+                  buyRange: this.state.marketData?.targetBuyRange,
+                  netProceeds: this.state.sellerCosts?.netProfit,
+                  cashToClose: this.state.buyerCosts?.cashToClose,
+                  piti: this.state.buyerCosts?.piti
+              };
+              try{
+                  const resp = await fetch(`${this.config.backendBase}/api/chat`, {
+                      method:'POST', headers:{'Content-Type':'application/json'},
+                      body: JSON.stringify({ message: msg, context: ctx })
+                  });
+                  const data = await resp.json();
+                  const reply = data?.reply || 'Sorry, I had trouble answering that.';
+                  this.appendChat('Lenny', reply);
+              } catch(err){
+                  this.appendChat('Lenny', 'The chat service is unavailable right now. Try again shortly.');
+              }
+          }
+          ,
+          // Skeleton toggling for overview
+          setOverviewSkeleton(isLoading){
+              const toggle = (sel, show) => document.querySelectorAll(sel).forEach(el => el.classList.toggle('hidden', !show));
+              // show skeletons
+              toggle('.ov-skel', !!isLoading);
+              // hide text while loading
+              if (this.elements.outputs.ovSellAddress) this.elements.outputs.ovSellAddress.classList.toggle('hidden', !!isLoading);
+              if (this.elements.outputs.ovBuyAddress) this.elements.outputs.ovBuyAddress.classList.toggle('hidden', !!isLoading);
+              if (this.elements.outputs.ovSaleRange) this.elements.outputs.ovSaleRange.classList.toggle('hidden', !!isLoading);
+              if (this.elements.outputs.ovBuyRange) this.elements.outputs.ovBuyRange.classList.toggle('hidden', !!isLoading);
+              if (this.elements.outputs.ovTaxSavings) this.elements.outputs.ovTaxSavings.classList.toggle('hidden', !!isLoading);
+              if (this.elements.outputs.ovUtilityDelta) this.elements.outputs.ovUtilityDelta.classList.toggle('hidden', !!isLoading);
+          }
+          ,
+          // --- PERSISTENCE ---
+          persistState(){
+              try {
+                  const payload = {
+                      version: this.config.appVersion,
+                      timestamp: Date.now(),
+                      currentView: this.state.currentView,
+                      chosenScenario: this.state.chosenScenario,
+                      inputs: this.getFinancialInputs(),
+                      marketData: this.state.marketData
+                  };
+                  localStorage.setItem('rz25_state', JSON.stringify(payload));
+              } catch (_) {}
+          }
+          ,
+          restoreState(){
+              try {
+                  const params = new URLSearchParams(location.search);
+                  const forceOnboarding = params.get('start') === 'onboarding' || params.get('onboarding') === '1';
+                  const raw = localStorage.getItem('rz25_state');
+                  if (forceOnboarding || !raw) { this.switchView('onboarding'); return; }
+                  const data = JSON.parse(raw);
+                  const ageHrs = (Date.now() - (data.timestamp || 0)) / 36e5;
+                  const versionChanged = data.version !== this.config.appVersion;
+                  if (versionChanged || ageHrs > this.config.stateTTLHours) {
+                      localStorage.removeItem('rz25_state'); this.switchView('onboarding'); return;
+                  }
+                  if (data.inputs) {
+                      if (this.elements.inputs.salePrice) this.elements.inputs.salePrice.value = data.inputs.salePrice ?? this.config.financials.defaultSalePrice;
+                      if (this.elements.inputs.mortgageBalance) this.elements.inputs.mortgageBalance.value = data.inputs.mortgageBalance ?? this.config.financials.defaultMortgageBalance;
+                      if (this.elements.inputs.purchasePrice) this.elements.inputs.purchasePrice.value = data.inputs.purchasePrice ?? this.config.financials.defaultPurchasePrice;
+                      if (this.elements.inputs.downPaymentPercent) this.elements.inputs.downPaymentPercent.value = data.inputs.downPaymentPercent ?? this.config.financials.defaultDownPaymentPercent;
+                  }
+                  if (data.chosenScenario) {
+                      const el = document.getElementById(data.chosenScenario);
+                      if (el) {
+                          Object.values(this.elements.scenarioCards).forEach(c => c.classList.remove('selected'));
+                          el.classList.add('selected');
+                          this.state.chosenScenario = data.chosenScenario;
+                          this.elements.buttons.confirmScenario.disabled = false;
+                          this.elements.buttons.confirmScenario.classList.remove('opacity-50', 'cursor-not-allowed');
+                      }
+                  }
+                  if (data.marketData) this.state.marketData = data.marketData;
+                  if (data.currentView && this.elements.views[data.currentView?.replace('-view','')] ? true : this.elements.views[data.currentView]) {
+                      const viewKey = this.elements.views[data.currentView] ? data.currentView : `${data.currentView}-view`;
+                      this.switchView(viewKey);
+                  }
+              } catch (_) { this.switchView('onboarding'); }
+          }
+      };
+
+      RelocationApp.init();
+  });
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Decision-ready plan for relocating from White Plains to the Capital District with live sell/buy math, interactive timeline, and key metrics." />
+  <title>Relocation Project – White Plains → Capital District</title>
+  <meta name="theme-color" content="#0a3d62" />
+  <link rel="canonical" href="https://z.colonie.town/" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+  <meta property="og:title" content="Relocation Project – White Plains → Capital District" />
+  <meta property="og:description" content="Interactive plan for moving from White Plains to the Capital District with live sell/buy analysis." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://z.colonie.town/" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Relocation Project – White Plains → Capital District" />
+  <meta name="twitter:description" content="Interactive plan for moving from White Plains to the Capital District with live sell/buy analysis." />
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script defer src="assets/script.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-header header-v2">
+  <div class="container nav-row">
+    <a class="brand" href="/">z.colonie.town</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-controls="siteNav" aria-expanded="false">☰</button>
+    <nav id="siteNav" class="nav-links" aria-label="Primary">
+      <a href="#hero">Home</a>
+      <a href="#sale-strategy">Sell</a>
+      <a href="#metrics">Buy</a>
+      <a href="#timeline">Timeline</a>
+      <a href="#resources">Resources</a>
+    </nav>
+  </div>
+
+  <section class="hero" id="hero">
+    <div class="container hero-inner">
+      <h1>Relocation Project</h1>
+      <p class="sub">Decision-ready plan for moving from White Plains to the Capital District — with live sell/buy math.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#sale-strategy">Start with Sale</a>
+  <a class="btn btn-outline" href="#metrics">Evaluate Purchase</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="kpi-strip">
+    <div class="container kpi-grid">
+      <div class="kpi">
+        <div class="kpi-label">Seller Baseline</div>
+        <output class="kpi-value" id="kpiSellBaseline" aria-live="polite">$—</output>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Annual Taxes</div>
+        <div class="kpi-value" id="kpiTaxesAnnual" role="status" aria-live="polite">$—</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Target Buy (default)</div>
+        <div class="kpi-value" id="kpiBuyDefault" role="status" aria-live="polite">$—</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+  <main id="main" class="container">
+    <noscript>
+      <div class="alert alert-warning">This page includes interactive charts and calculators that require JavaScript. Please enable JavaScript to use all features.</div>
+    </noscript>
+    <section class="section featured featured-interactive" id="featured-interactive">
+      <h2>Transaction Timeline &amp; Strategy (Interactive)</h2>
+      <p class="sub">Generate a location-aware buy–sell sequence for White Plains → Loudonville/Colonie based on current conditions.</p>
+
+      <div class="resource-card">
+        <h4>Assumptions</h4>
+        <div class="grid-inputs">
+          <label>Start date
+            <input id="txStartDate" type="date" autocomplete="off">
+          </label>
+
+          <label>Sell market (fixed)
+            <select id="sellMarket">
+              <option value="whiteplains" selected>White Plains (Westchester, NY)</option>
+            </select>
+          </label>
+
+          <label>Buy market
+            <select id="buyMarket">
+              <option value="loudonville" selected>Loudonville / Town of Colonie (Albany Co.)</option>
+              <option value="albany">Albany (City)</option>
+              <option value="colonie">Colonie (wider)</option>
+            </select>
+          </label>
+
+          <label>Season
+            <select id="season">
+              <option value="auto" selected>Auto (from start date)</option>
+              <option value="spring">Spring (Mar–Jun)</option>
+              <option value="summer">Summer (Jul–Aug)</option>
+              <option value="fall">Fall (Sep–Nov)</option>
+              <option value="winter">Winter (Dec–Feb)</option>
+            </select>
+          </label>
+
+          <label>Sell market heat
+            <select id="sellHeat">
+              <option value="slow">Slow</option>
+              <option value="balanced" selected>Balanced</option>
+              <option value="competitive">Competitive</option>
+            </select>
+          </label>
+
+          <label>Buy market heat
+            <select id="buyHeat">
+              <option value="slow">Slow</option>
+              <option value="balanced">Balanced</option>
+              <option value="competitive" selected>Competitive</option>
+            </select>
+          </label>
+
+          <label>Property type (buy)
+            <select id="propType">
+              <option value="sfh" selected>Single-family</option>
+              <option value="hoa">Condo/HOA</option>
+            </select>
+          </label>
+
+          <label>Financing (buy)
+            <select id="financing">
+              <option value="cash">Cash</option>
+              <option value="conv20" selected>Conventional 20%+</option>
+              <option value="conv10">Conventional 10%</option>
+              <option value="fha">FHA</option>
+              <option value="va">VA</option>
+            </select>
+          </label>
+
+          <label>Sale contingency on buy?
+            <select id="saleContingency">
+              <option value="yes">Yes (buy depends on sale)</option>
+              <option value="no" selected>No (bridge/rent-back/other)</option>
+            </select>
+          </label>
+
+          <label>Close order
+            <select id="closeOrder">
+              <option value="same_day" selected>Same-day close (sell then buy)</option>
+              <option value="gap_3">Sell then buy (3-day gap)</option>
+              <option value="buy_first">Buy then sell (bridge)</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="control-row">
+          <button id="txRecalcBtn" class="btn btn-primary" type="button">Recalculate Plan</button>
+          <button id="txExportICS" class="btn" type="button">Export .ics</button>
+        </div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <h4>Estimated Total Duration</h4>
+          <div class="value" id="txTotalDuration">—</div>
+          <div class="detail">Start → final closing</div>
+        </div>
+        <div class="metric-card">
+          <h4>Recommended Rate-Lock</h4>
+          <div class="value" id="txRateLock">—</div>
+          <div class="detail">Consider 45–60 days for financed buys</div>
+        </div>
+        <div class="metric-card">
+          <h4>Risk Flags</h4>
+          <div class="detail" id="txFlags">None</div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="guide" id="txPlanTable">
+          <caption>Auto-generated plan based on your assumptions</caption>
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Phase</th>
+              <th scope="col">Window</th>
+              <th scope="col">Days</th>
+              <th scope="col">Notes</th>
+            </tr>
+          </thead>
+          <tbody><!-- filled by JS --></tbody>
+        </table>
+      </div>
+    </section>
+    <!-- Key Metrics -->
+    <section class="section" id="metrics">
+      <!-- Compatibility anchor for older links -->
+      <span id="buy-8le" aria-hidden="true"></span>
+      <h2>Key Metrics</h2>
+      <div class="metrics">
+        <div class="metric-card">
+          <h3>Selling Property</h3>
+          <p>54 Collyer Pl, White Plains, NY</p>
+          <p class="metric-value" id="sellPrice" role="status" aria-live="polite">$0</p>
+        </div>
+
+        <div class="metric-card">
+          <h3>Buying Property</h3>
+          <select id="buyPropertySelect" aria-label="Select target property"></select>
+          <p class="metric-value" id="buyPrice" role="status" aria-live="polite">$0</p>
+        </div>
+
+        <div class="metric-card">
+          <h3>Net Difference</h3>
+          <p class="metric-value" id="netDifference" role="status" aria-live="polite">$0</p>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <canvas id="costChart"></canvas>
+      </div>
+      <div id="propertyDetails" aria-live="polite"></div>
+    </section>
+
+    <!-- Overview -->
+    <section class="section" id="overview">
+      <h2>Relocation Overview</h2>
+      <p>This page tracks a White Plains → Capital District move with up-to-date values for the fixed seller address and candidate purchases in Colonie/Loudonville.</p>
+
+      <div class="metrics-grid">
+        <div class="metric-card guide">
+          <h4>Typical Sale Range</h4>
+          <div class="value" id="typicalSaleRange" role="status" aria-live="polite">$—</div>
+          <div class="detail">White Plains Market</div>
+        </div>
+        <div class="metric-card guide">
+          <h4>Target Purchase Range</h4>
+          <div class="value" id="targetBuyRange" role="status" aria-live="polite">$—</div>
+          <div class="detail">Colonie / Loudonville</div>
+        </div>
+        <div class="metric-card guide">
+          <h4>Monthly Utility Delta</h4>
+          <div class="value" id="utilDelta" role="status" aria-live="polite">$—</div>
+          <div class="detail">Difference vs current</div>
+        </div>
+        <div class="metric-card guide">
+          <h4>Tax Savings Potential</h4>
+          <div class="value" id="taxSavings" role="status" aria-live="polite">$—</div>
+          <div class="detail">Programs like STAR</div>
+        </div>
+      </div>
+
+      <div class="alert alert-info">
+        <strong>Note:</strong> NYS mansion tax (1%) applies to <strong>buyers</strong> at or above $1,000,000. It doesn’t hit your seller net directly, but it can reduce demand above that threshold.
+      </div>
+    </section>
+
+    <!-- Sale Strategy -->
+    <section class="section" id="sale-strategy">
+      <h2>White Plains Sale Strategy</h2>
+      <p>We model seller <strong>net proceeds</strong> including commission, NYS transfer tax (0.4%), attorney, staging, and standard closing costs. Adjust the assumptions to match reality.</p>
+
+      <div class="metrics-grid">
+        <div class="metric-card guide">
+          <h4>Fixed Selling Address</h4>
+          <div class="value" id="sellAddress">54 Collyer Pl, White Plains, NY 10605</div>
+          <div class="detail">Edit assumptions in <code>assets/script.js</code> if needed</div>
+        </div>
+        <div class="metric-card guide">
+          <h4>Best Listing Tactic</h4>
+          <div class="value">List $999,000</div>
+          <div class="detail">Avoid buyer-side mansion tax threshold</div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="guide" id="pricingTable">
+          <caption>Seller pricing scenarios and estimated net proceeds</caption>
+          <thead>
+            <tr>
+              <th scope="col">Scenario</th>
+              <th scope="col">List</th>
+              <th scope="col">Expected Sale</th>
+              <th scope="col">Commission</th>
+              <th scope="col">Transfer Tax (0.4%)</th>
+              <th scope="col">Other Costs</th>
+              <th scope="col"><strong>Net Proceeds</strong></th>
+            </tr>
+          </thead>
+          <tbody><!-- Filled by JS --></tbody>
+        </table>
+      </div>
+
+      <div class="alert alert-warning">
+        <strong>Strategy:</strong> Staying just under $1,000,000 can expand demand. If comps justify $1.05–$1.10M, weigh demand vs buyer tax friction.
+      </div>
+    </section>
+
+    <!-- Unified Buy–Sell Timeline -->
+    <section class="section" id="timeline">
+      <h2>Unified Buy–Sell Timeline</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <h4>Weeks 1–2: Prep</h4>
+          <p>Pre-inspection, minor fixes, staging, photography, loan pre-approval.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Weeks 3–4: List & Tour</h4>
+          <p>List White Plains; begin touring Colonie/Loudonville targets.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Weeks 5–6: Offers</h4>
+          <p>Negotiate sale; prepare purchase offer with suitable contingencies.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Weeks 7–8: Due Diligence</h4>
+          <p>Inspections, appraisal, mortgage commitment.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Weeks 9–10: Pre-Closing</h4>
+          <p>Final walkthroughs, movers, utilities, address changes.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>Weeks 11–12: Close</h4>
+          <p>Close sale first if possible; then purchase close and move-in.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <!-- Resources -->
+  <section class="section" id="resources">
+    <div class="container">
+      <h2>Resources</h2>
+      <ul class="resource-list">
+        <li><a href="https://www.tax.ny.gov/pit/property/star/" target="_blank" rel="noopener">NYS STAR Program</a></li>
+        <li><a href="https://www.dos.ny.gov/licensing/docs/RealEstateSalesperson.pdf" target="_blank" rel="noopener">NY Real Estate Transaction Guide</a></li>
+        <li><a href="#featured-interactive">Interactive Timeline & Strategy</a></li>
+      </ul>
+    </div>
+  </section>
+</body>
+</html>
+
+<!-- Vite/TypeScript SPA bootstrap (non-blocking). Safe alongside existing assets/script.js. -->

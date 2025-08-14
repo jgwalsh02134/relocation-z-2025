@@ -70,6 +70,35 @@ Avoid legal/financial advice disclaimers unless necessary. Encourage informed de
   }
 });
 
+// RapidAPI generic search proxy
+app.get('/api/rapid/search', async (req, res) => {
+  try {
+    const location = req.query.location;
+    if (!location) return res.status(400).json({ error: 'location is required' });
+
+    const apiKey = process.env.RAPIDAPI_KEY;
+    const apiHost = process.env.RAPIDAPI_HOST;
+    if (!apiKey || !apiHost) {
+      return res.status(500).json({ error: 'Missing RAPIDAPI_KEY or RAPIDAPI_HOST' });
+    }
+
+    const url = `https://${apiHost}/search`;
+    const resp = await axios.get(url, {
+      params: { location: String(location) },
+      headers: {
+        'X-RapidAPI-Key': apiKey,
+        'X-RapidAPI-Host': apiHost
+      },
+      timeout: 15000
+    });
+
+    return res.json(resp.data);
+  } catch (e) {
+    console.error('RapidAPI search failed', e?.response?.data || e.message);
+    return res.status(502).json({ error: 'RapidAPI request failed' });
+  }
+});
+
 function mergeSources(sources) {
   const median = arr => {
     const a = [...arr].sort((x, y) => x - y);
