@@ -1,6 +1,16 @@
-name = "relocation-z-2025"
-pages_build_output_dir = "web/dist"
-compatibility_date = "2024-09-01"
+name = "relocation-z-2025-worker"
+compatibility_date = "2025-08-01"
+
+# Worker entrypoint
+main = "worker/index.ts"
+
+# Serve the built SPA as static assets with SPA history fallback
+[assets]
+directory = "web/dist"
+not_found_handling = "single-page-application"
+
+[vars]
+RAPIDAPI_HOST = "zillow56.p.rapidapi.com"
 
 
 
