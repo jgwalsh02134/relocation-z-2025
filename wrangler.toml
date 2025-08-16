@@ -8,5 +8,9 @@ directory = "web/dist"
 not_found_handling = "single-page-application"
 binding = "ASSETS"
 
+# Cloudflare Pages configuration for wrangler
+[pages]
+pages_build_output_dir = "web/dist"
+
 
 
