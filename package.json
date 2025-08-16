@@ -2,14 +2,15 @@
   "name": "relocation-z-2025",
   "private": true,
   "scripts": {
+    "dev": "npm --prefix web run dev",
     "build": "npm --prefix web run build",
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy"
+    "preview": "npm --prefix web run preview",
+    "pages": "wrangler pages dev --proxy=5173"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250113.0",
     "typescript": "^5.5.4",
-    "wrangler": "^3.78.0"
+    "wrangler": "^3.80.0"
   }
 }
 
