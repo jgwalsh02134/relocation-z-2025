@@ -1,17 +1,12 @@
 name = "relocation-z-2025-worker"
+main = "worker/index.ts"
 compatibility_date = "2025-08-01"
 
-# Worker entrypoint
-main = "worker/index.ts"
-
-# Serve the built SPA as static assets with SPA history fallback
+# Serve the built SPA; SPA routing fallback handled automatically
 [assets]
 directory = "web/dist"
 not_found_handling = "single-page-application"
-run_worker_first = true
-
-[vars]
-RAPIDAPI_HOST = "zillow56.p.rapidapi.com"
+binding = "ASSETS"
 
 
 
