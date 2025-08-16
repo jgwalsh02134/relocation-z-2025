@@ -4,8 +4,9 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "strict": true,
+    "types": ["vite/client"],
     "baseUrl": ".",
-    "paths": { "@/*": ["assets/*"], "vite/client": ["types/vite-client.d.ts"] }
+    "paths": { "@/*": ["assets/*"] }
   },
-  "include": ["**/*.ts", "index.html"]
+  "include": ["assets/**/*.ts", "index.html"]
 }

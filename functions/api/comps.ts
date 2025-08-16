@@ -1,15 +1,42 @@
-export const onRequestGet: PagesFunction = async ({ request }) => {
-  const url = new URL(request.url);
-  const address = url.searchParams.get("address") || "";
+export const onRequestGet: PagesFunction<{
+  RAPIDAPI_KEY: string; RAPIDAPI_HOST: string;
+  ZILLOW_FIND_PATH?: string; ZILLOW_COMPS_PATH?: string;
+}> = async ({ request, env }) => {
+  const addr = new URL(request.url).searchParams.get("address") || "";
+  if (!addr) return new Response(JSON.stringify({ error: "Missing address" }), { status: 400 });
 
-  const respond = (low: number, high: number, taxes: number, utilities: number) =>
-    new Response(JSON.stringify({ low, high, taxes, utilities }), {
-      headers: { "Content-Type": "application/json" },
-    });
+  const HOST = env.RAPIDAPI_HOST;                    // e.g. zillow56.p.rapidapi.com
+  const FIND = env.ZILLOW_FIND_PATH || "/search";
+  const COMPS = env.ZILLOW_COMPS_PATH || "/propertyComps";
 
-  if (/White Plains/i.test(address)) return respond(1010000, 1140000, 21000, 450);
-  if (/Loudonwood|Loudonville|Colonie/i.test(address)) return respond(430000, 490000, 7300, 320);
-  return respond(500000, 550000, 8000, 300);
+  const headers = { "X-RapidAPI-Key": env.RAPIDAPI_KEY, "X-RapidAPI-Host": HOST } as Record<string,string>;
+
+  // 1) address → zpid
+  const q1 = new URLSearchParams({ q: addr, location: addr, limit: "1" });
+  const r1 = await fetch(`https://${HOST}${FIND}?${q1}`, { headers });
+  const j1 = await r1.json();
+  const zpid = j1?.data?.results?.[0]?.zpid || j1?.result?.[0]?.zpid || j1?.props?.[0]?.zpid;
+  if (!zpid) return new Response(JSON.stringify({ error: "No ZPID" }), { status: 404 });
+
+  // 2) zpid → comps
+  const q2 = new URLSearchParams({ zpid: String(zpid), limit: "25" });
+  const r2 = await fetch(`https://${HOST}${COMPS}?${q2}`, { headers });
+  const j2 = await r2.json();
+
+  const comps = j2?.data?.comparables || j2?.comps || [];
+  const prices = (Array.isArray(comps) ? comps : [])
+    .map((c: any) => Number(c.price || c.listPrice || c.soldPrice || c.zestimate))
+    .filter(Number.isFinite)
+    .sort((a, b) => a - b);
+  const p10 = prices[Math.floor(prices.length * 0.10)] ?? 450000;
+  const p90 = prices[Math.floor(prices.length * 0.90)] ?? 550000;
+
+  const taxes = Math.round(((p10 + p90) / 2) * 0.012);
+  const utilities = 350;
+
+  return new Response(JSON.stringify({ low: p10, high: p90, taxes, utilities }), {
+    headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=600" }
+  });
 };
 
 
