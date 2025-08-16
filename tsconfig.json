@@ -7,7 +7,6 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "noEmit": true,
-    "types": ["vite/client"],
     "lib": ["ES2020", "DOM"]
   },
   "include": ["assets/**/*.ts"],
