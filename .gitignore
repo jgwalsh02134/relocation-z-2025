@@ -1,3 +1,14 @@
-node_modules
-dist
+# Build / tooling
+.wrangler/
+node_modules/
+dist/
+build/
+.tmp/
+*.map
 .web-*
+
+# macOS
+.DS_Store
+
+# Don’t commit the nested work folder
+relocation-z-2025-v2/
