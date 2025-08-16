@@ -26,6 +26,7 @@
     button, [role="button"], .chip { min-height: 44px; min-width: 44px; }
   </style>
   <link rel="stylesheet" href="/assets/styles.css">
+  <script defer src="assets/script.js"></script>
 </head>
 <body class="antialiased bg-[#F8F7F4] text-[#3D3B38] [padding-bottom:calc(env(safe-area-inset-bottom)+72px)]">
 
@@ -84,12 +85,7 @@
     </footer>
   </div>
 
-  <!-- Keep only minimal inline config and UI logic necessary for demo; full app script intentionally trimmed in web/index.html to avoid conflicts. -->
-  <script>
-  window.RelocationConfig = { backendBase: '' };
-  </script>
-
-  <script type="module" src="/assets/app.ts"></script>
+  
 </body>
 </html>
 

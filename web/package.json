@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && mkdir -p dist/assets && cp -f assets/script.js dist/assets/script.js",
     "preview": "vite preview --host --port 5173"
   },
   "devDependencies": {
